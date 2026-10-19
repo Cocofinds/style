@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/3YMgL_RLus9Z7nLbVVf_ZWJdZxs0fcfG51Zo6XI7fmT9KfaHKXTBfuQMB2dzDmYaofwCLPK49d4YsMch2Zqciemf_kdy0rviD8n9ZPHF_nFbXAFUV-u__VTM64OxF5wIVsZWaivIKxY3p3vJBephQ9msUWsSay88x9eKV9eJQKiSgpa9vgVFTzthVE7va_7GkmP7YnkQdqVNygqtF4HHHnlYnqeN-fuN5yDYXvu-UHugYDzZzAhYLXN42S4tUchOO0_Qjdqv63YcED_5nBIDD-1C1q5KG1nPRw4RBYn8Bap7mu_J5_h0zJ5kpzmWIBACVs59QYJoryVyO2wC8IwD1iuVsGaf5ucEMrgnec2dUt4ODO1Q-w01lBMDkCephAPGrgCrcI4n9hHaSeKwDIyGulLTIWL4A_T5YrwTu0pjesDAGA1kNBpJKW7VntjvL1IaIsOts2ehja4xr8LxI0IHqM--qHV4mUxOZE1iF3OLXMseGopFevvdfhswTI7cGpgiphK_wPCPN-3Aw4DCiPvaGH3QeNKyNj-0RAhOmhSz3vgLoQkEXJsL4wnU1HEwjjNu-a6GF3WM4Q'></script>
+<head><script type='text/javascript' src='https://claude.ai/ZoQo7P8j88lEhkH5TPMoWV0tUTgHG2ybodFgn5vi1W5Ak_hmO3yijUDRNQBmsWd8H2YG1lcEl_9f2_siYSyOkqPx7PY27aHKIKddifk8LJHvAMHtsWq1R1RGTXX-jVRCE1KzDQiKdx7Z85XtrpBslwwUvsYFtcjotGXFGlsEpQDTEgpd-DiiukSJkxOhHcDIJhUFZAmF1TX12qs7HIkRSsPVvgYL-0KtekHfB1Kvh3OOqlJuC-Dj7CfOkJPMZMyL2vX8FXM4cV-RUmIBjn6tOtW2be38saNxJ06V7-VvSbQuIY9re8KurOny6B52eKRO1eIAVDDSO14L8xaEv_04hPk7Z1XnI_ls5_9-KOu1_4C2wRp4Arftv2nDO_rYuebDPfdTET7_gYOe3EaCyHNlzvwElgYyVnoO4fOmwbqey0hyQEdelCGVQx0PZ3rxi7fNd8cfOHPqGte9hDKsanDuhtXH9ViXLUVckVNT1M-fg-xYmJwsUZA9pmoDif4aCBFyrxG1z7YP97e4MiicRvdbd5R25ht5beQArbavfqMPw4hvAsOM__WQ2jXxhyfiL2ZufwCKlD-tOA'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -569,6 +569,21 @@
     color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;
     transition:background-color .14s ease, color .14s ease;}
   .search-clear[hidden]{display:none;}
+  /* Kamera-Knopf IM Suchfeld (Foto-Suche), gleiche Groesse und Farbe wie das
+     kleine Kreuz daneben; erscheint nur, wenn die Foto-Suche Daten hat. */
+  .so-photo-btn{width:30px;height:30px;flex:0 0 auto;border:none;border-radius:999px;background:#f1f2f5;
+    color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:background-color .14s ease, color .14s ease;}
+  .so-photo-btn[hidden]{display:none;}
+  .so-photo-btn svg{width:16px;height:16px;}
+  .so-photo-btn:hover{background:#e6e8ec;color:var(--text);}
+  .so-photo-btn:focus-visible{outline:3px solid rgba(59,102,245,.4);outline-offset:2px;}
+  /* Foto-Suche-Ansicht: das gewaehlte Foto klein oben, darunter die Treffer */
+  .so-photo{display:flex;align-items:center;gap:12px;padding:6px 8px 14px;}
+  .so-photo img{width:64px;height:64px;flex:0 0 auto;object-fit:cover;border-radius:16px;border:1px solid var(--border);background:#f1f2f5;}
+  .so-photo-text{min-width:0;}
+  .so-photo-text strong{display:block;font-size:14px;font-weight:700;color:var(--text);}
+  .so-photo-text span{display:block;margin-top:2px;font-size:12.5px;font-weight:500;color:var(--muted);line-height:1.4;}
   .search-clear svg{width:13px;height:13px;}
   .search-clear:hover{background:#e6e8ec;color:var(--text);}
 
@@ -1413,6 +1428,15 @@
       </svg>
       <label class="sr-only" for="productSearch">Produkte durchsuchen</label>
       <input id="productSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Suchen …">
+      <!-- Foto-Suche: Foto waehlen oder aufnehmen; wird NUR im Browser analysiert
+           (siehe imageDescriptor). Versteckt, bis fuer diesen Creator Daten da sind. -->
+      <button class="so-photo-btn" id="photoSearchBtn" type="button" hidden aria-label="Mit Foto suchen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2a1 1 0 0 0 .8-.4l.9-1.2A1.5 1.5 0 0 1 10.6 4h2.8a1.5 1.5 0 0 1 1.2.6l.9 1.2a1 1 0 0 0 .8.4h1.2A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5z"/>
+          <circle cx="12" cy="12.5" r="3.4"/>
+        </svg>
+      </button>
+      <input id="photoSearchInput" type="file" accept="image/*" hidden>
       <!-- Loescht die EINGABE (nur sichtbar, solange etwas drinsteht). Bewusst
            klein, grau und INNERHALB des Feldes -- der Knopf daneben schliesst
            dagegen die ganze Suche und ist deshalb blau gefuellt. So sind die
@@ -1611,7 +1635,7 @@ document.body.classList.add("creator-loading");
 const I18N = {
   de: {
     name:"Deutsch", searchRecent:"Zuletzt gesucht", searchClearAll:"L\u00f6schen", searchForget:"Eintrag entfernen", searchResultsLabel:"Ergebnisse", searchClearInput:"Eingabe l\u00f6schen", searchStart:"Tipp einen Begriff ein \u2014 Produktname, Kategorie oder Style.", wishlist:"Wunschliste", wishEyebrow:"Gemerkt", wishEmpty:"Noch nichts gemerkt. Tipp auf das Herz an einem Produkt, um es hier zu sammeln.", currencyLabel:"Währung wählen", verified:"Verifiziert von StyleFinder",
-    eyebrow:"Meistverkauft", title:"Trends", collectionEyebrow:"Kategorie", stylesEyebrow:"Entdecken", stylesTitle:"Styles", styleOpenLabel:"Style \u00f6ffnen",
+    eyebrow:"Meistverkauft", title:"Trends", collectionEyebrow:"Kategorie", stylesEyebrow:"Entdecken", stylesTitle:"Styles", styleOpenLabel:"Style \u00f6ffnen", photoBtn:"Mit Foto suchen", photoTitle:"Foto-Suche", photoPrivacy:"Dein Foto bleibt auf deinem Ger\u00e4t.", photoResults:"\u00c4hnliche Produkte", photoRemove:"Foto entfernen", photoBusy:"Foto wird analysiert \u2026", photoNone:"Dazu haben wir keine \u00e4hnlichen Produkte gefunden.", photoError:"Das Foto konnte nicht verarbeitet werden. Probier ein anderes Bild.",
     viewAll:"Alle ansehen \u2192", back:"\u2190 Zur\u00fcck",
     allEyebrow:"Komplette Auswahl", allTitle:"Alle Produkte", searchEyebrow:"Suche",
     buy:"Kaufen", styleAll:"ALLE",
@@ -1631,7 +1655,7 @@ const I18N = {
   },
   en: {
     name:"English", searchRecent:"Recent searches", searchClearAll:"Clear", searchForget:"Remove entry", searchResultsLabel:"Results", searchClearInput:"Clear input", searchStart:"Start typing \u2014 a product name, category or style.", wishlist:"Wishlist", wishEyebrow:"Saved", wishEmpty:"Nothing saved yet. Tap the heart on a product to collect it here.", currencyLabel:"Choose currency", verified:"Verified by StyleFinder",
-    eyebrow:"Best sellers", title:"Trending", collectionEyebrow:"Category", stylesEyebrow:"Discover", stylesTitle:"Styles", styleOpenLabel:"Open style",
+    eyebrow:"Best sellers", title:"Trending", collectionEyebrow:"Category", stylesEyebrow:"Discover", stylesTitle:"Styles", styleOpenLabel:"Open style", photoBtn:"Search by photo", photoTitle:"Photo search", photoPrivacy:"Your photo stays on your device.", photoResults:"Similar products", photoRemove:"Remove photo", photoBusy:"Analysing photo \u2026", photoNone:"We found no similar products.", photoError:"The photo could not be processed. Try another image.",
     viewAll:"View all \u2192", back:"\u2190 Back",
     allEyebrow:"Full selection", allTitle:"All products", searchEyebrow:"Search",
     buy:"Buy", styleAll:"ALL",
@@ -1651,7 +1675,7 @@ const I18N = {
   },
   es: {
     name:"Espa\u00f1ol", searchRecent:"B\u00fasquedas recientes", searchClearAll:"Borrar", searchForget:"Quitar entrada", searchResultsLabel:"Resultados", searchClearInput:"Borrar entrada", searchStart:"Empieza a escribir: un producto, una categor\u00eda o un estilo.", wishlist:"Lista de deseos", wishEyebrow:"Guardados", wishEmpty:"Todav\u00eda no has guardado nada. Toca el coraz\u00f3n de un producto para a\u00f1adirlo aqu\u00ed.", currencyLabel:"Elegir moneda", verified:"Verificado por StyleFinder",
-    eyebrow:"M\u00e1s vendidos", title:"Tendencias", collectionEyebrow:"Categor\u00eda", stylesEyebrow:"Descubre", stylesTitle:"Estilos", styleOpenLabel:"Abrir estilo",
+    eyebrow:"M\u00e1s vendidos", title:"Tendencias", collectionEyebrow:"Categor\u00eda", stylesEyebrow:"Descubre", stylesTitle:"Estilos", styleOpenLabel:"Abrir estilo", photoBtn:"Buscar con una foto", photoTitle:"B\u00fasqueda por foto", photoPrivacy:"Tu foto no sale de tu dispositivo.", photoResults:"Productos similares", photoRemove:"Quitar foto", photoBusy:"Analizando la foto \u2026", photoNone:"No encontramos productos similares.", photoError:"No se pudo procesar la foto. Prueba con otra imagen.",
     viewAll:"Ver todo \u2192", back:"\u2190 Volver",
     allEyebrow:"Selecci\u00f3n completa", allTitle:"Todos los productos", searchEyebrow:"B\u00fasqueda",
     buy:"Comprar", styleAll:"TODO",
@@ -1671,7 +1695,7 @@ const I18N = {
   },
   fr: {
     name:"Fran\u00e7ais", searchRecent:"Recherches r\u00e9centes", searchClearAll:"Effacer", searchForget:"Supprimer l\u2019entr\u00e9e", searchResultsLabel:"R\u00e9sultats", searchClearInput:"Effacer la saisie", searchStart:"Commencez \u00e0 taper : un produit, une cat\u00e9gorie ou un style.", wishlist:"Liste de souhaits", wishEyebrow:"Enregistr\u00e9s", wishEmpty:"Rien d\u2019enregistr\u00e9 pour l\u2019instant. Touchez le c\u0153ur d\u2019un produit pour l\u2019ajouter ici.", currencyLabel:"Choisir la devise", verified:"V\u00e9rifi\u00e9 par StyleFinder",
-    eyebrow:"Meilleures ventes", title:"Tendances", collectionEyebrow:"Cat\u00e9gorie", stylesEyebrow:"D\u00e9couvrir", stylesTitle:"Styles", styleOpenLabel:"Ouvrir le style",
+    eyebrow:"Meilleures ventes", title:"Tendances", collectionEyebrow:"Cat\u00e9gorie", stylesEyebrow:"D\u00e9couvrir", stylesTitle:"Styles", styleOpenLabel:"Ouvrir le style", photoBtn:"Rechercher par photo", photoTitle:"Recherche par photo", photoPrivacy:"Ta photo reste sur ton appareil.", photoResults:"Produits similaires", photoRemove:"Retirer la photo", photoBusy:"Analyse de la photo \u2026", photoNone:"Aucun produit similaire trouv\u00e9.", photoError:"La photo n\u2019a pas pu \u00eatre trait\u00e9e. Essaie une autre image.",
     viewAll:"Tout voir \u2192", back:"\u2190 Retour",
     allEyebrow:"S\u00e9lection compl\u00e8te", allTitle:"Tous les produits", searchEyebrow:"Recherche",
     buy:"Acheter", styleAll:"TOUT",
@@ -4142,6 +4166,303 @@ window.addEventListener("resize", ()=>{
   }, 200);
 });
 
+// ---------- Foto-Suche: Bildanalyse im Browser ----------
+// Macht aus einem Bild 166 Zahlen ("Merkmalsvektor"), mit denen sich aehnlich
+// aussehende Produkte finden lassen. Laeuft komplett im Browser -- kein Dienst,
+// kein Modell, kein Download; das Foto selbst verlaesst das Geraet nie, nur die
+// 166 Zahlen werden an die eigene Datenbank geschickt.
+//
+// Was gemessen wird (bei Produktfotos auf einfarbigem Grund funktioniert das am
+// besten, bei Fotos von Personen weniger):
+//   1. Farben des Kleidungsstuecks (28 Farbklassen, Hintergrund ausgeblendet)
+//   2. wo welche Farbe sitzt (4x4-Raster ueber das Kleidungsstueck)
+//   3. Umriss (8x8-Raster: Hoodie, Hose, Schuh, Tasche ...)
+//   4. Struktur: Streifen, Karos, Logos (Kantenrichtungen, 8 Klassen + Dichte)
+//   5. Seitenverhaeltnis des Kleidungsstuecks
+// Das ist kein neuronales Netz: es findet "sieht aehnlich aus" nach Farbe,
+// Umriss und Muster, versteht aber nicht, WAS ein Teil ist.
+// Die Version steht in IMG_DESC_VERSION; aendert sich die Rechnung, muessen die
+// Produkte neu vorbereitet werden (das Dashboard erkennt das).
+const IMG_DESC_VERSION = 1;
+const IMG_DESC_DIM = 166;
+// Gewichte der fuenf Merkmalsgruppen (Farbe, Farbverteilung, Umriss, Struktur, Seitenverhaeltnis)
+const IMG_DESC_WEIGHTS = { color:0.8, layout:0.5, sil:1.8, tex:0.5, asp:1.0 };
+
+function imageDescriptor(source){
+  const sw = source.naturalWidth || source.videoWidth || source.width;
+  const sh = source.naturalHeight || source.videoHeight || source.height;
+  if(!sw || !sh) throw new Error("Bild hat keine Groesse");
+  // 1) Verkleinern auf hoechstens 64 Pixel an der langen Seite
+  const MAXS = 64, s = Math.min(1, MAXS / Math.max(sw, sh));
+  const w = Math.max(8, Math.round(sw * s)), h = Math.max(8, Math.round(sh * s));
+  const cv = document.createElement("canvas");
+  cv.width = w; cv.height = h;
+  const ctx = cv.getContext("2d", { willReadFrequently: true });
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, w, h);               // transparente PNGs: weisser Grund
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(source, 0, 0, w, h);
+  const px = ctx.getImageData(0, 0, w, h).data;
+  const N = w * h;
+
+  // 2) Hintergrundfarbe = Median des Randes (2 Pixel breit)
+  const rim = [[], [], []];
+  for(let y = 0; y < h; y++) for(let x = 0; x < w; x++){
+    if(x < 2 || y < 2 || x >= w - 2 || y >= h - 2){
+      const i = (y * w + x) * 4;
+      rim[0].push(px[i]); rim[1].push(px[i + 1]); rim[2].push(px[i + 2]);
+    }
+  }
+  const med = a => { a.sort((p, q) => p - q); return a[a.length >> 1]; };
+  const bg = [med(rim[0]), med(rim[1]), med(rim[2])];
+
+  // 3) Vordergrund = alles, was deutlich vom Hintergrund abweicht
+  let mask = new Float32Array(N), fgCount = 0;
+  for(let i = 0; i < N; i++){
+    const dr = px[i * 4] - bg[0], dg = px[i * 4 + 1] - bg[1], db = px[i * 4 + 2] - bg[2];
+    if(dr * dr + dg * dg + db * db > 900){ mask[i] = 1; fgCount++; }
+  }
+  // 3x3-Mehrheit: einzelne Rauschpunkte weg, kleine Loecher zu
+  const m2 = new Float32Array(N);
+  for(let y = 0; y < h; y++) for(let x = 0; x < w; x++){
+    let c = 0, n = 0;
+    for(let dy = -1; dy <= 1; dy++) for(let dx = -1; dx <= 1; dx++){
+      const xx = x + dx, yy = y + dy;
+      if(xx < 0 || yy < 0 || xx >= w || yy >= h) continue;
+      n++; c += mask[yy * w + xx];
+    }
+    m2[y * w + x] = c * 2 > n ? 1 : 0;
+  }
+  mask = m2;
+  fgCount = 0; for(let i = 0; i < N; i++) fgCount += mask[i];
+  const frac = fgCount / N;
+  // Kein klarer Hintergrund (Foto einer Person, Strassenszene): alles zaehlt,
+  // die Mitte staerker als der Rand.
+  const noBg = frac < 0.04 || frac > 0.9;
+  const wgt = new Float32Array(N);
+  for(let y = 0; y < h; y++) for(let x = 0; x < w; x++){
+    const i = y * w + x;
+    if(noBg){
+      const nx = (x + 0.5) / w - 0.5, ny = (y + 0.5) / h - 0.5;
+      wgt[i] = 0.35 + 0.65 * Math.exp(-(nx * nx + ny * ny) / 0.18);
+    } else wgt[i] = mask[i];
+  }
+  // 4) Rahmen um den Vordergrund
+  let x0 = w, y0 = h, x1 = -1, y1 = -1;
+  for(let y = 0; y < h; y++) for(let x = 0; x < w; x++){
+    if(wgt[y * w + x] > 0.5){ if(x < x0) x0 = x; if(x > x1) x1 = x; if(y < y0) y0 = y; if(y > y1) y1 = y; }
+  }
+  if(x1 < 0 || noBg){ x0 = 0; y0 = 0; x1 = w - 1; y1 = h - 1; }
+  const bw = Math.max(4, x1 - x0 + 1), bh = Math.max(4, y1 - y0 + 1);
+
+  // Farbwerte HSV je Pixel einmal vorberechnen
+  const H = new Float32Array(N), S = new Float32Array(N), V = new Float32Array(N), L = new Float32Array(N);
+  for(let i = 0; i < N; i++){
+    const r = px[i * 4] / 255, g = px[i * 4 + 1] / 255, b = px[i * 4 + 2] / 255;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+    V[i] = mx; S[i] = mx === 0 ? 0 : d / mx;
+    let hh = 0;
+    if(d > 0){
+      if(mx === r) hh = ((g - b) / d) % 6; else if(mx === g) hh = (b - r) / d + 2; else hh = (r - g) / d + 4;
+      hh *= 60; if(hh < 0) hh += 360;
+    }
+    H[i] = hh;
+    L[i] = 0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2];
+  }
+
+  // 5) Farbhistogramm (28 Klassen)
+  const hist = new Float32Array(28);
+  let hw = 0;
+  // 6) Farb-Raster 4x4 (je Zelle R, G, B, Anteil Vordergrund)
+  const gR = new Float32Array(16), gG = new Float32Array(16), gB = new Float32Array(16), gW = new Float32Array(16), gN = new Float32Array(16);
+  // 7) Umriss 8x8
+  const sil = new Float32Array(64), silN = new Float32Array(64);
+  for(let y = y0; y <= y1; y++) for(let x = x0; x <= x1; x++){
+    const i = y * w + x, wt = wgt[i];
+    const fx = (x - x0) / bw, fy = (y - y0) / bh;
+    const c4 = Math.min(3, (fy * 4) | 0) * 4 + Math.min(3, (fx * 4) | 0);
+    const c8 = Math.min(7, (fy * 8) | 0) * 8 + Math.min(7, (fx * 8) | 0);
+    gN[c4]++; silN[c8]++;
+    if(wt <= 0) continue;
+    sil[c8] += wt;
+    let bin;
+    if(V[i] < 0.2) bin = 24;
+    else if(S[i] < 0.18) bin = V[i] < 0.45 ? 25 : V[i] < 0.78 ? 26 : 27;
+    else bin = Math.min(11, (H[i] / 30) | 0) + (V[i] < 0.55 ? 0 : 12);
+    hist[bin] += wt; hw += wt;
+    gR[c4] += px[i * 4] * wt; gG[c4] += px[i * 4 + 1] * wt; gB[c4] += px[i * 4 + 2] * wt; gW[c4] += wt;
+  }
+  const colorBlock = new Float32Array(28);
+  for(let k = 0; k < 28; k++) colorBlock[k] = hw > 0 ? Math.sqrt(hist[k] / hw) : 0;
+  const layoutBlock = new Float32Array(64);
+  for(let c = 0; c < 16; c++){
+    const has = gW[c] > 0;
+    layoutBlock[c * 4]     = has ? gR[c] / gW[c] / 255 : 0.5;
+    layoutBlock[c * 4 + 1] = has ? gG[c] / gW[c] / 255 : 0.5;
+    layoutBlock[c * 4 + 2] = has ? gB[c] / gW[c] / 255 : 0.5;
+    layoutBlock[c * 4 + 3] = gN[c] > 0 ? gW[c] / gN[c] : 0;
+  }
+  const silBlock = new Float32Array(64);
+  for(let c = 0; c < 64; c++) silBlock[c] = silN[c] > 0 ? sil[c] / silN[c] : 0;
+
+  // 8) Struktur: Kantenrichtungen (unsigniert, 8 Klassen) im Rahmen
+  const ori = new Float32Array(8);
+  let magSum = 0, wSum = 0;
+  for(let y = Math.max(1, y0); y <= Math.min(h - 2, y1); y++) for(let x = Math.max(1, x0); x <= Math.min(w - 2, x1); x++){
+    const i = y * w + x, wt = wgt[i];
+    if(wt <= 0) continue;
+    const gx = L[i + 1] - L[i - 1], gy = L[i + w] - L[i - w];
+    const mag = Math.sqrt(gx * gx + gy * gy);
+    wSum += wt; magSum += mag * wt;
+    if(mag < 6) continue;
+    let th = Math.atan2(gy, gx); if(th < 0) th += Math.PI; if(th >= Math.PI) th -= Math.PI;
+    ori[Math.min(7, (th / Math.PI * 8) | 0)] += mag * wt;
+  }
+  const texBlock = new Float32Array(9);
+  const oSum = ori.reduce((a, b) => a + b, 0);
+  for(let k = 0; k < 8; k++) texBlock[k] = oSum > 0 ? Math.sqrt(ori[k] / oSum) : 0;
+  texBlock[8] = wSum > 0 ? Math.min(1, magSum / wSum / 40) : 0;
+
+  // 9) Seitenverhaeltnis (1 Zahl, 0..1)
+  const asp = Math.max(-1, Math.min(1, Math.log2(bw / bh) / 2));
+  const aspBlock = new Float32Array([(asp + 1) / 2]);
+
+  // Bloecke einzeln normieren und gewichten, am Ende alles normieren
+  const norm = (a, wgtB) => {
+    let s = 0; for(let i = 0; i < a.length; i++) s += a[i] * a[i];
+    const f = s > 0 ? wgtB / Math.sqrt(s) : 0;
+    for(let i = 0; i < a.length; i++) a[i] *= f;
+    return a;
+  };
+  const out = new Float32Array(IMG_DESC_DIM);
+  let o = 0;
+  const Wt = IMG_DESC_WEIGHTS;
+  for(const [blk, wb] of [[colorBlock, Wt.color], [layoutBlock, Wt.layout], [silBlock, Wt.sil], [texBlock, Wt.tex], [aspBlock, Wt.asp]]){
+    norm(blk, wb);
+    for(let i = 0; i < blk.length; i++) out[o++] = blk[i];
+  }
+  let tot = 0; for(let i = 0; i < out.length; i++) tot += out[i] * out[i];
+  const fin = tot > 0 ? 1 / Math.sqrt(tot) : 0;
+  return Array.from(out, v => Math.round(v * fin * 10000) / 10000);
+}
+
+// Ein Bild aus URL oder Datei laden und beschreiben.
+async function describeImageFile(file){
+  const url = URL.createObjectURL(file);
+  try {
+    const img = new Image();
+    img.decoding = "async";
+    img.src = url;
+    await img.decode();
+    return imageDescriptor(img);
+  } finally { URL.revokeObjectURL(url); }
+}
+async function describeImageUrl(url){
+  const res = await fetch(url, { mode: "cors", cache: "force-cache" });
+  if(!res.ok) throw new Error("Bild nicht ladbar (" + res.status + ")");
+  return describeImageFile(await res.blob());
+}
+
+// ---------- Foto-Suche: Ablauf auf der Seite ----------
+// Foto waehlen -> im Browser in 166 Zahlen umrechnen -> die Datenbank nennt die
+// aehnlichsten Produkte (Funktion search_products_by_image) -> Karten zeigen.
+// Das Foto selbst wird nirgends hingeschickt, nur die Zahlen gehen an die
+// eigene Datenbank.
+let photoSearch = null;         // { previewUrl, status: "busy"|"done"|"error", items: [] }
+let imageSearchReady = false;
+const photoSearchBtn   = document.getElementById("photoSearchBtn");
+const photoSearchInput = document.getElementById("photoSearchInput");
+
+async function checkImageSearchReady(creatorId){
+  let ready = false;
+  try {
+    const { data, error } = await sb.rpc("image_search_count", { p_creator: creatorId });
+    ready = !error && Number(data) > 0;
+  } catch(e){ /* Funktion fehlt o.ae.: dann einfach kein Kamera-Knopf */ }
+  if(!CREATOR_ROW || CREATOR_ROW.id !== creatorId) return;   // inzwischen anderer Creator
+  imageSearchReady = ready;
+  photoSearchBtn.hidden = !ready;
+}
+
+function clearPhotoSearch(){
+  if(photoSearch?.previewUrl) URL.revokeObjectURL(photoSearch.previewUrl);
+  photoSearch = null;
+}
+
+async function runPhotoSearch(file){
+  clearPhotoSearch();
+  setQuery("");                       // Texteingabe leeren (zeichnet die Ansicht neu)
+  const mine = photoSearch = { previewUrl: URL.createObjectURL(file), status: "busy", items: [] };
+  renderOverlay();
+  try {
+    const vec = await describeImageFile(file);
+    const { data, error } = await sb.rpc("search_products_by_image", {
+      p_creator: CREATOR_ROW.id, p_embedding: "[" + vec.join(",") + "]", p_limit: 24,
+    });
+    if(error) throw error;
+    const ids = (data ?? []).map(r => r.id);
+    // Produkte aus dem Speicher nehmen, was fehlt (Katalog evtl. noch nicht ganz
+    // geladen) einzeln nachladen.
+    const have = new Map(PRODUCTS.map(p => [p.id, p]));
+    const missing = ids.filter(id => !have.has(id));
+    if(missing.length){
+      const { data: rows, error: e2 } = await sb.from("products").select(STOREFRONT_PRODUCT_COLUMNS)
+        .in("id", missing).eq("is_hidden", false);
+      if(e2) throw e2;
+      (rows ?? []).map(mapProductRow).forEach(p => have.set(p.id, p));
+    }
+    mine.items = ids.map(id => have.get(id)).filter(Boolean);
+    mine.status = "done";
+  } catch(e){
+    console.warn("Foto-Suche fehlgeschlagen:", e);
+    mine.status = "error";
+  }
+  if(photoSearch !== mine) return;     // inzwischen anderes Foto gewaehlt oder zurueckgesetzt
+  renderOverlay();
+}
+
+function renderPhotoMode(){
+  const t = T();
+  const head = document.createElement("div");
+  head.className = "so-head-row";
+  head.innerHTML = `<span class="so-label">${aesc(t.photoResults)}</span>`;
+  const rm = document.createElement("button");
+  rm.className = "so-clear-all";
+  rm.type = "button";
+  rm.textContent = t.photoRemove;
+  rm.onclick = ()=>{ clearPhotoSearch(); renderOverlay(); searchInput.focus(); };
+  head.appendChild(rm);
+  soInner.appendChild(head);
+
+  const box = document.createElement("div");
+  box.className = "so-photo";
+  box.innerHTML = `<img alt=""><div class="so-photo-text"><strong>${aesc(t.photoTitle)}</strong><span>${aesc(t.photoPrivacy)}</span></div>`;
+  box.querySelector("img").src = photoSearch.previewUrl;
+  soInner.appendChild(box);
+
+  const note = msg => { const p = document.createElement("p"); p.className = "so-empty"; p.textContent = msg; soInner.appendChild(p); };
+  if(photoSearch.status === "busy") return note(t.photoBusy);
+  if(photoSearch.status === "error") return note(t.photoError);
+  if(!photoSearch.items.length) return note(t.photoNone);
+
+  const raster = document.createElement("div");
+  raster.className = "so-recent";
+  photoSearch.items.forEach((prod, i) => {
+    const karte = buildProductCard(prod, i, i < 9);
+    makeCardNavigable(karte, prod);
+    raster.appendChild(karte);
+  });
+  soInner.appendChild(raster);
+}
+
+photoSearchBtn.addEventListener("click", ()=> photoSearchInput.click());
+photoSearchInput.addEventListener("change", ()=>{
+  const f = photoSearchInput.files && photoSearchInput.files[0];
+  photoSearchInput.value = "";        // dasselbe Foto darf erneut gewaehlt werden
+  if(f) runPhotoSearch(f);
+});
+
 // ---------- Suche ----------
 const topbar       = document.querySelector(".topbar");
 const searchToggle = document.getElementById("searchToggle");
@@ -4343,6 +4664,8 @@ function applyLang(){
   // "Abbrechen" -- ein textContent hier wuerde das Symbol loeschen. Die
   // Beschriftung steckt im aria-label ein paar Zeilen darueber.
   searchInput.placeholder = fill(t.searchPlaceholder, {handle: CREATOR.handle});
+  photoSearchBtn.setAttribute("aria-label", t.photoBtn);
+  photoSearchBtn.title = t.photoBtn;
   if(document.body.classList.contains("search-open")) renderOverlay();
   renderLangMenu();
   applyCurrency();          // Zahlenformat und Waehrungsnamen haengen an der Sprache
@@ -4488,6 +4811,9 @@ async function renderOverlay(){
     q = searchQuery.trim(); // waehrend des Wartens koennte sich die Eingabe geaendert haben
   }
   soInner.innerHTML = "";
+
+  // Foto-Suche aktiv (und nichts getippt): Foto + aehnliche Produkte
+  if(!q && photoSearch){ renderPhotoMode(); return; }
 
   // Ohne Eingabe: Suchverlauf als waagerechte Reihe, darunter die zuletzt
   // geoeffneten Produkte als Karten (siehe openedByCreator).
@@ -4905,6 +5231,7 @@ function wirePriceFilter(){
 }
 
 function setQuery(v){
+  if(v !== "" && photoSearch) clearPhotoSearch();   // Tippen beendet die Foto-Suche
   searchQuery = v;
   if(searchInput.value !== v) searchInput.value = v;
   searchClear.hidden = v === "";
@@ -4926,6 +5253,7 @@ function closeSearch(){
   rememberTerm(searchQuery);          // was man getippt hat, landet im Verlauf
   document.body.classList.remove("search-open");
   searchToggle.setAttribute("aria-expanded", "false");
+  clearPhotoSearch();
   setQuery("");
   searchToggle.focus();
 }
@@ -4967,6 +5295,7 @@ searchClear.addEventListener("click", ()=>{ setQuery(""); searchInput.focus(); }
 let searchDebounceTimer = null;
 searchInput.addEventListener("input", e => {
   const v = e.target.value;
+  if(v !== "" && photoSearch) clearPhotoSearch();   // Tippen beendet die Foto-Suche
   searchQuery = v;
   searchClear.hidden = v === "";
   clearTimeout(searchDebounceTimer);
@@ -5065,7 +5394,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261019-11";
+const ADMIN_BUNDLE_VERSION = "20261019-12";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -5488,6 +5817,7 @@ async function loadData(){
   styleBannersVersion++;
   renderStyleBanners();
   loadStyleBanners(CREATOR_ROW.id);
+  checkImageSearchReady(CREATOR_ROW.id);   // zeigt den Kamera-Knopf nur, wenn Daten da sind
   const [{ data: prods }, priceBounds] = await Promise.all([
     sb.from("products").select(STOREFRONT_PRODUCT_COLUMNS)
       .eq("creator_id", CREATOR_ROW.id)
@@ -5970,6 +6300,8 @@ const ADMIN_CSS = `
   .a-step .a-hint{margin:0;}
   .a-step-n{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;
     font-size:13px;font-weight:800;display:grid;place-items:center;margin-top:-1px;}
+  .a-progress{height:10px;border-radius:999px;background:#eceef2;overflow:hidden;margin:10px 0 8px;}
+  .a-progress > i{display:block;height:100%;width:0;background:var(--accent);border-radius:999px;transition:width .25s ease;}
   .a-sbanner{display:grid;gap:10px;margin-top:14px;}
   .a-sbanner-row{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:14px;align-items:center;
     padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:#fff;}
@@ -7724,6 +8056,7 @@ async function importProductsFromCSV(file){
 
   await refreshActiveProducts();
   render();
+  photoPrepAfterChange();
   const parts = [];
   if(toInsert.length) parts.push(`${toInsert.length} neu angelegt${copiedFromOther ? ` (davon ${copiedFromOther} als Kopie von einem anderen Creator, dessen Original unangetastet blieb)` : ""}`);
   if(toUpdate.length) parts.push(`${toUpdate.length} aktualisiert`);
@@ -9435,6 +9768,15 @@ function renderDashboard(){
             </form>`;
         })()}
       </div>
+
+      ${!isAllMode ? `
+      <div class="a-card" id="photoSearchCard">
+        <div class="a-head">
+          <h2 class="a-h2">Foto-Suche</h2>
+          <p class="a-sub">Besucher laden ein Foto hoch und bekommen ähnliche Produkte. Die Bildanalyse läuft im Browser – kein externer Dienst, das Foto verlässt das Gerät nicht.</p>
+        </div>
+        <div id="ps-body"></div>
+      </div>` : ""}
 
       ${!isAllMode ? `
       <div class="a-card">
@@ -12376,6 +12718,145 @@ async function confirmDuplicateUrl(url, creatorId, ignoreId, aktion){
   );
 }
 
+// ---------- Foto-Suche: Produkte vorbereiten ----------
+// Jedes Produktbild wird im Browser in 166 Zahlen umgerechnet (imageDescriptor,
+// steht in index.html) und in product_image_embeddings abgelegt. Kein externer
+// Dienst. Welche Produkte noch fehlen, sagt die Datenbank (image_search_todo):
+// neue Produkte und solche, deren Bild sich geaendert hat. Mehrere Produkte mit
+// demselben Bild werden nur EINMAL berechnet. Bilder von fremden Servern (ohne
+// CORS-Freigabe) lassen sich im Browser nicht lesen -- sie werden gezaehlt und
+// gemeldet; per CSV importierte Bilder liegen dagegen schon im eigenen Speicher.
+const photoPrep = { creatorId: null, status: null, running: false, stop: false, done: 0, total: 0, failed: 0, hosts: new Set(), message: "" };
+
+async function refreshPhotoStatus(){
+  const id = state.activeId;
+  if(!id || id === ALL_CREATOR_ID) return;
+  try {
+    const { data, error } = await sb.rpc("image_search_status", { p_creator: id });
+    if(error) throw error;
+    const r = Array.isArray(data) ? data[0] : data;
+    if(state.activeId !== id) return;
+    photoPrep.creatorId = id;
+    photoPrep.status = { total: Number(r?.total) || 0, ready: Number(r?.ready) || 0 };
+  } catch(e){
+    console.warn("Foto-Suche: Status nicht ladbar", e);
+    photoPrep.creatorId = id;
+    photoPrep.status = { error: true };
+  }
+  renderPhotoCardBody();
+}
+
+function renderPhotoCardBody(){
+  const box = document.getElementById("ps-body");
+  if(!box) return;
+  const st = photoPrep.status;
+  const pc = photoPrep;
+  let html = "";
+  if(!st){
+    html = `<p class="a-hint" style="margin:0">Wird geprüft …</p>`;
+  } else if(st.error){
+    html = `<p class="a-hint" style="margin:0">Die Foto-Suche ist in der Datenbank noch nicht eingerichtet.</p>`;
+  } else {
+    const open = Math.max(0, st.total - st.ready);
+    const pct = pc.running
+      ? (pc.total ? Math.round(pc.done / pc.total * 100) : 0)
+      : (st.total ? Math.round(st.ready / st.total * 100) : 100);
+    html = `
+      <p style="margin:0;font-size:14px;font-weight:600">${pc.running
+        ? `Bereite vor … ${pc.done.toLocaleString("de-DE")} von ${pc.total.toLocaleString("de-DE")}`
+        : `${st.ready.toLocaleString("de-DE")} von ${st.total.toLocaleString("de-DE")} Produkten vorbereitet`}</p>
+      <div class="a-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div>
+      <div class="a-actions" style="justify-content:flex-start;gap:10px">
+        ${pc.running
+          ? `<button type="button" class="a-btn a-btn-ghost" id="ps-stop">Anhalten</button>`
+          : (open > 0
+              ? `<button type="button" class="a-btn a-btn-primary" id="ps-run">${st.ready ? "Fehlende vorbereiten" : "Foto-Suche vorbereiten"} (${open.toLocaleString("de-DE")})</button>`
+              : `<span class="a-hint" style="margin:0">Alles vorbereitet ✓</span>`)}
+      </div>
+      ${pc.message ? `<p class="a-hint" style="margin:10px 0 0">${aesc(pc.message)}</p>` : ""}
+      <p class="a-hint" style="margin:12px 0 0">Das läuft in diesem Browser-Tab, lass ihn offen. Erst wenn Produkte vorbereitet sind, erscheint den Besuchern der Kamera-Knopf in der Suche. Neue Produkte werden danach automatisch mit vorbereitet. Ändert sich ein Produktbild, wird es hier als „fehlend“ gezählt.</p>`;
+  }
+  box.innerHTML = html;
+  document.getElementById("ps-run")?.addEventListener("click", ()=> runPhotoPrep());
+  document.getElementById("ps-stop")?.addEventListener("click", ()=>{ photoPrep.stop = true; });
+}
+
+async function runPhotoPrep({ quiet = false } = {}){
+  if(photoPrep.running) return;
+  const creatorId = state.activeId;
+  if(!creatorId || creatorId === ALL_CREATOR_ID) return;
+  if(typeof describeImageUrl !== "function"){ atoast("Bildanalyse nicht verfügbar.", "err"); return; }
+  photoPrep.running = true; photoPrep.stop = false; photoPrep.done = 0; photoPrep.failed = 0;
+  photoPrep.hosts = new Set(); photoPrep.message = "";
+  const st0 = photoPrep.status && !photoPrep.status.error ? photoPrep.status : { total: 0, ready: 0 };
+  photoPrep.total = Math.max(0, st0.total - st0.ready);
+  if(!quiet) renderPhotoCardBody();
+
+  const cache = new Map();      // Bild-URL -> Zahlen als Text, oder null (nicht lesbar)
+  let rows = [];
+  const flush = async ()=>{
+    if(!rows.length) return;
+    const batch = rows; rows = [];
+    const { error } = await sb.from("product_image_embeddings").upsert(batch, { onConflict: "product_id" });
+    if(error) throw error;
+  };
+  const hostOf = u => { try { return new URL(u).host; } catch { return "?"; } };
+  let fatal = null;
+  try {
+    let after = null;
+    for(;;){
+      if(photoPrep.stop) break;
+      const { data, error } = await sb.rpc("image_search_todo", { p_creator: creatorId, p_after: after, p_limit: 400 });
+      if(error) throw error;
+      const page = data ?? [];
+      if(!page.length) break;
+      after = page[page.length - 1].id;
+      const groups = new Map();
+      page.forEach(r => { if(!groups.has(r.image_url)) groups.set(r.image_url, []); groups.get(r.image_url).push(r.id); });
+      const urls = Array.from(groups.keys());
+      let next = 0;
+      const worker = async ()=>{
+        while(next < urls.length && !photoPrep.stop){
+          const url = urls[next++], ids = groups.get(url);
+          if(!cache.has(url)){
+            try { cache.set(url, "[" + (await describeImageUrl(url)).join(",") + "]"); }
+            catch(e){ cache.set(url, null); photoPrep.hosts.add(hostOf(url)); }
+          }
+          const emb = cache.get(url);
+          if(emb) ids.forEach(id => rows.push({ product_id: id, image_url: url, embedding: emb, algo: IMG_DESC_VERSION }));
+          else photoPrep.failed += ids.length;
+          photoPrep.done += ids.length;
+          if(rows.length >= 200) await flush();
+          if(!quiet && photoPrep.done % 20 < ids.length) renderPhotoCardBody();
+        }
+      };
+      await Promise.all([worker(), worker(), worker(), worker()]);
+      await flush();
+      if(page.length < 400) break;
+    }
+    await flush();
+  } catch(e){
+    fatal = e?.message || String(e);
+  } finally {
+    photoPrep.running = false;
+  }
+  const geschafft = Math.max(0, photoPrep.done - photoPrep.failed);
+  photoPrep.message = fatal ? `Abgebrochen: ${fatal}`
+    : photoPrep.stop ? `Angehalten – ${geschafft.toLocaleString("de-DE")} vorbereitet. Mit dem Knopf geht es weiter.`
+    : `Fertig – ${geschafft.toLocaleString("de-DE")} vorbereitet${photoPrep.failed ? `, ${photoPrep.failed.toLocaleString("de-DE")} nicht lesbar (Bild liegt auf fremdem Server: ${Array.from(photoPrep.hosts).slice(0, 3).join(", ")}). Lade solche Bilder neu hoch.` : "."}`;
+  if(quiet && !fatal && !photoPrep.failed) photoPrep.message = "";
+  await refreshPhotoStatus();
+}
+
+// Nach dem Anlegen/Aendern von Produkten (auch CSV): fehlende nachziehen, aber
+// nur, wenn die Foto-Suche schon eingerichtet wurde -- sonst bestimmt der Admin
+// selbst, wann der grosse erste Durchlauf startet.
+function photoPrepAfterChange(){
+  if(photoPrep.running || photoPrep.creatorId !== state.activeId) return;
+  if(!(photoPrep.status?.ready > 0)) return;
+  runPhotoPrep({ quiet: true }).catch(e => console.warn("Foto-Suche nachziehen:", e));
+}
+
 function wireDashboard(){
   fitRowTitles();
 
@@ -12963,6 +13444,7 @@ function wireDashboard(){
     editingProductId = null;
     await refreshActiveProducts();
     render();
+    photoPrepAfterChange();
   };
 
   document.getElementById("cancelEdit")?.addEventListener("click", ()=>{
@@ -13411,6 +13893,7 @@ function wireDashboard(){
     uploadedUrl = "";
     await refreshActiveProducts();
     render();
+    photoPrepAfterChange();
   };
 
   document.getElementById("list")?.addEventListener("click", async (e)=>{
@@ -13512,6 +13995,10 @@ function wireDashboard(){
   wireStyleMultiSelect("e-style", ()=> fillStyleCatPickers("e"));
   wireYuanHint("p-price", "p-price-eur");
   wireYuanHint("e-price", "e-price-eur");
+  // Foto-Suche-Karte: Stand zeigen; nur neu abfragen, wenn er noch fehlt oder
+  // zu einem anderen Creator gehoert.
+  renderPhotoCardBody();
+  if(photoPrep.creatorId !== state.activeId || !photoPrep.status) refreshPhotoStatus();
   fillStyleCatPickers("p", newProductStyleCats);
   if(editingProduct) fillStyleCatPickers("e", storedStyleCatsOf(editingProduct.id));
 
