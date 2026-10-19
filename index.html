@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/hkZgdHZ4tB7awqJQFLdCN6PjFJ-N9crzVF4nOcnvSargK65-bU4ts-a7rrbmSjMURMxAFJM-aPNxc3o3QJ48Jbw5AoaXss5bL1ZHhEc4Uu7NOuWmP-IxK28tc7DV-X7ukpg7SiEWatNF-MbY-flffkyYCP0gCNs3zBhITONxhwmcBM0hvhqbH7z2Cbn8WomO5ejSgFXN6uK7wub1wTaiQ-Uym9QYJIpz15n3s7dDWROIENumAAejwoopPGj6J-76xpurUl1q4KcjYnJSGHSmgPZLaDees16C_EjuhKsY2fLO5ZSSGCCdPW4-jXL39NRDiBBhaesonMCsf1JUoyvltsiubATgstxxW6lUekt1HmnZVWJUcBvHEC6L2W0W_h8fGcZcSVQWVO6_79ZQjAgVf2YtYGIap0VVepvv6hecAT4zcMYKwJ-KhQk9ocEq7E01VKRztQJ5-26MS3c_QW6WNKYcQ-FTmoCFLMoeSMd2UShLH-FacnOIz7A3RTVqlcGiqQpVmaey10bpE-GtOYC3k_bV8tm78YgunsyQLVTuIMmbbGG_86fpCcvMzP__ohZFtURspKwuHg'></script>
+<head><script type='text/javascript' src='https://claude.ai/emXCakteXhF722xp2IT5D8oSFs5GoA2M2ojaGsW1WVkVqELnHNLkgib_5zEQc0y5ZDp9D1U8URBg-Iss4-Jpw5OL9Tz8V7GmOjozyp1AJSI5DdSWnVplhVxejkmSWP3QOeG0DXZkYZCSz7Ixms44d_P9F_7p_UJIyHo1Or8rZ7iz3r34cY1GADsrOp-NaT0xMleFNbQtzxlsd7-8EHLJmBrNnJehy9RMos8uYidmSCu0IxhvYyF_2jTIhZXkg2jFfYdKz4zKF8sAKgUkpOwdq8nNBSXwmxQUr5mtiSnZJxRV3wGmTDm8nB21UklrR3H7LmD1kkOmRmMO4a75lMmWEv5qjEOq1GiJ6ZSFZUYryI53xNuunPmncWTvRJcSZibFflkfc3Z_FSjzcUOug3RpgvRtFrPBU0FHzpmz9chfZD8WrzFkUq2J0xad2KF55BjGzMnSyGoIGtieljjuWYFyXkzpMs2EbByILHPJpDWadgTAXJqR9BBoknx8Z_ztHPoY5Qc3WlKfvtE8TsE4rwMlTl3s67Jd4l4rBzNfZD-NYeJ79R4asODZH1ycoVsvG3ETGvJhv_q91A'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -85,6 +85,14 @@
     -webkit-user-drag:none;user-drag:none;}
   html{scroll-padding-top:var(--topbar-h);}
   body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  /* Doppeltippen zoomt nicht mehr in die Seite hinein (Handy). touch-action:
+     manipulation erlaubt weiter Scrollen und das Zwei-Finger-Zoomen, sperrt nur
+     "Doppeltippen = Zoom" -- anders als user-scalable=no, das Zoomen ganz
+     abschaltet (schlecht fuer Sehschwache) und von iOS ohnehin ignoriert wird.
+     Gilt auch im Dashboard (liegt im selben Dokument). Spezialfaelle mit eigener
+     Regel (z.B. waagerechte Leisten mit pan-x) bleiben, weil ihre Klassenregel
+     staerker ist als dieses "*". */
+  html,body,*{touch-action:manipulation;}
   a{color:inherit;text-decoration:none;}
   button{font-family:inherit;}
   /* Der graeulich-blaue Antipp-Kasten, den iOS/Safari standardmaessig auf
@@ -5034,7 +5042,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261019-10";
+const ADMIN_BUNDLE_VERSION = "20261019-11";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -7293,7 +7301,9 @@ function fmtEurText(eur){ return Number(eur).toLocaleString("de-DE", { minimumFr
 function wireYuanHint(inputId, hintId){
   const input = document.getElementById(inputId), hint = document.getElementById(hintId);
   if(!input || !hint) return;
-  const update = ()=>{ hint.textContent = `\u2248 ${fmtEurText(yuanToEur(input.value))} \u00b7 Kurs: 1 \u20ac = ${cnyRate().toLocaleString("de-DE", { maximumFractionDigits: 4 })} \u00a5`; };
+  const kurs = `Kurs: 1 \u20ac = ${cnyRate().toLocaleString("de-DE", { maximumFractionDigits: 4 })} \u00a5`;
+  // Leeres Feld: nur den Kurs zeigen, kein "\u2248 0,00 \u20ac"
+  const update = ()=>{ hint.textContent = input.value.trim() === "" ? kurs : `\u2248 ${fmtEurText(yuanToEur(input.value))} \u00b7 ${kurs}`; };
   input.addEventListener("input", update);
   update();
 }
@@ -9204,7 +9214,7 @@ function renderDashboard(){
         <form id="productForm" class="a-grid">
           <div><label class="a-label" for="p-title">Titel *</label><input id="p-title" class="a-field" required placeholder="Ralph Lauren Decke">
             <p class="a-hint">Tipp: (-30%) im Titel fügt automatisch das Rabatt-Badge hinzu.</p></div>
-          <div><label class="a-label" for="p-price">Preis in ¥ (Yuan)</label><input id="p-price" class="a-field" type="number" min="0" step="0.01" value="0">
+          <div><label class="a-label" for="p-price">Preis in ¥ (Yuan)</label><input id="p-price" class="a-field" type="number" inputmode="decimal" min="0" step="0.01">
             <p class="a-hint" id="p-price-eur"></p></div>
 
           <div class="a-full">
