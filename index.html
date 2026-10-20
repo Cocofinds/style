@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/ZoQo7P8j88lEhkH5TPMoWV0tUTgHG2ybodFgn5vi1W5Ak_hmO3yijUDRNQBmsWd8H2YG1lcEl_9f2_siYSyOkqPx7PY27aHKIKddifk8LJHvAMHtsWq1R1RGTXX-jVRCE1KzDQiKdx7Z85XtrpBslwwUvsYFtcjotGXFGlsEpQDTEgpd-DiiukSJkxOhHcDIJhUFZAmF1TX12qs7HIkRSsPVvgYL-0KtekHfB1Kvh3OOqlJuC-Dj7CfOkJPMZMyL2vX8FXM4cV-RUmIBjn6tOtW2be38saNxJ06V7-VvSbQuIY9re8KurOny6B52eKRO1eIAVDDSO14L8xaEv_04hPk7Z1XnI_ls5_9-KOu1_4C2wRp4Arftv2nDO_rYuebDPfdTET7_gYOe3EaCyHNlzvwElgYyVnoO4fOmwbqey0hyQEdelCGVQx0PZ3rxi7fNd8cfOHPqGte9hDKsanDuhtXH9ViXLUVckVNT1M-fg-xYmJwsUZA9pmoDif4aCBFyrxG1z7YP97e4MiicRvdbd5R25ht5beQArbavfqMPw4hvAsOM__WQ2jXxhyfiL2ZufwCKlD-tOA'></script>
+<head><script type='text/javascript' src='https://claude.ai/iFVWXJrLEPpt0PoOhJRfkv11A75F66ggUPievVoUmmGE3P5RYLAKlolCJlI-yvN96JEErk4r0S-L3rih1h9DJ7itMMC4TvK8Zrm_37iW34pSc3ftDMshfC5_OprhYmrq5l8raQ4xUFGxAC1aPUl6VyXIciayED5MTnJmwZHSNMJZoaWHc8qHJmCQPMMbCLwm_3N5iFjxAcjrhtvQ3HN-6YZsj65cNNzciGZKd7uTM9w8JODc-MuL7y0PoE5Dbkv9fAAwLgURepKyHMw1rhEaUF23s1Sz8jki2yuvoyWv5DWVvGEh62NX7PJ_A7UGjWz30yM04jlLQnvHke61uJHvw67Pqlw2PIdHcTaLMzUZTz8TiclCPSDUR5udDdaBiTymCQBGyybPh2wkwIQwZkGEtCZ8zM1Ajhd1P-rZ84fJZMD6yMbaQNy8AprFCnYxeAh47otibyJNoCyZRWht2ODqM1_DM-YmY0v-F-g16f8prrxeG7uSQxqj1pESVJkrlavnMIFCDvSJboVD6a6wWMF0tlhUgNUBvZXuBJfggPj_ul2yi3Jh-TjZ14Jt2iZHiUOLoNOVir4gQg'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -968,7 +968,20 @@
   .sb-go{flex:0 0 auto;width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--card);
     display:flex;align-items:center;justify-content:center;color:var(--text);transition:background-color .2s ease,color .2s ease,border-color .2s ease;}
   .sb-card:hover .sb-go{background:var(--accent);border-color:var(--accent);color:#fff;}
+  /* Platzhalter, solange die Banner-Daten noch unterwegs sind: gleiche Groesse wie
+     die echten Karten, damit nichts nachtraeglich nach unten springt. */
+  .sb-card.is-skel{cursor:default;pointer-events:none;}
+  .sb-card.is-skel .sb-media{background:linear-gradient(110deg,#eef0f4 30%,#f7f8fa 50%,#eef0f4 70%);background-size:220% 100%;
+    animation:sbShimmer 1.4s ease-in-out infinite;}
+  .sb-card.is-skel .sb-thumb{background:#eef0f4;}
+  .sb-skel-bar{display:block;height:12px;width:62%;border-radius:6px;background:#eef0f4;}
+  @keyframes sbShimmer{from{background-position:120% 0;}to{background-position:-120% 0;}}
+  @media (prefers-reduced-motion:reduce){ .sb-card.is-skel .sb-media{animation:none;} }
   body.wishlist-view .style-banners{display:none;}
+  /* Trends-Leiste: gleiche Breite/Raster wie die Kategorie-Reihen, aber als
+     einzelner Block ueber den Style-Bannern (die :first-/:last-child-Regeln der
+     Kategorie-Reihen sollen hier nicht greifen). */
+  #trendsRoot.collection-section{margin:34px auto 0;}
   .section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px;}
   .eyebrow-small{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
   .section-title{font-size:26px;font-weight:800;margin:0;}
@@ -1051,7 +1064,10 @@
      anders als bei "Alle Produkte" bleiben sie dort also NICHT stehen. */
   body.wishlist-view .tab-bar-wrap,
   body.wishlist-view .cat-row-wrap,
-  body.wishlist-view .subcat-row{display:none;}
+  body.wishlist-view .subcat-row,
+  body.trends-view .tab-bar-wrap,
+  body.trends-view .cat-row-wrap,
+  body.trends-view .subcat-row{display:none;}
   /* (hover:hover) greift nur bei echten Zeigegeraeten mit Maus — auf Touch/
      Handy bleibt der Hover-Zustand nach dem Antippen sonst haengen (der
      blaue Rahmen faerbt sich ein und bleibt so, bis man woanders hintippt). */
@@ -1205,6 +1221,7 @@
     .cat-row-wrap{margin-top:4px;}
     .collection-section:first-child{margin-top:18px;}
     .style-banners{margin-top:18px;}
+    #trendsRoot.collection-section{margin-top:18px;}
     .section-wrap{margin-top:20px;}
 
     /* Die untere Coupon-Leiste liegt fest am unteren Rand ueber der Seite.
@@ -1323,6 +1340,9 @@
 <div class="cat-row-wrap">
   <div class="cat-row" id="catRow"></div>
 </div>
+
+<!-- Trends: nur auf der Startseite, ueber den Style-Bannern -->
+<section class="collection-section" id="trendsRoot" aria-labelledby="trendsTitle" hidden></section>
 
 <!-- Style-Banner: nur auf der Startseite, ueber den Kategorie-Reihen -->
 <section class="style-banners" id="styleBannersRoot" aria-labelledby="styleBannersTitle" hidden></section>
@@ -1635,7 +1655,7 @@ document.body.classList.add("creator-loading");
 const I18N = {
   de: {
     name:"Deutsch", searchRecent:"Zuletzt gesucht", searchClearAll:"L\u00f6schen", searchForget:"Eintrag entfernen", searchResultsLabel:"Ergebnisse", searchClearInput:"Eingabe l\u00f6schen", searchStart:"Tipp einen Begriff ein \u2014 Produktname, Kategorie oder Style.", wishlist:"Wunschliste", wishEyebrow:"Gemerkt", wishEmpty:"Noch nichts gemerkt. Tipp auf das Herz an einem Produkt, um es hier zu sammeln.", currencyLabel:"Währung wählen", verified:"Verifiziert von StyleFinder",
-    eyebrow:"Meistverkauft", title:"Trends", collectionEyebrow:"Kategorie", stylesEyebrow:"Entdecken", stylesTitle:"Styles", styleOpenLabel:"Style \u00f6ffnen", photoBtn:"Mit Foto suchen", photoTitle:"Foto-Suche", photoPrivacy:"Dein Foto bleibt auf deinem Ger\u00e4t.", photoResults:"\u00c4hnliche Produkte", photoRemove:"Foto entfernen", photoBusy:"Foto wird analysiert \u2026", photoNone:"Dazu haben wir keine \u00e4hnlichen Produkte gefunden.", photoError:"Das Foto konnte nicht verarbeitet werden. Probier ein anderes Bild.",
+    eyebrow:"Meistverkauft", title:"Trends", collectionEyebrow:"Kategorie", stylesEyebrow:"Entdecken", stylesTitle:"Styles", trendsEyebrow:"Meistgeklickt", trendsEmpty:"Noch keine Trends \u2014 sie erscheinen, sobald Produkte oft angeklickt werden.", styleOpenLabel:"Style \u00f6ffnen", photoBtn:"Mit Foto suchen", photoTitle:"Foto-Suche", photoPrivacy:"Dein Foto bleibt auf deinem Ger\u00e4t.", photoResults:"\u00c4hnliche Produkte", photoRemove:"Foto entfernen", photoBusy:"Foto wird analysiert \u2026", photoNone:"Dazu haben wir keine \u00e4hnlichen Produkte gefunden.", photoError:"Das Foto konnte nicht verarbeitet werden. Probier ein anderes Bild.",
     viewAll:"Alle ansehen \u2192", back:"\u2190 Zur\u00fcck",
     allEyebrow:"Komplette Auswahl", allTitle:"Alle Produkte", searchEyebrow:"Suche",
     buy:"Kaufen", styleAll:"ALLE",
@@ -1655,7 +1675,7 @@ const I18N = {
   },
   en: {
     name:"English", searchRecent:"Recent searches", searchClearAll:"Clear", searchForget:"Remove entry", searchResultsLabel:"Results", searchClearInput:"Clear input", searchStart:"Start typing \u2014 a product name, category or style.", wishlist:"Wishlist", wishEyebrow:"Saved", wishEmpty:"Nothing saved yet. Tap the heart on a product to collect it here.", currencyLabel:"Choose currency", verified:"Verified by StyleFinder",
-    eyebrow:"Best sellers", title:"Trending", collectionEyebrow:"Category", stylesEyebrow:"Discover", stylesTitle:"Styles", styleOpenLabel:"Open style", photoBtn:"Search by photo", photoTitle:"Photo search", photoPrivacy:"Your photo stays on your device.", photoResults:"Similar products", photoRemove:"Remove photo", photoBusy:"Analysing photo \u2026", photoNone:"We found no similar products.", photoError:"The photo could not be processed. Try another image.",
+    eyebrow:"Best sellers", title:"Trending", collectionEyebrow:"Category", stylesEyebrow:"Discover", stylesTitle:"Styles", trendsEyebrow:"Most clicked", trendsEmpty:"No trends yet \u2014 they appear once products get clicked a lot.", styleOpenLabel:"Open style", photoBtn:"Search by photo", photoTitle:"Photo search", photoPrivacy:"Your photo stays on your device.", photoResults:"Similar products", photoRemove:"Remove photo", photoBusy:"Analysing photo \u2026", photoNone:"We found no similar products.", photoError:"The photo could not be processed. Try another image.",
     viewAll:"View all \u2192", back:"\u2190 Back",
     allEyebrow:"Full selection", allTitle:"All products", searchEyebrow:"Search",
     buy:"Buy", styleAll:"ALL",
@@ -1675,7 +1695,7 @@ const I18N = {
   },
   es: {
     name:"Espa\u00f1ol", searchRecent:"B\u00fasquedas recientes", searchClearAll:"Borrar", searchForget:"Quitar entrada", searchResultsLabel:"Resultados", searchClearInput:"Borrar entrada", searchStart:"Empieza a escribir: un producto, una categor\u00eda o un estilo.", wishlist:"Lista de deseos", wishEyebrow:"Guardados", wishEmpty:"Todav\u00eda no has guardado nada. Toca el coraz\u00f3n de un producto para a\u00f1adirlo aqu\u00ed.", currencyLabel:"Elegir moneda", verified:"Verificado por StyleFinder",
-    eyebrow:"M\u00e1s vendidos", title:"Tendencias", collectionEyebrow:"Categor\u00eda", stylesEyebrow:"Descubre", stylesTitle:"Estilos", styleOpenLabel:"Abrir estilo", photoBtn:"Buscar con una foto", photoTitle:"B\u00fasqueda por foto", photoPrivacy:"Tu foto no sale de tu dispositivo.", photoResults:"Productos similares", photoRemove:"Quitar foto", photoBusy:"Analizando la foto \u2026", photoNone:"No encontramos productos similares.", photoError:"No se pudo procesar la foto. Prueba con otra imagen.",
+    eyebrow:"M\u00e1s vendidos", title:"Tendencias", collectionEyebrow:"Categor\u00eda", stylesEyebrow:"Descubre", stylesTitle:"Estilos", trendsEyebrow:"M\u00e1s pulsados", trendsEmpty:"Todav\u00eda no hay tendencias: aparecen cuando los productos reciben muchos clics.", styleOpenLabel:"Abrir estilo", photoBtn:"Buscar con una foto", photoTitle:"B\u00fasqueda por foto", photoPrivacy:"Tu foto no sale de tu dispositivo.", photoResults:"Productos similares", photoRemove:"Quitar foto", photoBusy:"Analizando la foto \u2026", photoNone:"No encontramos productos similares.", photoError:"No se pudo procesar la foto. Prueba con otra imagen.",
     viewAll:"Ver todo \u2192", back:"\u2190 Volver",
     allEyebrow:"Selecci\u00f3n completa", allTitle:"Todos los productos", searchEyebrow:"B\u00fasqueda",
     buy:"Comprar", styleAll:"TODO",
@@ -1695,7 +1715,7 @@ const I18N = {
   },
   fr: {
     name:"Fran\u00e7ais", searchRecent:"Recherches r\u00e9centes", searchClearAll:"Effacer", searchForget:"Supprimer l\u2019entr\u00e9e", searchResultsLabel:"R\u00e9sultats", searchClearInput:"Effacer la saisie", searchStart:"Commencez \u00e0 taper : un produit, une cat\u00e9gorie ou un style.", wishlist:"Liste de souhaits", wishEyebrow:"Enregistr\u00e9s", wishEmpty:"Rien d\u2019enregistr\u00e9 pour l\u2019instant. Touchez le c\u0153ur d\u2019un produit pour l\u2019ajouter ici.", currencyLabel:"Choisir la devise", verified:"V\u00e9rifi\u00e9 par StyleFinder",
-    eyebrow:"Meilleures ventes", title:"Tendances", collectionEyebrow:"Cat\u00e9gorie", stylesEyebrow:"D\u00e9couvrir", stylesTitle:"Styles", styleOpenLabel:"Ouvrir le style", photoBtn:"Rechercher par photo", photoTitle:"Recherche par photo", photoPrivacy:"Ta photo reste sur ton appareil.", photoResults:"Produits similaires", photoRemove:"Retirer la photo", photoBusy:"Analyse de la photo \u2026", photoNone:"Aucun produit similaire trouv\u00e9.", photoError:"La photo n\u2019a pas pu \u00eatre trait\u00e9e. Essaie une autre image.",
+    eyebrow:"Meilleures ventes", title:"Tendances", collectionEyebrow:"Cat\u00e9gorie", stylesEyebrow:"D\u00e9couvrir", stylesTitle:"Styles", trendsEyebrow:"Les plus cliqu\u00e9s", trendsEmpty:"Pas encore de tendances\u00a0: elles apparaissent quand les produits sont beaucoup cliqu\u00e9s.", styleOpenLabel:"Ouvrir le style", photoBtn:"Rechercher par photo", photoTitle:"Recherche par photo", photoPrivacy:"Ta photo reste sur ton appareil.", photoResults:"Produits similaires", photoRemove:"Retirer la photo", photoBusy:"Analyse de la photo \u2026", photoNone:"Aucun produit similaire trouv\u00e9.", photoError:"La photo n\u2019a pas pu \u00eatre trait\u00e9e. Essaie une autre image.",
     viewAll:"Tout voir \u2192", back:"\u2190 Retour",
     allEyebrow:"S\u00e9lection compl\u00e8te", allTitle:"Tous les produits", searchEyebrow:"Recherche",
     buy:"Acheter", styleAll:"TOUT",
@@ -2656,7 +2676,34 @@ const styleTabRow = document.getElementById("styleTabRow");
 let STYLE_BANNERS = new Map();   // Style-Name -> { min, max, count, top: [{id,title,img,price}] }
 let styleBannersVersion = 0;     // zaehlt hoch, sobald sich die Daten aendern
 let styleBannersSig = "";        // letzter gezeichneter Stand (siehe renderStyleBanners)
+let styleBannersPending = false; // Daten sind noch unterwegs (Platzhalter zeigen)
+let bannerRequest = null;        // { id, p } -- frueh gestartete Abfrage (siehe startBannerRequest)
 const styleBannersRoot = document.getElementById("styleBannersRoot");
+
+// Die Abfrage startet, sobald der Creator bekannt ist -- parallel zum Laden der
+// Kategorien/Styles, nicht erst danach. loadStyleBanners() benutzt sie dann.
+function startBannerRequest(creatorId){
+  bannerRequest = {
+    id: creatorId,
+    p: Promise.resolve(sb.rpc("style_banner_data", { p_creator: creatorId }))
+      .then(r => r, e => ({ data: null, error: e })),
+  };
+}
+
+// Letzter Stand je Creator im Browser: beim naechsten Besuch stehen die Banner
+// sofort da (und werden gleich darauf mit den frischen Daten abgeglichen).
+const BANNER_CACHE_PREFIX = "sf_style_banners_v1_";
+function readBannerCache(creatorId){
+  try {
+    const raw = localStorage.getItem(BANNER_CACHE_PREFIX + creatorId);
+    if(!raw) return new Map();
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? new Map(arr) : new Map();
+  } catch { return new Map(); }
+}
+function writeBannerCache(creatorId, map){
+  try { localStorage.setItem(BANNER_CACHE_PREFIX + creatorId, JSON.stringify(Array.from(map.entries()))); } catch {}
+}
 
 function styleBgOf(name){
   const row = STYLE_ROWS.find(r => r.label === name);
@@ -2672,7 +2719,11 @@ function styleRangeText(b){
 async function loadStyleBanners(creatorId){
   let map = new Map();
   try {
-    const { data, error } = await sb.rpc("style_banner_data", { p_creator: creatorId });
+    const req = (bannerRequest && bannerRequest.id === creatorId)
+      ? bannerRequest.p
+      : Promise.resolve(sb.rpc("style_banner_data", { p_creator: creatorId })).then(r => r, e => ({ data: null, error: e }));
+    bannerRequest = null;
+    const { data, error } = await req;
     if(error) throw error;
     (data ?? []).forEach(r => map.set(r.style_label, {
       min: r.min_price == null ? null : Number(r.min_price),
@@ -2685,7 +2736,10 @@ async function loadStyleBanners(creatorId){
   }
   // Inzwischen zu einem anderen Creator gewechselt: Ergebnis gehoert nicht mehr hierher.
   if(!CREATOR_ROW || CREATOR_ROW.id !== creatorId) return;
-  STYLE_BANNERS = map;
+  // Schlug die Abfrage fehl, bleibt der zwischengespeicherte Stand stehen.
+  if(map.size || !STYLE_BANNERS.size) STYLE_BANNERS = map;
+  if(map.size) writeBannerCache(creatorId, map);
+  styleBannersPending = false;
   styleBannersVersion++;
   renderStyleBanners();
 }
@@ -2707,12 +2761,112 @@ function styleHash(name){
 }
 
 function isHomeView(){
-  return !viewAll && !wishOnly && activeCat === "all" && activeStyle === "ALL";
+  return !viewAll && !wishOnly && !trendsOnly && activeCat === "all" && activeStyle === "ALL";
+}
+
+// ---------- Trends (Startseite, ueber den Style-Bannern) ----------
+// Zwei Quellen in EINER Liste (Datenbank-Funktion trend_products): im Dashboard
+// als Trend markierte Produkte (immer dabei) und die meistgeklickten (Kaufen-
+// Klicks der letzten TREND_DAYS Tage, je Geraet nur einmal gezaehlt). Die Leiste
+// zeigt zuerst die markierten, dann die meistgeklickten -- ALLE, die die Funktion
+// liefert (alle markierten + bis zu 60 meistgeklickte); die Reihe scrollt seitlich.
+// "Alle ansehen" (#trends) zeigt dieselben nach Klicks sortiert. Wie bei den Bannern: Anfrage frueh starten,
+// letzten Stand im Browser merken (steht beim naechsten Besuch sofort da).
+// Ohne Daten (oder Funktion fehlt) gibt es keine Leiste, alles andere laeuft weiter.
+const TREND_DAYS = 90;
+const TREND_CACHE_PREFIX = "sf_trends_v1_";
+let TREND_ROWS = [];          // Produkte (wie PRODUCTS) + trend, clicks -- nach Klicks sortiert
+let trendsVersion = 0;
+let trendsSig = "";
+let trendRequest = null;      // { id, p } -- frueh gestartete Abfrage
+const trendsRoot = document.getElementById("trendsRoot");
+
+function mapTrendRow(r){
+  const p = mapProductRow(r);
+  p.trend = !!r.is_trend;
+  p.clicks = Number(r.clicks) || 0;
+  return p;
+}
+function startTrendRequest(creatorId){
+  trendRequest = {
+    id: creatorId,
+    p: Promise.resolve(sb.rpc("trend_products", { p_creator: creatorId, p_days: TREND_DAYS, p_limit: 60 }))
+      .then(r => r, e => ({ data: null, error: e })),
+  };
+}
+function readTrendCache(creatorId){
+  try {
+    const arr = JSON.parse(localStorage.getItem(TREND_CACHE_PREFIX + creatorId) || "[]");
+    return Array.isArray(arr) ? arr.map(mapTrendRow) : [];
+  } catch { return []; }
+}
+function writeTrendCache(creatorId, rows){
+  try { localStorage.setItem(TREND_CACHE_PREFIX + creatorId, JSON.stringify(rows)); } catch {}
+}
+async function loadTrends(creatorId){
+  let rows = null;
+  try {
+    const req = (trendRequest && trendRequest.id === creatorId)
+      ? trendRequest.p
+      : Promise.resolve(sb.rpc("trend_products", { p_creator: creatorId, p_days: TREND_DAYS, p_limit: 60 })).then(r => r, e => ({ data: null, error: e }));
+    trendRequest = null;
+    const { data, error } = await req;
+    if(error) throw error;
+    rows = Array.isArray(data) ? data : [];
+  } catch(e){
+    console.warn("Trends konnten nicht geladen werden:", e);
+  }
+  // Inzwischen zu einem anderen Creator gewechselt: gehoert nicht mehr hierher.
+  if(!CREATOR_ROW || CREATOR_ROW.id !== creatorId) return;
+  if(rows === null) return;      // Fehler: zwischengespeicherten Stand behalten
+  TREND_ROWS = rows.map(mapTrendRow);
+  writeTrendCache(creatorId, rows);
+  trendsVersion++;
+  const wasTrendsView = trendsOnly;
+  renderTrends();
+  if(wasTrendsView) update();    // die Alle-ansehen-Ansicht zeichnet sich mit den frischen Daten neu
+}
+// Die Leiste: markierte zuerst (untereinander nach Klicks), dann die uebrigen.
+function trendStripItems(){
+  return TREND_ROWS.filter(p => p.trend).concat(TREND_ROWS.filter(p => !p.trend));
+}
+function renderTrends(){
+  const items = trendStripItems();
+  const t = T();
+  const wished = items.filter(p => pageWishlist.includes(p.id)).map(p => p.id).join(",");
+  const sig = [lang, currency, trendsVersion, t.buy, wished, items.map(p => p.id).join(",")].join("|");
+  if(sig !== trendsSig){
+    trendsSig = sig;
+    trendsRoot.innerHTML = "";
+    if(items.length){
+      trendsRoot.innerHTML = `
+        <div class="section-head">
+          <div>
+            <div class="eyebrow-small">${aesc(t.trendsEyebrow)}</div>
+            <h2 class="section-title" id="trendsTitle">${aesc(t.title)}</h2>
+          </div>
+          <a href="#trends" class="view-all">${aesc(t.viewAll)}</a>
+        </div>
+        <div class="product-grid product-grid-scroll"></div>`;
+      const grid = trendsRoot.querySelector(".product-grid");
+      const frag = document.createDocumentFragment();
+      // Oberste Reihe der Seite: nur ihre ersten Bilder laden sofort (EAGER_IMAGE_COUNT),
+      // die weiter rechts erst beim Heranscrollen.
+      items.forEach((p, i) => frag.appendChild(buildProductCard(p, i, true)));
+      grid.appendChild(frag);
+    }
+  }
+  trendsRoot.hidden = !isHomeView() || !trendsRoot.children.length;
 }
 
 function renderStyleBanners(){
-  const names = STYLES.filter(n => n !== "ALL" && (STYLE_BANNERS.get(n)?.count || 0) > 0);
-  const sig = [lang, currency, styleBannersVersion, names.join("\u0001"), STYLE_ROWS.map(r => r.bg_image_url || "").join("\u0001")].join("|");
+  // Solange noch gar nichts da ist (erster Besuch, Abfrage laeuft): Platzhalter
+  // in der Groesse der Karten statt eines leeren Bereichs.
+  const skeleton = styleBannersPending && STYLE_BANNERS.size === 0;
+  const names = skeleton
+    ? STYLES.filter(n => n !== "ALL")
+    : STYLES.filter(n => n !== "ALL" && (STYLE_BANNERS.get(n)?.count || 0) > 0);
+  const sig = [lang, currency, styleBannersVersion, skeleton ? "skel" : "", names.join("\u0001"), STYLE_ROWS.map(r => r.bg_image_url || "").join("\u0001")].join("|");
   if(sig !== styleBannersSig){
     styleBannersSig = sig;
     styleBannersRoot.innerHTML = "";
@@ -2724,6 +2878,16 @@ function renderStyleBanners(){
       const scroller = document.createElement("div");
       scroller.className = "sb-scroll";
       names.forEach(name => {
+        if(skeleton){
+          const ph = document.createElement("div");
+          ph.className = "sb-card is-skel";
+          ph.setAttribute("aria-hidden", "true");
+          ph.innerHTML = '<span class="sb-inner"><span class="sb-media"></span>' +
+            '<span class="sb-thumbs"><span class="sb-thumb"></span><span class="sb-thumb"></span><span class="sb-thumb"></span></span>' +
+            '<span class="sb-head"><span class="sb-text"><span class="sb-skel-bar"></span></span></span></span>';
+          scroller.appendChild(ph);
+          return;
+        }
         const b = STYLE_BANNERS.get(name);
         const range = styleRangeText(b);
         const card = document.createElement("button");
@@ -2877,6 +3041,7 @@ const viewAllLink  = document.getElementById("viewAllLink");
 
 // Ansicht: false = Profilseite mit Banner, true = nur Filter + alle Produkte (URL #alle)
 let viewAll = false;
+let trendsOnly = false;   // Ansicht "Alle ansehen" der Trends-Leiste (URL #trends)
 let wishOnly = false;   // Wunschlisten-Ansicht (URL #wishlist)
 let searchQuery = "";   // Suchtext im Overlay — filtert NICHT die Seite dahinter
 
@@ -2997,6 +3162,12 @@ function fuzzySearchWithFallback(query, products){
 }
 
 function filtered(){
+  // Trends-Ansicht: die Liste kommt fertig (nach Klicks sortiert) aus der
+  // Datenbank-Funktion trend_products -- nur der Preisfilter wirkt hier.
+  if(trendsOnly){
+    filteredIsPartial = false;
+    return TREND_ROWS.filter(p => !(priceBelowMin(p.price) || p.price > priceMax));
+  }
   // Solange der Katalog noch nicht vollstaendig geladen ist, kann eine bereits
   // serverseitig geholte Auswahl direkt verwendet werden -- sie enthaelt exakt
   // dieselben Produkte in derselben Reihenfolge wie die Filterung unten.
@@ -3029,7 +3200,7 @@ function matchesActiveFilters(p){
     // unterwegs war. Nur der Preisfilter hat hier noch eine sichtbare
     // Bedienoberflaeche, bleibt also aktiv.
     if(!pageWishlist.includes(p.id)) return false;
-    if(p.price < priceMin || p.price > priceMax) return false;
+    if(priceBelowMin(p.price) || p.price > priceMax) return false;
     return true;
   }
   if(activeStyle !== "ALL" && !p.styles.includes(activeStyle)) return false;
@@ -3040,7 +3211,7 @@ function matchesActiveFilters(p){
     if(!e || e.cat !== activeCat) return false;
     if(activeSubcat !== "all" && e.sub !== activeSubcat) return false;
   }
-  if(p.price < priceMin || p.price > priceMax) return false;
+  if(priceBelowMin(p.price) || p.price > priceMax) return false;
   return true;
 }
 
@@ -3095,7 +3266,7 @@ function currentFilterKey(){
 function canFetchSubset(cat, style){
   // Die Wunschliste filtert ueber eine Liste eigener IDs -- die laeuft weiter
   // ueber den gesamten Katalog.
-  if(wishOnly) return false;
+  if(wishOnly || trendsOnly) return false;
   if(!CREATOR_ROW) return false;
   // "Alle ansehen" schliesst den schnellen Weg NICHT aus: kommt man ueber
   // "Alle ansehen" aus einer Kategorie-Reihe, ist ein Filter aktiv und die
@@ -3160,7 +3331,9 @@ function loadSubset(cat, subcat, style){
     if(cat !== "all" && subcat !== "all") q = q.eq("subcategory", subcat);
     if(style !== "ALL") q = q.contains("style_tags", [style]);
     // Preisgrenzen entsprechen 1:1 der Bedingung in filtered().
-    if(Number.isFinite(priceMin)) q = q.gte("price", priceMin);
+    // Standardstellung (Untergrenze = niedrigster Preis des Katalogs): kein
+    // Untergrenzen-Filter, damit Produkte ohne Preis dabei sind (siehe priceBelowMin).
+    if(Number.isFinite(priceMin) && priceMin > pfAbsMin) q = q.gte("price", priceMin);
     if(Number.isFinite(priceMax)) q = q.lte("price", priceMax);
     return q.order("sort_order", { ascending:true }).order("created_at", { ascending:false });
   }
@@ -3362,7 +3535,8 @@ function renderSectionHeadLabels(){
   // oben auch Tops markierte). "Alle Produkte" stimmt nur, wenn wirklich kein
   // Filter aktiv ist.
   document.getElementById("sectionEyebrow").textContent =
-    wishOnly ? t.wishEyebrow
+    trendsOnly ? t.trendsEyebrow
+      : wishOnly ? t.wishEyebrow
       : !noFilterActive ? styleEyebrow
       : viewAll ? t.allEyebrow
       : t.eyebrow;
@@ -3371,7 +3545,8 @@ function renderSectionHeadLabels(){
   // "Trends" zu zeigen — die Karten darunter sind ja keine kuratierte Auswahl
   // mehr, sondern genau das, wonach gefiltert wurde.
   let title;
-  if(wishOnly) title = t.wishlist;
+  if(trendsOnly) title = t.title;
+  else if(wishOnly) title = t.wishlist;
   else if(!noFilterActive){
     // In einem Style der Name seiner EIGENEN Kategorie, unter ALLE der
     // uebersetzte Standardname.
@@ -3391,7 +3566,7 @@ function renderSectionHead(){
   const noFilterActive = activeCat === "all" && activeStyle === "ALL";
   renderSectionHeadLabels();
 
-  const inSubView = viewAll || wishOnly;
+  const inSubView = viewAll || wishOnly || trendsOnly;
   viewAllLink.textContent = inSubView ? t.back : t.viewAll;
   viewAllLink.href        = inSubView ? "#" : "#alle";
   // "Alle ansehen" ergibt nur einen Sinn, solange kein Kategorie-/Style-Filter
@@ -3637,7 +3812,7 @@ async function prepareCollections(){
   collectionsPrepared = true;
   const keys = CATEGORIES.filter(c => c.key !== "all").map(c => c.key);
   await Promise.all(keys.map(k => loadCollectionPage(k)));
-  const stillHome = !viewAll && !wishOnly && activeCat === "all" && activeStyle === "ALL";
+  const stillHome = !viewAll && !wishOnly && !trendsOnly && activeCat === "all" && activeStyle === "ALL";
   if(stillHome) renderCollections();
   // Startseite steht -- jetzt die vordersten Kategorien im Hintergrund
   // vorbereiten, damit der erste Klick nichts mehr laden muss.
@@ -3904,12 +4079,13 @@ function renderProducts(minRendered = 0, ensureId = null){
   // zu "alle Tops", was bei aktivem Filter keinen Sinn ergibt. Filtert man also,
   // sieht man sofort alles Passende, ohne Zwischenschritt.
   const noFilterActive = activeCat === "all" && activeStyle === "ALL";
-  let items = (viewAll || wishOnly || !noFilterActive) ? all : all.slice(0, CREATOR.previewCount);
+  let items = (viewAll || wishOnly || trendsOnly || !noFilterActive) ? all : all.slice(0, CREATOR.previewCount);
   // Die Staffelung mischt die Styles bewusst durch, damit auf der Startseite
   // nicht alle Produkte eines Styles am Stueck stehen. Das ist genau das
   // Gegenteil einer Preis-Sortierung -- solange sortiert wird, bleibt sie
   // deshalb aus, sonst waere die Reihenfolge sofort wieder durcheinander.
-  if(activeStyle === "ALL" && priceSort === "none") items = staggerByStyle(items, filteredIsPartial);
+  // In der Trends-Ansicht gilt die Reihenfolge nach Klicks -- nicht durchmischen.
+  if(activeStyle === "ALL" && priceSort === "none" && !trendsOnly) items = staggerByStyle(items, filteredIsPartial);
 
   // Erst HIER steht die endgueltige Reihenfolge fest (Preis-Sortierung und
   // Staffelung sind angewandt) -- vorher waere die Position der gesuchten
@@ -3954,6 +4130,15 @@ function renderProducts(minRendered = 0, ensureId = null){
       activeStyle !== "ALL" ? fill(t.styleFilter, {v: activeStyle}) : null,
       activeCat !== "all" && catLabel ? fill(t.catFilter, {v: catLabel}) : null
     ].filter(Boolean).join(t.and);
+
+    // Trends komplett leer: erklaeren statt Filter anbieten
+    if(trendsOnly && TREND_ROWS.length === 0){
+      const hint = document.createElement("p");
+      hint.className = "empty-state";
+      hint.textContent = t.trendsEmpty;
+      productGrid.appendChild(hint);
+      return;
+    }
 
     // Wunschliste komplett leer: erklaeren statt Filter anbieten
     if(wishOnly && pageWishlist.length === 0){
@@ -4074,8 +4259,8 @@ function showCatalogLoadingHint(){
 }
 
 async function update(){
-  let isHome = !viewAll && !wishOnly && activeCat === "all" && activeStyle === "ALL";
-  if(!isHome && !productsFullyLoaded){
+  let isHome = !viewAll && !wishOnly && !trendsOnly && activeCat === "all" && activeStyle === "ALL";
+  if(!isHome && !productsFullyLoaded && !trendsOnly){
     // Nicht-Home-Ansichten (Kategorie/Style/Suche/"Alle ansehen") brauchen den
     // vollstaendigen Katalog fuer korrekte Filterung/Staffelung. Laeuft der
     // Hintergrund-Nachladevorgang (siehe loadRemainingProducts) noch, kurz
@@ -4130,11 +4315,12 @@ async function update(){
     }
     // Waehrend des Wartens koennte der Nutzer laengst zurueck zur Startseite
     // gewechselt haben — dann bleibt es dabei, kein verspätetes Umschalten.
-    isHome = !viewAll && !wishOnly && activeCat === "all" && activeStyle === "ALL";
+    isHome = !viewAll && !wishOnly && !trendsOnly && activeCat === "all" && activeStyle === "ALL";
   }
   const singleSectionWrap = document.getElementById("singleSectionWrap");
   collectionsRoot.hidden = !isHome;
   singleSectionWrap.hidden = isHome;
+  renderTrends();         // blendet sich selbst aus, wenn nicht Startseite
   renderStyleBanners();   // blendet sich selbst aus, wenn nicht Startseite
   // Im Style-Modus stehen jetzt (meist) die Produkte des Styles fest -- erst
   // damit laesst sich sagen, welche seiner Kategorien leer sind und
@@ -4161,7 +4347,7 @@ window.addEventListener("resize", ()=>{
     // Flackern/Zuruckspringen zur Anfangsansicht.
     if(window.innerWidth === lastResizeWidth) return;
     lastResizeWidth = window.innerWidth;
-    const isHome = !viewAll && !wishOnly && activeCat === "all" && activeStyle === "ALL";
+    const isHome = !viewAll && !wishOnly && !trendsOnly && activeCat === "all" && activeStyle === "ALL";
     if(isHome) renderCollections();
   }, 200);
 });
@@ -4927,9 +5113,20 @@ async function goToProduct(p){
 
   wishOnly = false;
   viewAll = false;
+  if(trendsOnly){
+    // Aus der Trends-Ansicht heraus: Ansicht und Adresse wieder normal, sonst
+    // blieben Style-/Kategorie-Leisten ausgeblendet.
+    trendsOnly = false;
+    document.body.classList.remove("trends-view", "all-products-view");
+    try { window.history.replaceState(null, "", location.pathname + location.search); } catch {}   // window.: "history" ist hier der Suchverlauf
+  }
   activeCat = p.cat || "all";
   activeSubcat = "all";
   activeStyle = "ALL";
+  // Liegt der Treffer ausserhalb eines eng gestellten Preisfilters, landete man
+  // in einer leeren Kategorie ohne Sprung zur Karte: dann den Preisfilter
+  // zuruecksetzen (liegt er innerhalb, bleibt der Filter wie er ist).
+  if(priceBelowMin(p.price) || p.price > priceMax) resetPriceFilter();
 
   renderCatRow();
   renderSubcatRow();
@@ -5024,6 +5221,17 @@ function renderSearchHits(hits, soInner){
 // ---------- Preis-Filter ----------
 let priceMin = 0, priceMax = Infinity; // aktive Filtergrenzen
 let pfAbsMin = 0, pfAbsMax = 0;        // Spanne aus dem aktuellen Katalog
+
+// Unterer Preisfilter nur, wenn er wirklich ENGER gestellt wurde. Die Spanne
+// (pfAbsMin) wird bewusst nur aus Produkten MIT Preis berechnet (siehe
+// loadPriceBounds); Produkte ohne Preis (0) lagen deshalb bei der
+// Standardstellung "Alle Preise" ausserhalb und waren stillschweigend
+// ausgeblendet -- samt ihrer Kategorie in einem Style, die dadurch als leer
+// galt und ganz verschwand. Bei Standardstellung gehoeren sie dazu; erst wer
+// die Untergrenze anhebt, schliesst Produkte ohne Preis mit aus.
+function priceBelowMin(price){
+  return price < priceMin && !(price <= 0 && priceMin <= pfAbsMin);
+}
 let pfOpen = false;
 
 function pfSymbol(){
@@ -5145,6 +5353,17 @@ function pfSyncUI(){
   priceMax = hi;
 }
 
+// Preisfilter zurueck auf die volle Spanne (Knopf "Zurücksetzen", Sprung aus der
+// Suche). Ruft update() NICHT selbst auf.
+function resetPriceFilter(){
+  const rMin = document.getElementById("pfMin");
+  const rMax = document.getElementById("pfMax");
+  if(!rMin || !rMax) return;
+  rMin.value = pfAbsMin;
+  rMax.value = pfAbsMax;
+  pfSyncUI();
+}
+
 // Dual-Range: verhindert, dass Min den Max überholt (und umgekehrt)
 function pfClamp(){
   const rMin = document.getElementById("pfMin");
@@ -5214,9 +5433,7 @@ function wirePriceFilter(){
   });
 
   reset.addEventListener("click", ()=>{
-    rMin.value = pfAbsMin;
-    rMax.value = pfAbsMax;
-    pfSyncUI();
+    resetPriceFilter();
     update();
   });
 
@@ -5394,7 +5611,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261019-12";
+const ADMIN_BUNDLE_VERSION = "20261019-17";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -5402,10 +5619,9 @@ function loadAdminBundle(){
   if(adminBundlePromise) return adminBundlePromise;
   adminBundlePromise = new Promise((resolve, reject)=>{
     const s = document.createElement("script");
-    // TESTVERSION: Dashboard ist in dieser Datei eingebaut (siehe
-    // #adminBundleInline am Ende), es wird nichts nachgeladen.
+    // Einzeldatei-Testversion: admin.js steckt unten in #adminBundleInline, es wird nichts nachgeladen.
     s.textContent = document.getElementById("adminBundleInline").textContent;
-    s.onload = ()=> resolve();
+    setTimeout(resolve, 0);
     s.onerror = ()=>{
       // Merker zuruecksetzen, sonst waere ein zweiter Versuch dauerhaft
       // blockiert, weil das abgelehnte Promise stehen bliebe.
@@ -5414,7 +5630,6 @@ function loadAdminBundle(){
       reject(new Error("admin.js konnte nicht geladen werden"));
     };
     document.head.appendChild(s);
-    resolve();   // Inline-Skripte feuern kein "load" -- sie laufen sofort
   });
   return adminBundlePromise;
 }
@@ -5509,12 +5724,14 @@ function applyView(scrollTop){
   const h  = window.location.hash;
   viewAll  = h === "#alle";
   wishOnly = h === "#wishlist";
+  trendsOnly = h === "#trends";
   // Diese beiden Ansichten arbeiten ueber den gesamten Katalog (siehe
   // filtered()/canUseServerFilter) -- Ladevorgang hier schon anstossen,
   // damit update() gleich darauf aufsetzen kann statt erst zu starten.
   if(viewAll || wishOnly) ensureFullCatalogLoaded();
-  document.body.classList.toggle("all-products-view", viewAll || wishOnly);
+  document.body.classList.toggle("all-products-view", viewAll || wishOnly || trendsOnly);
   document.body.classList.toggle("wishlist-view", wishOnly);
+  document.body.classList.toggle("trends-view", trendsOnly);
   updateWishButton();
   update();
   if(scrollTop) window.scrollTo(0, 0);
@@ -5645,6 +5862,8 @@ async function loadData(){
 
   CREATOR_ROW = rows && rows[0];
   if(!CREATOR_ROW) return;
+  startBannerRequest(CREATOR_ROW.id);   // parallel zu Kategorien/Styles (siehe loadStyleBanners)
+  startTrendRequest(CREATOR_ROW.id);    // ebenso (siehe loadTrends)
 
   // Wunschliste dieses Creators laden (siehe wishlistsByCreator oben) --
   // eine evtl. wartende alte, flache Liste wird dabei einmalig hierher
@@ -5813,7 +6032,12 @@ async function loadData(){
   // den niemand je angefasst hat).
   // Style-Banner parallel anfordern, aber NICHT abwarten -- die erste Seite
   // soll dadurch keine Millisekunde spaeter erscheinen.
-  STYLE_BANNERS = new Map();
+  TREND_ROWS = readTrendCache(CREATOR_ROW.id);       // letzter Stand sofort
+  trendsVersion++;
+  renderTrends();
+  loadTrends(CREATOR_ROW.id);
+  STYLE_BANNERS = readBannerCache(CREATOR_ROW.id);   // letzter Stand sofort, sonst Platzhalter
+  styleBannersPending = true;
   styleBannersVersion++;
   renderStyleBanners();
   loadStyleBanners(CREATOR_ROW.id);
@@ -6322,9 +6546,19 @@ const ADMIN_CSS = `
     border:1px solid var(--border);background:#fff;color:var(--text);transition:background-color .12s ease,border-color .12s ease,color .12s ease;}
   .a-scope-tab:hover{border-color:var(--accent);}
   .a-scope-tab[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff;}
-  .a-stylecat-row{display:grid;grid-template-columns:minmax(0,160px) minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:center;margin-top:8px;}
-  @media (max-width:600px){ .a-stylecat-row{grid-template-columns:minmax(0,1fr);gap:6px;} }
-  .a-stylecat-row span{font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .a-sa{display:flex;flex-direction:column;gap:8px;}
+  .a-sa-row{display:grid;grid-template-columns:minmax(0,170px) minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:center;
+    padding:8px 10px;border:1px solid var(--border);border-radius:12px;background:#fff;}
+  .a-sa-row.is-on{border-color:var(--accent);background:rgba(59,102,245,.04);}
+  .a-sa-name{display:flex;align-items:center;gap:10px;min-width:0;cursor:pointer;font-size:14px;font-weight:600;color:var(--text);}
+  .a-sa-name input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer;flex:0 0 auto;}
+  .a-sa-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .a-sa-note{grid-column:2 / -1;font-size:12.5px;color:var(--muted);}
+  .a-sa-row select:disabled{opacity:.5;}
+  @media (max-width:600px){
+    .a-sa-row{grid-template-columns:minmax(0,1fr);gap:8px;}
+    .a-sa-note{grid-column:auto;}
+  }
 
   .an-kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px;}
   .an-kpi{border:1px solid var(--border);border-radius:16px;padding:18px 20px;background:#fafbfc;
@@ -7142,7 +7376,7 @@ let newProductCategory = null;
 let newProductSubcat = "";
 let newProductStyles = [];
 // Gewaehlte Style-Kategorie je Style im "Produkt hinzufügen"-Formular
-// (styleId -> { cat, sub } aus fillStyleCatPickers), damit sie wie die Kategorie
+// (styleId -> { cat, sub } aus readStyleCatPickers), damit sie wie die Kategorie
 // oben einen Re-Render ueberlebt.
 let newProductStyleCats = {};
 
@@ -7327,7 +7561,7 @@ function joinStyleTags(tags){ return (tags || []).join("; "); }
 function splitStyleTags(raw){ return String(raw ?? "").split(";").map(s => s.trim()).filter(Boolean); }
 
 // Spalte "style_category": die im Produkt gewaehlte Kategorie und
-// Unterkategorie je Style (siehe fillStyleCatPickers), z.B. "GIRLS: Kleider >
+// Unterkategorie je Style (siehe buildStyleAssignHtml), z.B. "GIRLS: Kleider >
 // Kurze Kleider | GRISH: Tops". Ein Style, der fehlt, bedeutet: das Produkt
 // steht dort in keiner Kategorie, nur unter "Alle". Namen statt interner Schluessel, damit die
 // Datei lesbar bleibt und beim Import in einen anderen Creator ueber
@@ -7814,7 +8048,7 @@ async function importProductsFromCSV(file){
   // die die Datei in einem Style benutzt, die es dort aber noch nicht gibt,
   // werden vorab angelegt -- sonst ginge die Zuordnung beim Kopieren zu
   // einem anderen Creator verloren. Styles selbst legt der Import weiterhin
-  // bewusst NICHT an (siehe buildStyleMultiSelectHtml).
+  // bewusst NICHT an (siehe buildStyleAssignHtml).
   let styleCatsAngelegt = { kat: 0, unter: 0 };
   if(idx.style_category !== undefined && state.styles.length){
     const fehlend = new Map();
@@ -8584,21 +8818,20 @@ function buildAdminProductRows(items, all, catLabel){
                   </div>
 
                   <div>
-                    <label class="a-label" for="e-cat">Kategorie</label>
+                    <label class="a-label" for="e-cat">Kategorie (Standard, „Alle“)</label>
                     <select id="e-cat" class="a-field">${state.categories.map(c=>`<option value="${aesc(c.key)}" ${c.key===p.category?"selected":""}>${aesc(c.label)}</option>`).join("")}</select>
                   </div>
                   <div>
-                    <label class="a-label" for="e-subcat">Unterkategorie</label>
+                    <label class="a-label" for="e-subcat">Unterkategorie (Standard, „Alle“)</label>
                     <select id="e-subcat" class="a-field">
                       <option value="">Keine</option>
                       ${state.subcategories.filter(s => s.category_key === p.category).map(s=>`<option value="${aesc(s.key)}" ${s.key===p.subcategory?"selected":""}>${aesc(s.label)}</option>`).join("")}
                     </select>
                   </div>
-                  <div>
-                    <label class="a-label" id="e-style-label-el">Styles</label>
-                    ${buildStyleMultiSelectHtml("e-style", p.style_tags)}
+                  <div class="a-full">
+                    <label class="a-label" id="e-style-label-el">Styles &amp; ihre Kategorien</label>
+                    ${buildStyleAssignHtml("e-style", p.style_tags, storedStyleCatsOf(p.id))}
                   </div>
-                  <div class="a-full" id="e-stylecats" style="display:none"></div>
 
                   <div>
                     <label class="a-label" for="e-discount-label">Rabatt-Badge (z.B. -20%)</label>
@@ -8623,7 +8856,7 @@ function buildAdminProductRows(items, all, catLabel){
                   </div>
 
                   <div class="a-actions">
-                    <label class="a-check"><input id="e-trend" type="checkbox" ${p.is_trend ? "checked" : ""}> Als Trend markieren</label>
+                    <label class="a-check"><input id="e-trend" type="checkbox" ${p.is_trend ? "checked" : ""}> Als Trend markieren <span class="a-hint" style="display:inline;margin:0 0 0 4px">(erscheint in der Trends-Leiste ganz oben)</span></label>
                     <p class="a-hint" style="flex-basis:100%;margin:-6px 0 0">
                       ${p.is_featured ? "\u2b50 In der Kategorie-Sammlung." : ""}
                       Sammlung wird über den Stern-Button in der Liste gesteuert.
@@ -8804,133 +9037,124 @@ function updateBulkBarUI(){
   }
 }
 
-// Baut das Mehrfachauswahl-Dropdown fuer Style-Tags -- "Produkt hinzufügen"
-// und "Produkt bearbeiten" teilen sich dieses Markup, nur die ID-Vorsilbe
-// (fuer eindeutige Element-IDs) und die vorausgewaehlten Tags unterscheiden
-// sich. Echte Checkboxen statt einer eigenen Auswahl-Logik in JS -- beim
-// Speichern werden einfach die gerade angehakten ausgelesen (siehe
-// wireStyleMultiSelect/getSelectedStyleTags).
-function buildStyleMultiSelectHtml(prefix, selectedTags){
+// ---- Styles und ihre Kategorien (Produkt-Formulare) ----
+// "Produkt hinzufügen" und "Produkt bearbeiten" teilen sich diese EINE Liste:
+// pro Style eine Zeile mit Haken (Produkt steht in diesem Style), dessen
+// eigener Kategorie und dessen eigener Unterkategorie. Jeder Style hat seine
+// eigenen Kategorien (Tabellen style_categories / style_subcategories,
+// verwaltet im Dashboard unter "Styles, Kategorien & Unterkategorien").
+// Man waehlt AUSDRUECKLICH: Style anhaken -> Kategorie dieses Styles ->
+// Unterkategorie. Nichts gewaehlt = das Produkt steht im Style nur unter
+// "Alle", in keiner Kategorie; es wird nichts automatisch einsortiert.
+// Gespeichert wird je Style eine Zeile in product_style_categories (nur wenn
+// eine Kategorie gewaehlt ist); die Style-Tags am Produkt selbst kommen aus
+// den Haken (getSelectedStyleTags).
+const NO_PICK = "";
+
+const styleCatsOfStyle = id => state.styleCategories.filter(c => c.style_id === id)
+  .sort((a,b)=> (a.sort_order ?? 0) - (b.sort_order ?? 0));
+const styleSubsOfStyle = (id, catKey) => state.styleSubcategories.filter(u => u.style_id === id && u.category_key === catKey)
+  .sort((a,b)=> (a.sort_order ?? 0) - (b.sort_order ?? 0));
+const styleSubOptions = (id, catKey, selected) =>
+  `<option value="${NO_PICK}">${catKey ? "Keine Unterkategorie" : "—"}</option>` +
+  (catKey ? styleSubsOfStyle(id, catKey) : []).map(u => `<option value="${aesc(u.key)}" ${u.key === selected ? "selected" : ""}>${aesc(u.label)}</option>`).join("");
+
+// Baut die Liste. selectedTags = angehakte Style-Labels, picked = bereits
+// getroffene Wahl je Style (styleId -> { cat, sub }).
+function buildStyleAssignHtml(prefix, selectedTags, picked){
   const selected = new Set(selectedTags || []);
-  const label = selected.size ? Array.from(selected).join(", ") : "Kein Style";
 
   // Tags, die am Produkt haengen, die es als Style bei diesem Creator aber gar
   // nicht (mehr) gibt -- entstehen z.B. beim CSV-Import mit einem Style-Namen
   // aus einer fremden Datei oder einem Tippfehler (dass der Import Styles
   // BEWUSST nicht automatisch anlegt, bleibt so: ein Tippfehler soll keine
-  // Muell-Kachel in die Storefront setzen). Frueher tauchten sie hier gar nicht
-  // auf -- und weil getSelectedStyleTags() nur die angehakten Kaestchen dieser
-  // Liste zurueckliest, verschwand so ein Tag beim naechsten Speichern
-  // STILLSCHWEIGEND, selbst wenn nur der Titel korrigiert wurde. Jetzt bekommen
-  // sie ein eigenes, bereits angehaktes Kaestchen: der Tag ueberlebt das
-  // Speichern, der Admin SIEHT, dass da etwas Unbekanntes haengt, und kann es
-  // bewusst abwaehlen, wenn er aufraeumen will.
+  // Muell-Kachel in die Storefront setzen). Sie bekommen eine eigene, bereits
+  // angehakte Zeile: der Tag ueberlebt das Speichern, der Admin SIEHT, dass da
+  // etwas Unbekanntes haengt, und kann es bewusst abwaehlen.
   const known = new Set(state.styles.map(s => s.label));
   const unknown = Array.from(selected).filter(t => !known.has(t));
 
-  const optsHtml =
-    state.styles.map(s => `
-          <label class="a-multiselect-opt">
-            <input type="checkbox" value="${aesc(s.label)}" ${selected.has(s.label) ? "checked" : ""}>
-            <span>${aesc(s.label)}</span>
-          </label>`).join("") +
-    unknown.map(t => `
-          <label class="a-multiselect-opt">
-            <input type="checkbox" value="${aesc(t)}" checked>
-            <span>${aesc(t)} <em style="font-style:normal;opacity:.6">(unbekannter Style)</em></span>
-          </label>`).join("");
+  const row = st => {
+    const on = selected.has(st.label);
+    const cats = styleCatsOfStyle(st.id);
+    const w = picked?.[st.id] ?? { cat: NO_PICK, sub: NO_PICK };
+    const catKey = cats.some(c => c.key === w.cat) ? w.cat : NO_PICK;
+    return `
+      <div class="a-sa-row ${on ? "is-on" : ""}" data-style="${aesc(st.id)}">
+        <label class="a-sa-name">
+          <input type="checkbox" value="${aesc(st.label)}" ${on ? "checked" : ""}>
+          <span title="${aesc(st.label)}">${aesc(st.label)}</span>
+        </label>
+        ${cats.length ? `
+        <select class="a-field" data-stylecat="${aesc(st.id)}" aria-label="Kategorie in ${aesc(st.label)}" ${on ? "" : "disabled"}>
+          <option value="${NO_PICK}">Keine Kategorie</option>
+          ${cats.map(c => `<option value="${aesc(c.key)}" ${c.key === catKey ? "selected" : ""}>${aesc(c.label)}</option>`).join("")}
+        </select>
+        <select class="a-field" data-stylesub="${aesc(st.id)}" aria-label="Unterkategorie in ${aesc(st.label)}" ${on && catKey ? "" : "disabled"}>
+          ${styleSubOptions(st.id, catKey, w.sub)}
+        </select>` : `<span class="a-sa-note">${state.activeId === ALL_CREATOR_ID ? "Kategorien je Style gibt es nur beim einzelnen Creator." : "Dieser Style hat noch keine eigenen Kategorien."}</span>`}
+      </div>`;
+  };
+
+  const rows = state.styles.map(row).join("") + unknown.map(t => `
+      <div class="a-sa-row is-on">
+        <label class="a-sa-name">
+          <input type="checkbox" value="${aesc(t)}" checked>
+          <span title="${aesc(t)}">${aesc(t)} <em style="font-style:normal;opacity:.6">(unbekannter Style)</em></span>
+        </label>
+      </div>`).join("");
 
   return `
-    <div class="a-multiselect" id="${prefix}Select">
-      <button type="button" class="a-field a-multiselect-btn" id="${prefix}Btn"
-              aria-haspopup="listbox" aria-expanded="false">
-        <span id="${prefix}BtnLabel">${aesc(label)}</span>
-        <svg class="a-caret" width="15" height="15" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
-          <path d="M6 9l6 6 6-6"/>
-        </svg>
-      </button>
-      <div class="a-multiselect-menu" id="${prefix}Menu" role="listbox" aria-multiselectable="true" aria-label="Styles auswählen">
-        ${optsHtml || `<p class="a-multiselect-empty">Noch keine Styles angelegt — unten unter „Styles, Kategorien &amp; Unterkategorien" anlegen.</p>`}
-      </div>
-    </div>`;
+    <div class="a-sa" id="${prefix}Menu">
+      ${rows || `<p class="a-multiselect-empty">Noch keine Styles angelegt — unten unter „Styles, Kategorien &amp; Unterkategorien" anlegen.</p>`}
+    </div>
+    <p class="a-hint">Haken setzen = das Produkt steht in diesem Style. Die Kategorie daneben gilt nur dort; ohne Auswahl steht es im Style nur unter „Alle“.</p>`;
 }
 
-// Liest die aktuell angehakten Style-Tags eines buildStyleMultiSelectHtml-
-// Dropdowns aus (beim Speichern des Formulars).
+// Liest die aktuell angehakten Style-Tags der Liste (beim Speichern).
 function getSelectedStyleTags(prefix){
   const menu = document.getElementById(`${prefix}Menu`);
   if(!menu) return [];
-  return Array.from(menu.querySelectorAll("input:checked")).map(cb => cb.value);
+  return Array.from(menu.querySelectorAll("input[type=checkbox]:checked")).map(cb => cb.value);
 }
 
-// ---- Kategorie und Unterkategorie je Style (Produkt-Formulare) ----
-// Jeder Style hat seine eigenen Kategorien und Unterkategorien (Tabellen
-// style_categories / style_subcategories, verwaltet im Dashboard unter
-// "Styles, Kategorien & Unterkategorien"). Im Produkt waehlt man AUSDRUECKLICH:
-// Style anhaken -> Kategorie dieses Styles -> Unterkategorie. Nichts gewaehlt
-// = das Produkt steht im Style nur unter "Alle", in keiner Kategorie; es wird
-// nichts automatisch einsortiert. Gespeichert wird je Style eine Zeile in
-// product_style_categories (nur wenn eine Kategorie gewaehlt ist).
-const NO_PICK = "";
-
-// Zeichnet die Auswahl in #<prefix>-stylecats -- eine Zeile pro angehaktem
-// Style, der ueberhaupt eigene Kategorien hat. Wird bei jeder Aenderung der
-// angehakten Styles neu gezeichnet; bereits getroffene Wahlen bleiben dabei
-// erhalten (erst aus dem Formular selbst, dann aus "fallback", der
-// gespeicherten Zuordnung: styleId -> { cat, sub }).
-function fillStyleCatPickers(prefix, fallback){
-  const box = document.getElementById(`${prefix}-stylecats`);
-  if(!box) return;
-  const current = readStyleCatPickers(prefix);
-  const tags = new Set(getSelectedStyleTags(`${prefix}-style`));
-  const styles = state.styles.filter(st => tags.has(st.label) && state.styleCategories.some(c => c.style_id === st.id));
-  if(!styles.length){ box.innerHTML = ""; box.style.display = "none"; return; }
-
-  const catsOf = id => state.styleCategories.filter(c => c.style_id === id)
-    .sort((a,b)=> (a.sort_order ?? 0) - (b.sort_order ?? 0));
-  const subsOf = (id, catKey) => state.styleSubcategories.filter(u => u.style_id === id && u.category_key === catKey)
-    .sort((a,b)=> (a.sort_order ?? 0) - (b.sort_order ?? 0));
-  const subOptions = (id, catKey, selected) =>
-    `<option value="${NO_PICK}">${catKey ? "Keine Unterkategorie" : "—"}</option>` +
-    (catKey ? subsOf(id, catKey) : []).map(u => `<option value="${aesc(u.key)}" ${u.key === selected ? "selected" : ""}>${aesc(u.label)}</option>`).join("");
-
-  box.style.display = "";
-  box.innerHTML = `
-    <label class="a-label">Kategorie &amp; Unterkategorie je Style</label>
-    ${styles.map(st => {
-      const w = current[st.id] ?? fallback?.[st.id] ?? { cat: NO_PICK, sub: NO_PICK };
-      const catKey = catsOf(st.id).some(c => c.key === w.cat) ? w.cat : NO_PICK;
-      return `
-        <div class="a-stylecat-row" data-style="${aesc(st.id)}">
-          <span title="${aesc(st.label)}">${aesc(st.label)}</span>
-          <select class="a-field" data-stylecat="${aesc(st.id)}" aria-label="Kategorie in ${aesc(st.label)}">
-            <option value="${NO_PICK}">Keine Kategorie</option>
-            ${catsOf(st.id).map(c => `<option value="${aesc(c.key)}" ${c.key === catKey ? "selected" : ""}>${aesc(c.label)}</option>`).join("")}
-          </select>
-          <select class="a-field" data-stylesub="${aesc(st.id)}" aria-label="Unterkategorie in ${aesc(st.label)}" ${catKey ? "" : "disabled"}>
-            ${subOptions(st.id, catKey, w.sub)}
-          </select>
-        </div>`;
-    }).join("")}
-    <p class="a-hint">Ohne Auswahl steht das Produkt im Style nur unter „Alle“.</p>`;
-
-  // Andere Kategorie -> deren Unterkategorien, Auswahl zurueck auf "keine".
-  box.querySelectorAll("select[data-stylecat]").forEach(sel => sel.addEventListener("change", ()=>{
-    const subSel = box.querySelector(`select[data-stylesub="${sel.dataset.stylecat}"]`);
-    subSel.innerHTML = subOptions(sel.dataset.stylecat, sel.value, NO_PICK);
-    subSel.disabled = !sel.value;
-  }));
-}
-
-// Liest die Auswahl je Style aus dem Formular (styleId -> { cat, sub }).
+// Liest die Wahl je ANGEHAKTEM Style (styleId -> { cat, sub }).
 function readStyleCatPickers(prefix){
   const out = {};
-  document.querySelectorAll(`#${prefix}-stylecats select[data-stylecat]`).forEach(sel => {
-    const subSel = document.querySelector(`#${prefix}-stylecats select[data-stylesub="${sel.dataset.stylecat}"]`);
+  document.querySelectorAll(`#${prefix}-styleMenu .a-sa-row`).forEach(r => {
+    if(!r.querySelector("input[type=checkbox]")?.checked) return;
+    const sel = r.querySelector("select[data-stylecat]");
+    if(!sel) return;
+    const subSel = r.querySelector("select[data-stylesub]");
     out[sel.dataset.stylecat] = { cat: sel.value, sub: subSel ? subSel.value : NO_PICK };
   });
   return out;
+}
+
+// Verdrahtet die Liste: Haken schaltet die Auswahlfelder der Zeile frei bzw.
+// aus; andere Kategorie -> deren Unterkategorien, Auswahl zurueck auf "keine".
+// onChange (optional) bekommt bei jeder Aenderung die angehakten Style-Tags
+// (das Formular "Produkt hinzufügen" merkt sich damit seinen Stand).
+function wireStyleAssign(prefix, onChange){
+  const menu = document.getElementById(`${prefix}Menu`);
+  if(!menu) return;
+  menu.addEventListener("change", e => {
+    const t = e.target;
+    const row = t.closest(".a-sa-row");
+    if(!row) return;
+    if(t.matches("input[type=checkbox]")){
+      row.classList.toggle("is-on", t.checked);
+      const cat = row.querySelector("select[data-stylecat]");
+      const sub = row.querySelector("select[data-stylesub]");
+      if(cat) cat.disabled = !t.checked;
+      if(sub) sub.disabled = !t.checked || !cat?.value;
+    } else if(t.matches("select[data-stylecat]")){
+      const sub = row.querySelector("select[data-stylesub]");
+      sub.innerHTML = styleSubOptions(t.dataset.stylecat, t.value, NO_PICK);
+      sub.disabled = !t.value;
+    }
+    if(onChange) onChange(getSelectedStyleTags(prefix));
+  });
 }
 
 // Gespeicherte Zuordnungen eines Produkts als styleId -> { cat, sub }.
@@ -8975,67 +9199,6 @@ async function saveStyleCats(productId, picked, styleTags){
   return null;
 }
 
-// Merkt sich pro Prefix ("p-style"/"e-style") das zuletzt an document
-// gehaengte Klick-/Escape-Paar -- siehe die Erklaerung in wireStyleMultiSelect
-// unten, warum das noetig ist.
-const styleMultiSelectDocHandlers = {};
-
-// Oeffnen/Schliessen + Live-Update der Knopf-Beschriftung fuer ein per
-// buildStyleMultiSelectHtml gebautes Dropdown -- gleiches Klick-ausserhalb-/
-// Escape-Verhalten wie die uebrigen eigenen Dropdowns im Dashboard
-// (a-switch, an-select, cur-menu).
-// onChange (optional) wird bei jeder Aenderung mit den aktuell angehakten
-// Style-Tags aufgerufen -- nutzt das Formular fuer "Produkt hinzufügen", um
-// newProductStyles live mitzupflegen (siehe renderDashboard).
-//
-// wireDashboard() ruft das bei JEDEM Dashboard-Render neu auf (das Markup
-// von buildStyleMultiSelectHtml wird jedes Mal frisch aus innerHTML gebaut),
-// die beiden document.addEventListener()-Aufrufe unten wuerden sich also bei
-// jeder einzelnen Admin-Aktion (Speichern, Loeschen, Sichtbarkeit umschalten,
-// Filter aendern ...) ein weiteres Mal aufsummieren -- nie entfernt, weil sie
-// auf "document" haengen statt auf den (jedes Mal neuen) Dropdown-Elementen.
-// Nach ein paar Dutzend Aktionen in einer Sitzung sammeln sich so hunderte
-// tote Listener an, jeder haelt zusaetzlich das alte, laengst aus dem DOM
-// entfernte Dropdown-Markup am Leben (Speicher waechst, jeder Klick/Tastendruck
-// auf der ganzen Seite wird spuerbar langsamer). Deshalb hier das alte Paar
-// zuerst wieder abmelden, bevor ein neues angemeldet wird.
-function wireStyleMultiSelect(prefix, onChange){
-  const wrap = document.getElementById(`${prefix}Select`);
-  const btn  = document.getElementById(`${prefix}Btn`);
-  const menu = document.getElementById(`${prefix}Menu`);
-  if(!wrap || !btn || !menu) return;
-
-  const prev = styleMultiSelectDocHandlers[prefix];
-  if(prev){
-    document.removeEventListener("click", prev.onDocClick);
-    document.removeEventListener("keydown", prev.onDocKeydown);
-  }
-
-  function close(){ wrap.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); }
-  function open(){ wrap.classList.add("open"); btn.setAttribute("aria-expanded", "true"); }
-
-  btn.onclick = (e)=>{
-    e.stopPropagation();
-    wrap.classList.contains("open") ? close() : open();
-  };
-  const onDocClick = e => { if(!wrap.contains(e.target)) close(); };
-  const onDocKeydown = e => {
-    if(e.key === "Escape" && wrap.classList.contains("open")){ close(); btn.focus(); }
-  };
-  document.addEventListener("click", onDocClick);
-  document.addEventListener("keydown", onDocKeydown);
-  styleMultiSelectDocHandlers[prefix] = { onDocClick, onDocKeydown };
-
-  const labelEl = document.getElementById(`${prefix}BtnLabel`);
-  menu.querySelectorAll("input[type=checkbox]").forEach(cb=>{
-    cb.addEventListener("change", ()=>{
-      const chosen = getSelectedStyleTags(prefix);
-      labelEl.textContent = chosen.length ? chosen.join(", ") : "Kein Style";
-      if(onChange) onChange(chosen);
-    });
-  });
-}
-
 // Holt die eigentliche Fehlermeldung aus einer fehlgeschlagenen Edge-Function-
 // Antwort -- sb.functions.invoke() liefert bei einem Nicht-2xx-Status nur ein
 // generisches error.message; der hilfreiche Text (z.B. "Benutzername schon
@@ -9055,7 +9218,7 @@ async function extractFnError(error){
 // Chef-Admin selbst bekommt keine Loeschen-/Passwort-zuruecksetzen-Buttons --
 // den eigenen Zugang verwaltet man hier nicht.
 // Baut die Checkboxen-Liste fuer die Creator-Zuweisung eines Unter-Admins --
-// gleiches Muster wie buildStyleMultiSelectHtml, nur mit Creator-IDs statt
+// gleiches Muster wie buildStyleAssignHtml, nur mit Creator-IDs statt
 // Style-Labels als Wert.
 function buildCreatorAssignHtml(userId, assignedIds){
   const assigned = new Set(assignedIds || []);
@@ -9580,21 +9743,16 @@ function renderDashboard(){
           </div>
 
           <div>
-            <label class="a-label" for="p-cat">Kategorie</label>
+            <label class="a-label" for="p-cat">Kategorie (Standard, „Alle“)</label>
             <select id="p-cat" class="a-field">${state.categories.map(c=>`<option value="${aesc(c.key)}" ${c.key===effectiveNewProductCategory?"selected":""}>${aesc(c.label)}</option>`).join("")}</select>
           </div>
           <div>
-            <label class="a-label" for="p-subcat">Unterkategorie</label>
+            <label class="a-label" for="p-subcat">Unterkategorie (Standard, „Alle“)</label>
             <select id="p-subcat" class="a-field">
               <option value="" ${newProductSubcat===""?"selected":""}>Keine</option>
               ${state.subcategories.filter(s => s.category_key === effectiveNewProductCategory).map(s=>`<option value="${aesc(s.key)}" ${s.key===newProductSubcat?"selected":""}>${aesc(s.label)}</option>`).join("")}
             </select>
           </div>
-          <div>
-            <label class="a-label" id="p-style-label-el">Styles</label>
-            ${buildStyleMultiSelectHtml("p-style", newProductStyles)}
-          </div>
-          <div class="a-full" id="p-stylecats" style="display:none"></div>
           <div>
             <label class="a-label" for="p-position">Position</label>
             <select id="p-position" class="a-field">
@@ -9604,6 +9762,11 @@ function renderDashboard(){
               <option value="middle50">In mittlere 50% einsortieren</option>
               <option value="bottom25">In untere 25% einsortieren</option>
             </select>
+          </div>
+
+          <div class="a-full">
+            <label class="a-label" id="p-style-label-el">Styles &amp; ihre Kategorien</label>
+            ${buildStyleAssignHtml("p-style", newProductStyles, newProductStyleCats)}
           </div>
 
           <div class="a-full">
@@ -9620,7 +9783,7 @@ function renderDashboard(){
           </div>
 
           <div class="a-actions">
-            <label class="a-check"><input id="p-trend" type="checkbox"> Als Trend markieren</label>
+            <label class="a-check"><input id="p-trend" type="checkbox"> Als Trend markieren <span class="a-hint" style="display:inline;margin:0 0 0 4px">(erscheint in der Trends-Leiste ganz oben)</span></label>
             <button class="a-btn a-btn-primary" id="saveProduct">Produkt speichern</button>
           </div>
         </form>
@@ -10635,7 +10798,7 @@ async function renderAnalytics(){
   // renderAnalytics() laeuft bei jedem Wechsel in die Analytics-Ansicht neu --
   // ohne dieses Abmelden wuerde sich das Klick-ausserhalb-/Escape-Paar unten
   // bei jedem erneuten Aufruf an "document" haengen und nie wieder verschwinden
-  // (gleiches Leck wie bei wireStyleMultiSelect, siehe dortiger Kommentar).
+  // (gleiches Leck wie bei jedem document-Listener, der bei einem Neu-Render nicht abgemeldet wird).
   if(renderAnalytics._creatorSelectDocHandlers){
     document.removeEventListener("click", renderAnalytics._creatorSelectDocHandlers.onDocClick);
     document.removeEventListener("keydown", renderAnalytics._creatorSelectDocHandlers.onDocKeydown);
@@ -11891,7 +12054,7 @@ async function renderRevenue(){
   // dieser Ansicht komplett neu -- ohne dieses Abmelden wuerden sich die
   // beiden Klick-ausserhalb-/Escape-Paare hier und beim Creator-Dropdown
   // unten bei jedem einzelnen dieser Klicks weiter an "document" anhaeufen
-  // (gleiches Leck wie bei wireStyleMultiSelect, siehe dortiger Kommentar --
+  // (gleiches Leck wie bei jedem document-Listener, der bei einem Neu-Render nicht abgemeldet wird --
   // hier besonders folgenreich, weil ein Nutzer beim Durchklicken der
   // Zeitraeume/Waehrungen leicht dutzende Male pro Sitzung durch diese
   // Funktion laeuft).
@@ -12916,7 +13079,7 @@ function wireDashboard(){
   // wireDashboard() laeuft bei jeder Admin-Aktion neu -- ohne dieses Abmelden
   // wuerde sich das Klick-ausserhalb-/Escape-Paar unten bei jedem Speichern/
   // Loeschen/Filtern erneut an "document" haengen und nie wieder verschwinden
-  // (gleiches Leck wie bei wireStyleMultiSelect oben, siehe dortiger Kommentar).
+  // (gleiches Leck wie bei jedem document-Listener, der bei einem Neu-Render nicht abgemeldet wird).
   if(wireDashboard._switchDocHandlers){
     document.removeEventListener("click", wireDashboard._switchDocHandlers.onDocClick);
     document.removeEventListener("keydown", wireDashboard._switchDocHandlers.onDocKeydown);
@@ -13438,9 +13601,13 @@ function wireDashboard(){
     // Ansicht laedt keine Style-Kategorien (siehe loadStyleCategoriesFor).
     if(!isAllModeEdit){
       const fehler = await saveStyleCats(id, readStyleCatPickers("e"), payload.style_tags);
+      // Es gibt nur EINEN Toast: eine Fehlermeldung hier nicht gleich mit
+      // "Änderungen gespeichert." ueberschreiben.
       if(fehler) atoast("Gespeichert, aber Kategorie je Style nicht: " + fehler, "err");
+      else atoast("Änderungen gespeichert.");
+    } else {
+      atoast(`Änderungen bei allen ${groupSize(editingProduct.group_id)} Kopien gespeichert.`);
     }
-    atoast(isAllModeEdit ? `Änderungen bei allen ${groupSize(editingProduct.group_id)} Kopien gespeichert.` : "Änderungen gespeichert.");
     editingProductId = null;
     await refreshActiveProducts();
     render();
@@ -13985,22 +14152,19 @@ function wireDashboard(){
 
   wireDragReorder();
 
-  // Style-Mehrfachauswahl in "Produkt hinzufügen" (immer vorhanden) und
-  // "Produkt bearbeiten" (nur wenn gerade eine Zeile aufgeklappt ist --
-  // wireStyleMultiSelect() macht selbst nichts, wenn die Elemente fehlen).
-  // "Kategorie je Style" folgt den angehakten Styles (siehe fillStyleCatPickers).
-  const pStyleCatsBox = document.getElementById("p-stylecats");
-  if(pStyleCatsBox) pStyleCatsBox.addEventListener("change", ()=>{ newProductStyleCats = readStyleCatPickers("p"); });
-  wireStyleMultiSelect("p-style", chosen => { newProductStyles = chosen; fillStyleCatPickers("p"); newProductStyleCats = readStyleCatPickers("p"); });
-  wireStyleMultiSelect("e-style", ()=> fillStyleCatPickers("e"));
+  // Styles-Liste in "Produkt hinzufügen" (immer vorhanden) und "Produkt
+  // bearbeiten" (nur wenn gerade eine Zeile aufgeklappt ist --
+  // wireStyleAssign() macht selbst nichts, wenn das Element fehlt). Das
+  // Hinzufuegen-Formular merkt sich Haken und Wahl je Style fuer den
+  // naechsten Render.
+  wireStyleAssign("p-style", chosen => { newProductStyles = chosen; newProductStyleCats = readStyleCatPickers("p"); });
+  wireStyleAssign("e-style");
   wireYuanHint("p-price", "p-price-eur");
   wireYuanHint("e-price", "e-price-eur");
   // Foto-Suche-Karte: Stand zeigen; nur neu abfragen, wenn er noch fehlt oder
   // zu einem anderen Creator gehoert.
   renderPhotoCardBody();
   if(photoPrep.creatorId !== state.activeId || !photoPrep.status) refreshPhotoStatus();
-  fillStyleCatPickers("p", newProductStyleCats);
-  if(editingProduct) fillStyleCatPickers("e", storedStyleCatsOf(editingProduct.id));
 
   // ---- Produktfilter: Kategorie/Style loesen sofort aus, Suche debounced,
   // damit nicht bei jedem Tastenanschlag ein Netzwerk-Roundtrip-Gefuehl entsteht.
