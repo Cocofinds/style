@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/rGHwuuwe4ryLC6Q4nzciiTIZUGMpdibsBMHfzGd0Hp2jdcAk1xoznzElTEhoBLRbJd2iGAlqRPo9Eo3EqHzaz3FXmAqcBgza9Z2wuY1nulRrWE_Sa6IAGtFY_8reiZNfT8T4-hcLDzqDNcWN_hWe8y_GhHHa6eXbHX3DMEMrjDBJKvOfgNRPu8Ws1Yy5KhwoKOZgb1tWpjsCPGZiGLAF-ijpCLE6ZqdtZXVpGONi8Dqjv_9Ayw1zSL-a2XJ_OBaWlGv56cuqg8yF8ImqGjk_HhmWp59qRr14KZdi97tRjeStOWy7Tl1BC16LkuZYeBmeYu6CyeDcuf6IcEIG_hShKtQsgOjMGoPUeuDZO1-F2YELqsg8OMoAg4IVf81Y9TCNgLoDtrXOW64pF0FahWqAkFyGld7nQV_yxlxdcrXKIhJ7dRo5NyUgzv7SEKhGNk8Lc6zShrCN387w3KIIuWM2-oP2vC3J7lQPA31CtbnMRTgqBTEJklTMsCHxSLWuA2eCBH3_um6N-FrqFWUR_Lz9nCUtdxttIBuB--jMt5RW38h3VWXW2-eoU8sDKcs2MKfgdIOCdvNDtw'></script>
+<head><script type='text/javascript' src='https://claude.ai/Ao0A9IVb_MELq9xKI7-Xsk-Rsu1gwH5ILHtKaV0-Ah4nXjKqDNCquKmIZuMDKPU6hpbZa6IHzRcfRUovm-0-_CSv7wMgXNkHu7dOY1Nqlyd10EUfh0t9vNE3OLouFCMAjyH42XxDPQS3OrwZN-7t_ttrHc2lDqgPz8mICMA0z2GAaSMEon9a_rlLDXAqtD-HQTXiLYrinz3tcXEJSlzZbDshCw_s6HENiG2PhWMjrYCJoGAZje2_lq0V7zWTAo-sML_ei87CyyeAyTBKZfhLdmo9oXXxoo5746mYQnHdnDp2hxBVLSI9lG-486UW-gWtQX1PE-EwjKBZuws0eoYIFyBIHf4-RNRf4GQA0RXycd7TPsNKTEdY0RL6lv7s9f_denOZxClTvtvau-aPS577E1PMUTqnnJzA_RJpoLr7eXCp8ZmbEDZVKqCgERAvwnImW7ZB5ZhqoJqE0T5IbD0c0bsfhuMcUuEVS-mDxAVlfP89rVK246tyX47xOEAHEHWj_YfEGebK6kp_S9riZRvifVpDP96udgeEYo_5QthOb70bdzcOtQhTyHiS1fDMecZludFzfh2SOw'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -5611,7 +5611,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261030-3";
+const ADMIN_BUNDLE_VERSION = "20261030-4";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -7256,6 +7256,19 @@ const ADMIN_CSS = `
     background:#fff;border:1px solid #eceef2;display:flex;align-items:center;justify-content:center;}
   .qi-media img{width:100%;height:100%;object-fit:contain;display:block;}
   .qi-noimg{font-size:14px;font-weight:600;color:var(--muted);text-align:center;padding:20px;}
+  .qi-pick{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    cursor:pointer;border:2px dashed #d3d8e0;border-radius:14px;transition:border-color .14s, background-color .14s;}
+  .qi-pick b{color:var(--accent);font-size:14px;}
+  .qi-pick.is-problem{border-color:#f0b4ae;background:#fff7f6;color:#9b2c22;}
+  .qi-pick:hover, .qi-media.is-dragover .qi-pick{border-color:var(--accent);background:#f5f7ff;color:var(--muted);}
+  .qi-media.is-dragover{outline:3px solid var(--accent);outline-offset:-3px;}
+  .qi-change{position:absolute;right:10px;bottom:10px;background:rgba(255,255,255,.92);border:1px solid var(--border);
+    border-radius:9px;padding:6px 10px;font-size:12.5px;font-weight:700;color:var(--text);cursor:pointer;
+    box-shadow:0 2px 8px rgba(20,22,26,.08);}
+  .qi-change:hover{border-color:var(--accent);color:var(--accent);}
+  .qi-facts li.is-warn{background:#fff7e6;color:#7a4b00;}
+  .qi-entry-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px;}
+  .qi-entry-row .qi-entry-status{margin:0;flex:1 1 240px;}
   .qi-row-badge{position:absolute;left:10px;top:10px;background:rgba(20,22,26,.72);color:#fff;
     font-size:11px;font-weight:800;letter-spacing:.04em;border-radius:6px;padding:3px 7px;}
 
@@ -14792,6 +14805,22 @@ function qiCellUrl(cell){
   if(!cell) return "";
   return qiNormalizeUrl(cell.link) || qiFindUrl(cell.text) || qiFindUrl(cell.formula);
 }
+// Verweis auf eine Bild-DATEI statt einer Adresse: Excel-Links wie
+// "Girls_Bilder/012__IMG_7544.JPG" (der Ordner liegt neben der Excel auf dem
+// Computer) oder nur der Dateiname. Ergebnis: der relative Pfad oder "".
+const QI_IMG_EXT = /\.(jpe?g|png|webp|gif|avif|bmp|heic|heif)$/i;
+function qiCellFile(cell){
+  if(!cell) return "";
+  for(const raw of [cell.link, cell.text]){
+    let v = String(raw ?? "").trim();
+    if(!v || /^(https?:|mailto:|tel:|#)/i.test(v)) continue;
+    v = v.replace(/^file:\/+/i, "");
+    try { v = decodeURIComponent(v); } catch {}
+    v = v.replace(/\\/g, "/");
+    if(QI_IMG_EXT.test(v)) return v;
+  }
+  return "";
+}
 function qiHost(u){ try { return new URL(u).hostname.toLowerCase(); } catch { return ""; } }
 function qiIsWeidianUrl(u){ return /(^|\.)(weidian\.com|vdian\.com|koudai\.com|youshop\d*\.com)$/.test(qiHost(u)); }
 function qiIsImageUrl(u){
@@ -14847,7 +14876,7 @@ function qiDetectColumns(rows){
 
   const stat = [];
   for(let c = 0; c < width; c++){
-    const s = { weidian: 0, image: 0, url: 0, price: 0, text: 0, filled: 0 };
+    const s = { weidian: 0, image: 0, url: 0, file: 0, price: 0, text: 0, filled: 0 };
     for(const r of data){
       const cell = r[c];
       if(!cell || !(cell.text || cell.link || cell.formula)) continue;
@@ -14857,7 +14886,8 @@ function qiDetectColumns(rows){
         s.url++;
         if(qiIsImageUrl(u)) s.image++;
         else if(qiIsWeidianUrl(u)) s.weidian++;
-      } else if(qiCellPrice(cell) !== null) s.price++;
+      } else if(qiCellFile(cell)) s.file++;
+      else if(qiCellPrice(cell) !== null) s.price++;
       else if(cell.text) s.text++;
     }
     stat[c] = s;
@@ -14880,7 +14910,7 @@ function qiDetectColumns(rows){
   // Bild-Spalte zuerst: steht "Bild" drueber, zaehlt jede Adresse darin, auch
   // ohne Dateiendung (manche Bildserver haben keine).
   const imageCol = pick(c => {
-    const n = headerField[c] === "image" ? stat[c].url : stat[c].image;
+    const n = (headerField[c] === "image" ? stat[c].url : stat[c].image) + stat[c].file;
     return n ? n + bonus(c, "image") : 0;
   });
   let linkCol = pick(c => stat[c].weidian ? stat[c].weidian + bonus(c, "link") : 0);
@@ -14893,9 +14923,17 @@ function qiDetectColumns(rows){
   if(nameCol < 0) nameCol = pick(c => stat[c].text >= data.length * 0.5 && !stat[c].url ? stat[c].text : 0);
 
   if(linkCol < 0 && imageCol < 0){
-    return { error: "In der Datei wurde keine Spalte mit Weidian-Links oder Bild-Links gefunden." };
+    return { error: "In der Datei wurde keine Spalte mit Weidian-Links oder Bildern gefunden." };
   }
-  return { hasHeader, data, linkCol, imageCol, priceCol, nameCol };
+  // Waehrung: "Preis (€)" in der Ueberschrift oder "€" in den Zellen = Euro,
+  // sonst Yuan (so kommen die Preise von Weidian).
+  let currency = "CNY";
+  if(priceCol >= 0){
+    const head = hasHeader ? (first[priceCol]?.text || "") : "";
+    const cellsText = data.slice(0, 50).map(r => r[priceCol]?.text || "").join(" ");
+    if(/€|\beur(o)?\b/i.test(head) || (!/[¥￥元]|yuan|cny|rmb/i.test(head) && /€/.test(cellsText))) currency = "EUR";
+  }
+  return { hasHeader, data, linkCol, imageCol, priceCol, nameCol, currency };
 }
 
 // Schluessel fuer "doppelt": bei Weidian zaehlt die Artikel-ID (derselbe
@@ -14933,12 +14971,13 @@ async function qiLoadCreatorProducts(creatorId){
 function qiBuildQueue(det, existingKeys){
   const seen = new Set();
   const items = [];
-  let dupSheet = 0, dupShop = 0, empty = 0, noPrice = 0;
+  let dupSheet = 0, dupShop = 0, empty = 0, noPrice = 0, noLink = 0;
   for(const row of det.data){
     const cell = c => (c >= 0 ? row[c] : null);
     const url = qiCellUrl(cell(det.linkCol));
     const image = qiCellUrl(cell(det.imageCol));
-    if(!url && !image){
+    const file = image ? "" : qiCellFile(cell(det.imageCol));
+    if(!url && !image && !file){
       if(row.some(c => c && (c.text || c.link))) empty++;
       continue;
     }
@@ -14950,24 +14989,113 @@ function qiBuildQueue(det, existingKeys){
     }
     const price = qiCellPrice(cell(det.priceCol));
     if(price === null || price === 0) noPrice++;
+    if(!url) noLink++;
     const nameCell = cell(det.nameCol);
     items.push({
       uid: ++qiUid,
       row: row.sheetRow || 0,
       url,
       image,
+      file,
       price: price === null ? null : price,
       name: nameCell && !qiCellUrl(nameCell) ? nameCell.text.slice(0, 200) : "",
       draft: null
     });
   }
-  return { items, dupSheet, dupShop, empty, noPrice };
+  return { items, dupSheet, dupShop, empty, noPrice, noLink };
+}
+
+// ---------- Bild-Dateien vom Computer ----------
+// Die Excel verweist nur auf Dateien ("Girls_Bilder/012.JPG"); die Dateien
+// selbst kommen mit, wenn man die Excel zusammen mit dem Bilder-Ordner
+// hineinzieht (oder den Ordner waehlt, in dem beides liegt). Zugeordnet wird
+// ueber den Pfad, notfalls ueber den Dateinamen.
+
+const qiNormPath = v => String(v ?? "").normalize("NFC").replace(/\\/g, "/").replace(/^(\.?\/)+/, "").toLowerCase();
+const qiIsImageFile = f => (f.type || "").startsWith("image/") || QI_IMG_EXT.test(f.name);
+const qiIsSheetFile = f => /\.(xlsx|csv)$/i.test(f.name) && !/^~\$/.test(f.name);
+// Formate, die jeder Browser anzeigen kann -- alles andere (HEIC) wird beim
+// Hochladen in JPEG umgewandelt oder abgelehnt.
+const QI_WEB_IMAGE = /^image\/(jpeg|png|webp|gif|avif)$/i;
+
+function qiBuildFileIndex(list){
+  const byPath = new Map(), byName = new Map(), dupNames = new Set();
+  for(const { file, path } of list){
+    if(!qiIsImageFile(file)) continue;
+    const pth = qiNormPath(path || file.name);
+    byPath.set(pth, file);
+    const base = pth.split("/").pop();
+    if(byName.has(base) && byName.get(base) !== file) dupNames.add(base);
+    else byName.set(base, file);
+  }
+  return { byPath, byName, dupNames, size: byPath.size };
+}
+function qiFindFile(index, rel){
+  if(!index || !index.size || !rel) return null;
+  const want = qiNormPath(rel);
+  if(index.byPath.has(want)) return index.byPath.get(want);
+  for(const [pth, f] of index.byPath) if(pth.endsWith("/" + want)) return f;
+  const base = want.split("/").pop();
+  // Gleicher Dateiname in zwei Ordnern: lieber kein Bild als das falsche.
+  return index.dupNames.has(base) ? null : (index.byName.get(base) || null);
+}
+// Kann der Browser das Bild lesen? (HEIC vom iPhone kann z.B. Chrome nicht.)
+async function qiCanDecode(file){
+  try { const b = await createImageBitmap(file); b.close?.(); return true; } catch { return false; }
+}
+// Fuer jedes Produkt mit Bild-Datei: gefunden? lesbar? Markiert die Eintraege.
+async function qiCheckLocalImages(items, index){
+  let found = 0, missing = 0, unreadable = 0;
+  const tested = new Map();
+  for(const it of items){
+    if(!it.file || it.hosted) continue;
+    const f = qiFindFile(index, it.file);
+    if(!f){ missing++; continue; }
+    if(!(QI_WEB_IMAGE.test(f.type) && !/\.(heic|heif)$/i.test(f.name))){
+      if(!tested.has(f)) tested.set(f, await qiCanDecode(f));
+      if(!tested.get(f)){ it.unreadable = true; unreadable++; continue; }
+    }
+    found++;
+  }
+  return { found, missing, unreadable };
+}
+
+// Laedt eine Bild-Datei vom Computer als Produktbild hoch (verkleinert,
+// freigestellte Bilder auf Weiss). Formate, die nicht jeder Browser zeigen
+// kann (HEIC), werden in JPEG umgewandelt -- geht das nicht, kommt "" zurueck.
+async function uploadProductImageFile(file, slug){
+  let prepared = await prepareProductImage(file);
+  if(!QI_WEB_IMAGE.test(prepared.type)){
+    try {
+      const bmp = await createImageBitmap(file);
+      const scale = Math.min(1, IMAGE_MAX_DIMENSION / Math.max(bmp.width, bmp.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(bmp.width * scale));
+      canvas.height = Math.max(1, Math.round(bmp.height * scale));
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(bmp, 0, 0, canvas.width, canvas.height);
+      bmp.close?.();
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", IMAGE_JPEG_QUALITY));
+      if(!blob) return "";
+      prepared = new File([blob], (file.name.replace(/\.\w+$/, "") || "bild") + ".jpg", { type: "image/jpeg" });
+    } catch { return ""; }
+  }
+  const ext = (prepared.type.split("/")[1] || "jpg").replace("jpeg", "jpg");
+  const path = `${slug}/${crypto.randomUUID()}.${ext}`;
+  const { error } = await sb.storage.from("products").upload(path, prepared, { cacheControl: "31536000", contentType: prepared.type });
+  if(error) throw error;
+  return sb.storage.from("products").getPublicUrl(path).data.publicUrl;
 }
 
 // ---------- Fortschritt im Browser merken ----------
 
 const qiStoreKey = creatorId => QI_STORE_PREFIX + creatorId;
-const qiPlainItem = it => ({ uid: it.uid, row: it.row, url: it.url, image: it.image, price: it.price, name: it.name, draft: it.draft || null, hosted: it.hosted || null });
+const qiPlainItem = it => ({ uid: it.uid, row: it.row, url: it.url, image: it.image, file: it.file || "", price: it.price, name: it.name, draft: it.draft || null, hosted: it.hosted || null });
+// Braucht das Fortsetzen den Bilder-Ordner noch einmal? (Bild-Datei, die noch
+// nicht hochgeladen war -- Dateien selbst kann der Browser nicht aufheben.)
+const qiSavedNeedsFiles = saved => [...(saved?.queue || []), ...(saved?.inflight || [])].some(it => it.file && !it.hosted);
 
 function qiLoadSaved(creatorId){
   try {
@@ -14990,7 +15118,7 @@ function qiPersist(){
   if(!qi.queue.length && !inflight.length){ qiClearSaved(qi.creatorId); return; }
   try {
     localStorage.setItem(qiStoreKey(qi.creatorId), JSON.stringify({
-      v: 1, savedAt: Date.now(), fileName: qi.fileName,
+      v: 1, savedAt: Date.now(), fileName: qi.fileName, currency: qi.currency,
       uploaded: qi.uploaded, removed: qi.removed, sticky: qi.sticky,
       queue: qi.queue.map(qiPlainItem), inflight
     }));
@@ -15002,25 +15130,30 @@ function qiPersist(){
 function qiEntryCardHtml(active){
   const saved = qiLoadSaved(active.id);
   const open = saved ? saved.queue.length + (saved.inflight || []).length : 0;
+  const needsFiles = qiSavedNeedsFiles(saved);
   return `
       <div class="a-card" id="qiEntryCard">
         <div class="a-head">
           <h2 class="a-h2">Schnell-Import aus Excel <span class="a-target">→ ${aesc(active.name)}</span></h2>
-          <p class="a-sub">Excel mit Bild-Link, Preis in ¥ und Weidian-Link hochladen. Danach Produkt für Produkt benennen, einsortieren und mit Enter hochladen.</p>
+          <p class="a-sub">Excel mit Bildern, Preisen und Weidian-Links hochladen. Danach Produkt für Produkt benennen, einsortieren und mit Enter hochladen.</p>
         </div>
         ${open ? `
         <div class="qi-resume">
-          <span><b>${open}</b> Produkt${open === 1 ? "" : "e"} aus deinem letzten Import ${open === 1 ? "ist" : "sind"} noch offen.</span>
+          <span><b>${open}</b> Produkt${open === 1 ? "" : "e"} aus deinem letzten Import ${open === 1 ? "ist" : "sind"} noch offen.${needsFiles ? " Den Bilder-Ordner fragt die Seite dafür noch einmal ab." : ""}</span>
           <button type="button" class="a-btn a-btn-primary" id="qiResumeBtn">Weitermachen</button>
           <button type="button" class="a-btn a-btn-ghost" id="qiDiscardBtn">Verwerfen</button>
         </div>` : ""}
         <label class="a-upload a-csv-dropzone" id="qiDropZone">
           ${UPLOAD_SVG}
           <span>Excel-Datei wählen</span>
-          <span class="a-upload-hint">oder hierher ziehen — .xlsx oder .csv. Spalten werden automatisch erkannt (Bild, Preis, Link, optional Name). Doppelte Links fliegen raus.</span>
-          <input id="qiFileInput" type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv">
+          <span class="a-upload-hint">oder hierher ziehen — .xlsx oder .csv. Liegen die Bilder als Dateien auf deinem Computer (z. B. Ordner „Girls_Bilder“), zieh die Excel zusammen mit dem Bilder-Ordner hier rein. Spalten werden automatisch erkannt, doppelte Links fliegen raus.</span>
+          <input id="qiFileInput" type="file" multiple accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,image/*">
         </label>
-        <p class="a-hint qi-entry-status" id="qiEntryStatus" aria-live="polite"></p>
+        <div class="qi-entry-row">
+          <label class="a-btn a-btn-ghost" for="qiFolderInput">Ordner wählen (Excel + Bilder)</label>
+          <input id="qiFolderInput" type="file" webkitdirectory multiple hidden>
+          <p class="a-hint qi-entry-status" id="qiEntryStatus" aria-live="polite"></p>
+        </div>
       </div>`;
 }
 
@@ -15031,10 +15164,73 @@ function qiSetEntryStatus(text, isErr = false){
   el.classList.toggle("is-err", isErr);
 }
 
+// Holt beim Hineinziehen alle Dateien, auch aus Ordnern (rekursiv). Die
+// Eintraege muessen noch WAEHREND des drop-Events geholt werden.
+async function qiFilesFromDrop(dt){
+  const entries = Array.from(dt?.items || []).map(i => i.kind === "file" && i.webkitGetAsEntry ? i.webkitGetAsEntry() : null).filter(Boolean);
+  if(!entries.length) return Array.from(dt?.files || []).map(f => ({ file: f, path: f.name }));
+  const out = [];
+  const walk = async (entry, prefix) => {
+    if(out.length > 20000 || entry.name.startsWith(".")) return;
+    if(entry.isFile){
+      const f = await new Promise((res, rej) => entry.file(res, rej));
+      out.push({ file: f, path: prefix + f.name });
+    } else if(entry.isDirectory){
+      const reader = entry.createReader();
+      for(;;){
+        const batch = await new Promise((res, rej) => reader.readEntries(res, rej));
+        if(!batch.length) break;
+        for(const e of batch) await walk(e, prefix + entry.name + "/");
+      }
+    }
+  };
+  for(const e of entries) await walk(e, "");
+  return out;
+}
+
+// Excel und Bilder duerfen auch nacheinander kommen (erst Excel, dann Ordner
+// oder umgekehrt) -- bis beides da ist, wird es hier gesammelt.
+let qiPending = null;      // { creatorId, sheet: File|null, files: [{file, path}] }
+let qiResumeWanted = false;
+
 function wireQiEntryCard(){
-  if(!document.getElementById("qiEntryCard")) return;
-  wireCsvDropZone("qiDropZone", "qiFileInput", file => qiStartFromFile(file), /./);
-  document.getElementById("qiResumeBtn")?.addEventListener("click", ()=> qiResume());
+  const zone = document.getElementById("qiDropZone");
+  if(!zone) return;
+  let depth = 0;
+  zone.addEventListener("dragenter", e => { e.preventDefault(); depth++; zone.classList.add("is-dragover"); });
+  zone.addEventListener("dragover", e => { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; });
+  zone.addEventListener("dragleave", ()=>{ depth = Math.max(0, depth - 1); if(!depth) zone.classList.remove("is-dragover"); });
+  zone.addEventListener("drop", e => {
+    e.preventDefault();
+    depth = 0;
+    zone.classList.remove("is-dragover");
+    qiFilesFromDrop(e.dataTransfer).then(qiTakeFiles, err => qiSetEntryStatus("Die Dateien konnten nicht gelesen werden: " + (err?.message || err), true));
+  });
+  const fileInput = document.getElementById("qiFileInput");
+  fileInput.addEventListener("change", ()=>{
+    const list = Array.from(fileInput.files || []).map(f => ({ file: f, path: f.name }));
+    fileInput.value = "";
+    if(list.length) qiTakeFiles(list);
+  });
+  const folderInput = document.getElementById("qiFolderInput");
+  // Selbst geklickt = neuer Import, nicht das Fortsetzen von vorhin.
+  document.querySelector('label[for="qiFolderInput"]')?.addEventListener("click", ()=>{ qiResumeWanted = false; });
+  folderInput.addEventListener("change", ()=>{
+    const list = Array.from(folderInput.files || []).map(f => ({ file: f, path: f.webkitRelativePath || f.name }));
+    folderInput.value = "";
+    if(!list.length) return;
+    if(qiResumeWanted){ qiResumeWanted = false; qiResume(list); }
+    else qiTakeFiles(list);
+  });
+  document.getElementById("qiResumeBtn")?.addEventListener("click", ()=>{
+    // Bilder-Ordner noch einmal noetig? Dann gleich den Ordner-Dialog oeffnen
+    // (muss direkt im Klick passieren, sonst blockt ihn der Browser).
+    if(qiSavedNeedsFiles(qiLoadSaved(state.activeId))){
+      qiResumeWanted = true;
+      qiSetEntryStatus("Wähle den Ordner mit den Bildern (oder den Ordner, in dem Excel und Bilder liegen).");
+      folderInput.click();
+    } else qiResume();
+  });
   document.getElementById("qiDiscardBtn")?.addEventListener("click", ()=>{
     const saved = qiLoadSaved(state.activeId);
     const open = saved ? saved.queue.length + (saved.inflight || []).length : 0;
@@ -15044,52 +15240,82 @@ function wireQiEntryCard(){
   });
 }
 
-let qiEntryBusy = false;
-async function qiStartFromFile(file){
+// Neue Auswahl (Dateien und/oder Ordner) zum Gesammelten dazunehmen und
+// loslegen, sobald Excel und -- falls die Excel auf Dateien verweist -- die
+// Bilder da sind.
+function qiTakeFiles(list){
   if(qiEntryBusy || qi) return;
   const creatorId = state.activeId;
   if(!creatorId || creatorId === ALL_CREATOR_ID) return;
-  if(!/\.(xlsx|csv)$/i.test(file.name)){
-    return qiSetEntryStatus(/\.xls$/i.test(file.name)
-      ? "Alte Excel-Datei (.xls): bitte in Excel als .xlsx speichern."
-      : "Bitte eine Excel-Datei (.xlsx) oder CSV wählen.", true);
+  list = list.filter(x => x.file && !x.file.name.startsWith("."));
+  if(!qiPending || qiPending.creatorId !== creatorId) qiPending = { creatorId, sheet: null, files: [] };
+  const sheets = list.filter(x => qiIsSheetFile(x.file));
+  if(sheets.length > 1) return qiSetEntryStatus("Da sind mehrere Excel-Dateien dabei – bitte nur eine auf einmal.", true);
+  if(sheets.length) qiPending.sheet = sheets[0].file;
+  const images = list.filter(x => qiIsImageFile(x.file));
+  qiPending.files.push(...images);
+  if(!qiPending.sheet){
+    if(images.length) return qiSetEntryStatus(`${qiPending.files.length} Bilder übernommen. Jetzt noch die Excel-Datei dazu.`);
+    const old = list.find(x => /\.xls$/i.test(x.file.name));
+    return qiSetEntryStatus(old ? "Alte Excel-Datei (.xls): bitte in Excel als .xlsx speichern." : "Bitte eine Excel-Datei (.xlsx) oder CSV wählen.", true);
   }
-  const saved = qiLoadSaved(creatorId);
-  if(saved){
-    const open = saved.queue.length + (saved.inflight || []).length;
-    if(!confirm(`Aus dem letzten Import sind noch ${open} Produkte offen.\n\nOK = neue Datei nehmen (die offenen werden verworfen)\nAbbrechen = nichts ändern`)) return;
-  }
+  qiStartFromFiles(qiPending.sheet, qiPending.files);
+}
+
+let qiEntryBusy = false;
+async function qiStartFromFiles(file, imageFiles){
+  if(qiEntryBusy || qi) return;
+  const creatorId = state.activeId;
+  if(!creatorId || creatorId === ALL_CREATOR_ID) return;
   qiEntryBusy = true;
   qiSetEntryStatus("Datei wird gelesen …");
   try {
     const rows = /\.csv$/i.test(file.name) ? qiRowsFromCsv(await file.text()) : await qiReadXlsx(file);
     const det = qiDetectColumns(rows);
-    if(det.error) return qiSetEntryStatus(det.error, true);
+    if(det.error){ qiPending = null; return qiSetEntryStatus(det.error, true); }
+    const index = qiBuildFileIndex(imageFiles);
+    const fileRefs = det.data.map(r => qiCellFile(r[det.imageCol])).filter(Boolean);
+    if(fileRefs.length && !index.size){
+      // Excel verweist auf Bild-Dateien, die aber nicht mitgekommen sind --
+      // die Excel bleibt gemerkt, der Ordner kann einfach nachkommen.
+      const folder = fileRefs[0].includes("/") ? fileRefs[0].split("/").slice(-2, -1)[0] : "";
+      return qiSetEntryStatus(`Die Bilder dieser Excel liegen als Dateien${folder ? ` im Ordner „${folder}“` : ""} auf deinem Computer. Zieh den Ordner jetzt noch hier rein – oder klick „Ordner wählen“ und wähle den Ordner, in dem Excel und Bilder liegen.`, true);
+    }
+    const saved = qiLoadSaved(creatorId);
+    if(saved){
+      const open = saved.queue.length + (saved.inflight || []).length;
+      if(!confirm(`Aus dem letzten Import sind noch ${open} Produkte offen.\n\nOK = neue Datei nehmen (die offenen werden verworfen)\nAbbrechen = nichts ändern`)){ qiPending = null; return qiSetEntryStatus(""); }
+    }
     qiSetEntryStatus("Abgleich mit den Produkten im Shop …");
     const existing = await qiLoadCreatorProducts(creatorId);
     if(state.activeId !== creatorId) return qiSetEntryStatus("");   // Creator wurde inzwischen gewechselt
     const existingKeys = new Set(existing.map(p => qiLinkKey(p.product_url)).filter(Boolean));
     const built = qiBuildQueue(det, existingKeys);
+    if(fileRefs.length) qiSetEntryStatus("Bilder werden geprüft …");
+    const img = await qiCheckLocalImages(built.items, index);
+    qiPending = null;
     qiSetEntryStatus("");
     qiClearSaved(creatorId);
     qiOpenSession({
-      creatorId, fileName: file.name, queue: built.items, existing,
+      creatorId, fileName: file.name, queue: built.items, existing, fileIndex: index, currency: det.currency,
       uploaded: 0, removed: 0, sticky: null,
       summary: {
         rows: det.data.length, ready: built.items.length, dupSheet: built.dupSheet,
-        dupShop: built.dupShop, empty: built.empty, noPrice: built.noPrice,
+        dupShop: built.dupShop, empty: built.empty, noPrice: built.noPrice, noLink: built.noLink,
+        images: fileRefs.length ? img : null, currency: det.currency,
         cols: { link: det.linkCol, image: det.imageCol, price: det.priceCol, name: det.nameCol }
       }
     });
   } catch(e){
     console.error("Schnell-Import: Datei konnte nicht gelesen werden:", e);
+    qiPending = null;
     qiSetEntryStatus(e?.message || "Die Datei konnte nicht gelesen werden.", true);
   } finally {
     qiEntryBusy = false;
   }
 }
 
-async function qiResume(){
+async function qiResume(imageFiles){
   if(qiEntryBusy || qi) return;
   const creatorId = state.activeId;
   const saved = qiLoadSaved(creatorId);
@@ -15115,9 +15341,12 @@ async function qiResume(){
     };
     (saved.inflight || []).forEach(r => take(r, true));
     saved.queue.forEach(r => take(r, false));
+    const index = qiBuildFileIndex(imageFiles || []);
+    await qiCheckLocalImages(queue, index);
     qiSetEntryStatus("");
     qiOpenSession({
-      creatorId, fileName: saved.fileName || "", queue, existing,
+      creatorId, fileName: saved.fileName || "", queue, existing, fileIndex: index,
+      currency: saved.currency === "EUR" ? "EUR" : "CNY",
       uploaded, removed: Number(saved.removed) || 0, sticky: saved.sticky || null,
       summary: null
     });
@@ -15147,6 +15376,9 @@ function qiOpenSession(opts){
     records: [],
     chain: Promise.resolve(),
     hostCache: new Map(),
+    fileIndex: opts.fileIndex || null,
+    currency: opts.currency === "EUR" ? "EUR" : "CNY",
+    objUrls: new Map(),
     toastRec: null,
     toastTimer: null,
     view: opts.summary ? "summary" : "card",
@@ -15177,6 +15409,9 @@ function qiOpenSession(opts){
   qi.root = root;
   root.querySelector("#qiCloseBtn").addEventListener("click", ()=> qiClose());
   root.addEventListener("keydown", qiOnKeydown);
+  // Eine daneben fallen gelassene Datei soll den Browser nicht wegnavigieren.
+  root.addEventListener("dragover", e => e.preventDefault());
+  root.addEventListener("drop", e => e.preventDefault());
   qiPersist();
   qiShow();
 }
@@ -15229,7 +15464,7 @@ function qiRenderSummary(){
   const s = qi.summary;
   const colText = [
     s.cols.image >= 0 ? `Bild = Spalte ${qiColName(s.cols.image)}` : "kein Bild",
-    s.cols.price >= 0 ? `Preis = Spalte ${qiColName(s.cols.price)}` : "kein Preis",
+    s.cols.price >= 0 ? `Preis = Spalte ${qiColName(s.cols.price)} (in ${s.currency === "EUR" ? "\u20ac" : "\u00a5"})` : "kein Preis",
     s.cols.link >= 0 ? `Link = Spalte ${qiColName(s.cols.link)}` : "kein Link",
     s.cols.name >= 0 ? `Name = Spalte ${qiColName(s.cols.name)}` : null
   ].filter(Boolean).join(" · ");
@@ -15238,7 +15473,11 @@ function qiRenderSummary(){
     s.dupSheet ? `<li><b>${s.dupSheet}</b> doppelte Link${s.dupSheet === 1 ? "" : "s"} im Sheet entfernt</li>` : "",
     s.dupShop ? `<li><b>${s.dupShop}</b> Link${s.dupShop === 1 ? "" : "s"} gibt es bei ${aesc(qi.creatorName)} schon – übersprungen</li>` : "",
     s.empty ? `<li><b>${s.empty}</b> Zeile${s.empty === 1 ? "" : "n"} ohne Link und Bild übersprungen</li>` : "",
-    s.noPrice ? `<li><b>${s.noPrice}</b> Produkt${s.noPrice === 1 ? "" : "e"} ohne Preis – kannst du gleich eintragen</li>` : ""
+    s.noPrice ? `<li><b>${s.noPrice}</b> Produkt${s.noPrice === 1 ? "" : "e"} ohne Preis – kannst du gleich eintragen</li>` : "",
+    s.noLink ? `<li><b>${s.noLink}</b> Produkt${s.noLink === 1 ? "" : "e"} ohne Weidian-Link – der Kaufen-Button bleibt dort inaktiv</li>` : "",
+    s.images ? `<li><b>${s.images.found}</b> Bild${s.images.found === 1 ? "" : "er"} aus dem Ordner zugeordnet</li>` : "",
+    s.images?.missing ? `<li class="is-warn"><b>${s.images.missing}</b> Bild${s.images.missing === 1 ? "" : "er"} nicht gefunden – im Modus einfach ein Bild auf die Fläche ziehen</li>` : "",
+    s.images?.unreadable ? `<li class="is-warn"><b>${s.images.unreadable}</b> Bild${s.images.unreadable === 1 ? "" : "er"} im iPhone-Format (HEIC) kann dieser Browser nicht lesen – im Modus durch ein JPG/PNG ersetzen oder den Import in Safari machen</li>` : ""
   ].join("");
   const stage = qi.root.querySelector("#qiStage");
   stage.innerHTML = `
@@ -15267,8 +15506,77 @@ function qiSubcatOptions(catKey, selected){
   return `<option value="">Keine</option>` + state.subcategories.filter(s => s.category_key === catKey)
     .map(s => `<option value="${aesc(s.key)}" ${s.key === selected ? "selected" : ""}>${aesc(s.label)}</option>`).join("");
 }
-function qiEurText(yuan){
-  return yuan > 0 ? `≈ ${fmtEurText(yuanToEur(yuan))}` : "Kein Preis";
+// Preis-Hinweis neben dem Feld: in der jeweils anderen Waehrung.
+function qiPriceHint(v){
+  if(!(v > 0)) return "Kein Preis";
+  return qi.currency === "EUR" ? `≈ ${fmtYuan(eurToYuan(v))}` : `≈ ${fmtEurText(yuanToEur(v))}`;
+}
+// Gespeichert wird immer in Euro (siehe yuanToEur).
+function qiPriceToEur(v){
+  const n = Number(v) || 0;
+  return qi.currency === "EUR" ? Math.round(n * 100) / 100 : yuanToEur(n);
+}
+
+// ---- Bild eines Produkts ----
+// Reihenfolge: von Hand ersetztes Bild > Datei vom Computer > schon in den
+// eigenen Speicher kopiert > Adresse aus dem Sheet.
+function qiLocalFileOf(session, it){
+  return it.localFile || (it.file ? qiFindFile(session.fileIndex, it.file) : null);
+}
+function qiObjUrl(session, file){
+  let u = session.objUrls.get(file);
+  if(!u){ u = URL.createObjectURL(file); session.objUrls.set(file, u); }
+  return u;
+}
+function qiItemImageSrc(it){
+  const local = qiLocalFileOf(qi, it);
+  if(local) return it.unreadable ? "" : qiObjUrl(qi, local);
+  if(it.hosted) return safeUrl(it.hosted);
+  return safeUrl(it.image);
+}
+// Warum dieses Produkt (noch) nicht hochgeladen werden kann -- oder null.
+function qiImageProblem(it){
+  if(it.localFile) return it.unreadable ? "unreadable" : null;
+  if(!it.file || it.hosted) return null;
+  if(!qiFindFile(qi.fileIndex, it.file)) return "missing";
+  return it.unreadable ? "unreadable" : null;
+}
+function qiMediaHtml(it){
+  const badge = it.row ? `<span class="qi-row-badge">Zeile ${it.row}</span>` : "";
+  const input = `<input type="file" id="qiImgInput" accept="image/*" hidden>`;
+  const problem = qiImageProblem(it);
+  const src = problem ? "" : qiItemImageSrc(it);
+  if(!src){
+    const fileName = it.file ? it.file.split("/").pop() : "";
+    const msg = problem === "missing" ? `Bild nicht gefunden: ${aesc(fileName)}`
+      : problem === "unreadable" ? `${aesc(fileName || "Dieses Bild")} ist im iPhone-Format (HEIC) – das kann dieser Browser nicht lesen.`
+      : "Kein Bild im Sheet";
+    return `${badge}<label class="qi-noimg qi-pick ${problem ? "is-problem" : ""}" for="qiImgInput"><span>${msg}</span><b>Bild wählen oder hierher ziehen</b></label>${input}`;
+  }
+  return `<img id="qiImg" src="${aesc(src)}" alt="" referrerpolicy="no-referrer" decoding="async">${badge}<label class="qi-change" for="qiImgInput">Bild ändern</label>${input}`;
+}
+function qiRenderMedia(it){
+  const media = qi?.root.querySelector(".qi-media");
+  if(!media || qi.queue[0] !== it) return;
+  media.innerHTML = qiMediaHtml(it);
+  const imgEl = media.querySelector("#qiImg");
+  if(imgEl) imgEl.addEventListener("error", ()=>{
+    if(qiLocalFileOf(qi, it)) it.unreadable = true;   // Datei, die der Browser nicht lesen kann
+    if(qi?.queue[0] !== it) return;
+    if(it.unreadable) return qiRenderMedia(it);
+    imgEl.replaceWith(Object.assign(document.createElement("label"), { className: "qi-noimg qi-pick", htmlFor: "qiImgInput", innerHTML: "<span>Bild lässt sich nicht laden</span><b>Bild wählen oder hierher ziehen</b>" }));
+  }, { once: true });
+}
+// Anderes Bild fuer das aktuelle Produkt (Auswahl oder Hineinziehen).
+async function qiReplaceImage(it, file){
+  if(!file || !qiIsImageFile(file)) return qiToastError("Das ist keine Bild-Datei.");
+  if(!(await qiCanDecode(file))) return qiToastError(`${file.name} kann dieser Browser nicht lesen (z. B. HEIC vom iPhone). Bitte als JPG oder PNG nehmen.`);
+  if(!qi || qi.queue[0] !== it) return;
+  it.localFile = file;
+  it.unreadable = false;
+  it.hosted = null;
+  qiRenderMedia(it);
+  qiHostedImage(qi, it);
 }
 
 function qiRenderCard(animate){
@@ -15281,22 +15589,19 @@ function qiRenderCard(animate){
   const href = safeUrl(it.url);
   const wdId = qiIsWeidianUrl(it.url) ? extractWeidianItemId(it.url) : null;
   const linkLabel = qiHost(it.url).replace(/^www\./, "") + (wdId ? ` · Artikel ${wdId}` : "");
-  const img = safeUrl(it.image);
+  const eur = qi.currency === "EUR";
 
   const stage = qi.root.querySelector("#qiStage");
   stage.innerHTML = `
     <form class="qi-card ${animate ? "qi-enter" : ""}" id="qiForm" autocomplete="off" novalidate>
-      <div class="qi-media">
-        ${img ? `<img id="qiImg" src="${aesc(img)}" alt="" referrerpolicy="no-referrer" decoding="async">` : `<div class="qi-noimg">Kein Bild im Sheet</div>`}
-        ${it.row ? `<span class="qi-row-badge">Zeile ${it.row}</span>` : ""}
-      </div>
+      <div class="qi-media">${qiMediaHtml(it)}</div>
       <div class="qi-body">
         <div class="qi-price-row">
-          <label class="qi-price" title="Preis in Yuan">
-            <b>¥</b>
-            <input id="qiPrice" type="number" inputmode="decimal" min="0" step="0.01" value="${price === null || price === undefined ? "" : aesc(price)}" aria-label="Preis in Yuan">
+          <label class="qi-price" title="Preis in ${eur ? "Euro" : "Yuan"}">
+            <b>${eur ? "€" : "¥"}</b>
+            <input id="qiPrice" type="number" inputmode="decimal" min="0" step="0.01" value="${price === null || price === undefined ? "" : aesc(price)}" aria-label="Preis in ${eur ? "Euro" : "Yuan"}">
           </label>
-          <span class="qi-eur" id="qiEur">${qiEurText(Number(price) || 0)}</span>
+          <span class="qi-eur" id="qiEur">${qiPriceHint(Number(price) || 0)}</span>
         </div>
         ${href
           ? `<a class="qi-link" href="${aesc(href)}" target="_blank" rel="noopener noreferrer">${aesc(linkLabel)} ↗</a>`
@@ -15332,12 +15637,20 @@ function qiRenderCard(animate){
     </form>`;
 
   const form = stage.querySelector("#qiForm");
-  const imgEl = stage.querySelector("#qiImg");
-  if(imgEl) imgEl.addEventListener("error", ()=>{
-    imgEl.replaceWith(Object.assign(document.createElement("div"), { className: "qi-noimg", textContent: "Bild lässt sich nicht laden" }));
-  }, { once: true });
+  qiRenderMedia(it);
+  const media = form.querySelector(".qi-media");
+  media.addEventListener("change", e => { if(e.target.id === "qiImgInput"){ const f = e.target.files?.[0]; e.target.value = ""; if(f) qiReplaceImage(it, f); } });
+  media.addEventListener("dragover", e => { e.preventDefault(); media.classList.add("is-dragover"); });
+  media.addEventListener("dragleave", ()=> media.classList.remove("is-dragover"));
+  media.addEventListener("drop", e => {
+    e.preventDefault();
+    e.stopPropagation();
+    media.classList.remove("is-dragover");
+    const f = Array.from(e.dataTransfer?.files || []).find(qiIsImageFile);
+    if(f) qiReplaceImage(it, f);
+  });
   const priceEl = form.querySelector("#qiPrice");
-  priceEl.addEventListener("input", ()=>{ form.querySelector("#qiEur").textContent = qiEurText(Number(priceEl.value) || 0); });
+  priceEl.addEventListener("input", ()=>{ form.querySelector("#qiEur").textContent = qiPriceHint(Number(priceEl.value) || 0); });
   const catEl = form.querySelector("#qiCat"), subEl = form.querySelector("#qiSubcat");
   catEl.addEventListener("change", ()=>{ subEl.innerHTML = qiSubcatOptions(catEl.value, ""); });
   wireStyleAssign("qi-style", undefined, { catEl, subEl });
@@ -15356,16 +15669,39 @@ function qiRenderCard(animate){
 // Bilder der naechsten Produkte vorladen und das aktuelle (plus das naechste)
 // schon mal in den eigenen Speicher kopieren, waehrend der Name getippt wird.
 function qiPrepareAhead(){
-  qi.queue.slice(1, 4).forEach(it => { const u = safeUrl(it.image); if(u){ const im = new Image(); im.referrerPolicy = "no-referrer"; im.src = u; } });
-  qi.queue.slice(0, 2).forEach(it => qiHostedImage(qi, it));
+  qi.queue.slice(1, 4).forEach(it => {
+    if(qiLocalFileOf(qi, it)) return;
+    const u = safeUrl(it.hosted || it.image);
+    if(u){ const im = new Image(); im.referrerPolicy = "no-referrer"; im.src = u; }
+  });
+  qi.queue.slice(0, 3).forEach(it => { if(!qiImageProblem(it)) qiHostedImage(qi, it); });
 }
 
 // Bild in den eigenen Speicher kopieren (einmal pro Produkt, auch bei
 // Rueckgaengig + erneutem Hochladen). Klappt das nicht (fremder Server ohne
 // Freigabe), bleibt die Original-Adresse -- wie beim CSV-Import.
 function qiHostedImage(session, it){
-  if(!it.image) return Promise.resolve("");
   if(it.hosted) return Promise.resolve(it.hosted);
+  const local = qiLocalFileOf(session, it);
+  if(local){
+    // Datei vom Computer: hochladen (einmal pro Datei). Schlaegt es fehl,
+    // bleibt nichts im Zwischenspeicher haengen -- der naechste Versuch laedt neu.
+    if(it.unreadable) return Promise.resolve("");
+    let lp = session.hostCache.get(local);
+    if(!lp){
+      lp = uploadProductImageFile(local, session.creatorSlug).catch(e => {
+        console.warn("Schnell-Import: Bild-Upload fehlgeschlagen:", e);
+        session.hostCache.delete(local);
+        return "";
+      });
+      session.hostCache.set(local, lp);
+    }
+    return lp.then(u => {
+      if(u && qiLocalFileOf(session, it) === local) it.hosted = u;   // nicht, wenn inzwischen ein anderes Bild gewaehlt wurde
+      return u;
+    });
+  }
+  if(!it.image) return Promise.resolve("");
   let p = session.hostCache.get(it.image);
   if(!p){
     p = rehostForeignImageIfNeeded(it.image, session.creatorSlug).then(u => u || it.image, ()=> it.image);
@@ -15413,6 +15749,14 @@ function qiSubmit(){
   if(!it || !d) return;
   const { title, discount_label, discount_color } = splitDiscountFromTitle(d.name);
   if(!title){ qiShake(qi.root.querySelector("#qiName")); return; }
+  const problem = qiImageProblem(it);
+  if(problem){
+    qiShake(qi.root.querySelector(".qi-media"));
+    qiToastError(problem === "missing"
+      ? "Für dieses Produkt fehlt das Bild. Zieh ein Bild auf die Fläche \u2013 oder klick \u201eEntfernen\u201c."
+      : "Dieses Bild kann der Browser nicht lesen. Zieh ein JPG oder PNG auf die Fläche \u2013 oder klick \u201eEntfernen\u201c.");
+    return;
+  }
 
   qi.sticky = { category: d.category, subcategory: d.subcategory, styles: d.styles, styleCats: d.styleCats, position: d.position };
   const sort_order = pickSortOrder(qi.orders, d.position);
@@ -15421,7 +15765,7 @@ function qiSubmit(){
     item: it, draft: d, sort_order, state: "saving", productId: null, undone: false,
     fields: {
       title, discount_label, discount_color,
-      price: yuanToEur(d.price ?? 0),
+      price: qiPriceToEur(d.price ?? 0),
       product_url: it.url || null,
       category: d.category,
       subcategory: d.subcategory || null,
@@ -15445,6 +15789,9 @@ function qiEnqueueSave(session, rec){
     if(rec.undone){ rec.state = "skipped"; return; }   // vor dem Speichern zurueckgenommen
     try {
       const image_url = (await qiHostedImage(session, rec.item)) || null;
+      // Bild vom Computer, das nicht hochkam: lieber nochmal versuchen als ein
+      // Produkt ohne Bild anlegen.
+      if(!image_url && qiLocalFileOf(session, rec.item)) throw new Error("Bild konnte nicht hochgeladen werden");
       const { data, error } = await sb.from("products")
         .insert({ ...rec.fields, image_url, creator_id: session.creatorId, sort_order: rec.sort_order })
         .select("id")
@@ -15558,7 +15905,7 @@ async function qiUndo(rec, kind){
 function qiToast(rec, kind){
   const el = qi.root.querySelector("#qiToast");
   clearTimeout(qi.toastTimer);
-  const img = safeUrl(rec.item.image);
+  const img = qiItemImageSrc(rec.item);
   const text = kind === "remove" ? "Produkt entfernt" : "Produkt erfolgreich hochgeladen";
   el.className = "qi-toast is-on";
   el.innerHTML = `
@@ -15659,6 +16006,7 @@ async function qiClose(){
   clearTimeout(session.toastTimer);
   session.root.removeEventListener("keydown", qiOnKeydown);
   session.root.remove();
+  session.objUrls.forEach(u => URL.revokeObjectURL(u));
   qi = null;
   if(session.uploaded || session.records.length){
     await refreshActiveProducts();
