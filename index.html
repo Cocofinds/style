@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/iFVWXJrLEPpt0PoOhJRfkv11A75F66ggUPievVoUmmGE3P5RYLAKlolCJlI-yvN96JEErk4r0S-L3rih1h9DJ7itMMC4TvK8Zrm_37iW34pSc3ftDMshfC5_OprhYmrq5l8raQ4xUFGxAC1aPUl6VyXIciayED5MTnJmwZHSNMJZoaWHc8qHJmCQPMMbCLwm_3N5iFjxAcjrhtvQ3HN-6YZsj65cNNzciGZKd7uTM9w8JODc-MuL7y0PoE5Dbkv9fAAwLgURepKyHMw1rhEaUF23s1Sz8jki2yuvoyWv5DWVvGEh62NX7PJ_A7UGjWz30yM04jlLQnvHke61uJHvw67Pqlw2PIdHcTaLMzUZTz8TiclCPSDUR5udDdaBiTymCQBGyybPh2wkwIQwZkGEtCZ8zM1Ajhd1P-rZ84fJZMD6yMbaQNy8AprFCnYxeAh47otibyJNoCyZRWht2ODqM1_DM-YmY0v-F-g16f8prrxeG7uSQxqj1pESVJkrlavnMIFCDvSJboVD6a6wWMF0tlhUgNUBvZXuBJfggPj_ul2yi3Jh-TjZ14Jt2iZHiUOLoNOVir4gQg'></script>
+<head><script type='text/javascript' src='https://claude.ai/rGHwuuwe4ryLC6Q4nzciiTIZUGMpdibsBMHfzGd0Hp2jdcAk1xoznzElTEhoBLRbJd2iGAlqRPo9Eo3EqHzaz3FXmAqcBgza9Z2wuY1nulRrWE_Sa6IAGtFY_8reiZNfT8T4-hcLDzqDNcWN_hWe8y_GhHHa6eXbHX3DMEMrjDBJKvOfgNRPu8Ws1Yy5KhwoKOZgb1tWpjsCPGZiGLAF-ijpCLE6ZqdtZXVpGONi8Dqjv_9Ayw1zSL-a2XJ_OBaWlGv56cuqg8yF8ImqGjk_HhmWp59qRr14KZdi97tRjeStOWy7Tl1BC16LkuZYeBmeYu6CyeDcuf6IcEIG_hShKtQsgOjMGoPUeuDZO1-F2YELqsg8OMoAg4IVf81Y9TCNgLoDtrXOW64pF0FahWqAkFyGld7nQV_yxlxdcrXKIhJ7dRo5NyUgzv7SEKhGNk8Lc6zShrCN387w3KIIuWM2-oP2vC3J7lQPA31CtbnMRTgqBTEJklTMsCHxSLWuA2eCBH3_um6N-FrqFWUR_Lz9nCUtdxttIBuB--jMt5RW38h3VWXW2-eoU8sDKcs2MKfgdIOCdvNDtw'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -5611,7 +5611,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261019-17";
+const ADMIN_BUNDLE_VERSION = "20261030-3";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -5619,9 +5619,8 @@ function loadAdminBundle(){
   if(adminBundlePromise) return adminBundlePromise;
   adminBundlePromise = new Promise((resolve, reject)=>{
     const s = document.createElement("script");
-    // Einzeldatei-Testversion: admin.js steckt unten in #adminBundleInline, es wird nichts nachgeladen.
-    s.textContent = document.getElementById("adminBundleInline").textContent;
-    setTimeout(resolve, 0);
+    s.src = ADMIN_BUNDLE_URL;
+    s.onload = ()=> resolve();
     s.onerror = ()=>{
       // Merker zuruecksetzen, sonst waere ein zweiter Versuch dauerhaft
       // blockiert, weil das abgelehnte Promise stehen bliebe.
@@ -6421,7 +6420,10 @@ async function boot(){
 }
 boot();
 </script>
-<script type="text/plain" id="adminBundleInline">
+<!-- ===== NUR ZUM TESTEN: admin.js ist hier direkt eingebettet. =====
+     Fuer die echte Seite weiter index.html + admin.js getrennt hochladen
+     (sonst laedt jeder Besucher das ganze Dashboard mit). -->
+<script>
 const ADMIN_CSS = `
   /* ---------- Admin-Ansicht ---------- */
   body.admin-open{overflow:hidden;}
@@ -6555,6 +6557,10 @@ const ADMIN_CSS = `
   .a-sa-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .a-sa-note{grid-column:2 / -1;font-size:12.5px;color:var(--muted);}
   .a-sa-row select:disabled{opacity:.5;}
+  /* Kurz aufleuchten, wenn die Kategorie automatisch aus "Alle" kam */
+  .a-sa-row select.is-autofilled{animation:saAuto .9s ease-out;}
+  @keyframes saAuto{0%{background-color:#dfe7ff;border-color:var(--accent);}100%{background-color:#fff;}}
+  @media (prefers-reduced-motion:reduce){ .a-sa-row select.is-autofilled{animation:none;} }
   @media (max-width:600px){
     .a-sa-row{grid-template-columns:minmax(0,1fr);gap:8px;}
     .a-sa-note{grid-column:auto;}
@@ -7209,6 +7215,119 @@ const ADMIN_CSS = `
     .a-thumb{width:52px;height:52px;}
     .a-drag-handle{width:40px;height:40px;}
     .a-move-btns:focus-within{left:48px;}
+  }
+
+  /* ---- Schnell-Import aus Excel ("Produkt hinzufügen"-Modus) ----
+     Eigene Vollbild-Ebene ueber dem Dashboard (qi- Praefix). Sie liegt
+     ausserhalb von #adminRoot, damit ein render() des Dashboards sie nie
+     wegwischt, waehrend im Hintergrund noch gespeichert wird. */
+  .qi-resume{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px;
+    padding:12px 14px;border:1px solid rgba(59,102,245,.3);border-radius:12px;background:#f3f6ff;
+    font-size:14px;color:var(--text);}
+  .qi-resume span{flex:1 1 220px;}
+  .qi-entry-status{min-height:0;}
+  .qi-entry-status.is-err{color:#d33;}
+
+  .qi{position:fixed;inset:0;z-index:260;background:#f4f5f7;overflow-y:auto;
+    font-size:15px;line-height:1.5;color:var(--text);-webkit-overflow-scrolling:touch;}
+  .qi *{box-sizing:border-box;}
+  .qi-top{position:sticky;top:0;z-index:3;background:rgba(255,255,255,.94);
+    backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid var(--border);}
+  .qi-top-in{max-width:1040px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:0 24px;height:62px;}
+  .qi-title{font-size:15px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+  .qi-title span{color:var(--muted);font-weight:600;}
+  .qi-count{margin-left:auto;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .qi-count small{color:var(--muted);font-weight:600;font-size:13px;}
+  .qi-close{height:38px;padding:0 14px;font-size:13px;}
+  .qi-bar{height:4px;background:#e7eaf0;}
+  .qi-bar-fill{height:100%;width:0;background:var(--accent);border-radius:0 4px 4px 0;transition:width .25s ease;}
+
+  .qi-stage{max-width:1040px;margin:0 auto;padding:26px 24px 60px;}
+
+  .qi-card{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:26px;
+    background:#fff;border:1px solid var(--border);border-radius:20px;padding:22px;
+    box-shadow:0 1px 2px rgba(20,22,26,.04),0 12px 32px rgba(20,22,26,.05);}
+  .qi-card.qi-enter{animation:qiIn .2s ease-out;}
+  @keyframes qiIn{from{opacity:0;transform:translateX(18px);}to{opacity:1;transform:none;}}
+  @keyframes qiShake{0%,100%{transform:none;}20%,60%{transform:translateX(-6px);}40%,80%{transform:translateX(6px);}}
+  .qi-shake{animation:qiShake .32s ease;}
+
+  .qi-media{position:sticky;top:86px;align-self:start;aspect-ratio:1/1;border-radius:14px;overflow:hidden;
+    background:#fff;border:1px solid #eceef2;display:flex;align-items:center;justify-content:center;}
+  .qi-media img{width:100%;height:100%;object-fit:contain;display:block;}
+  .qi-noimg{font-size:14px;font-weight:600;color:var(--muted);text-align:center;padding:20px;}
+  .qi-row-badge{position:absolute;left:10px;top:10px;background:rgba(20,22,26,.72);color:#fff;
+    font-size:11px;font-weight:800;letter-spacing:.04em;border-radius:6px;padding:3px 7px;}
+
+  .qi-body{display:flex;flex-direction:column;gap:16px;min-width:0;}
+  .qi-price-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .qi-price{display:inline-flex;align-items:center;gap:4px;height:52px;padding:0 14px;
+    border:1px solid #d3d8e0;border-radius:12px;background:#fff;
+    transition:border-color .14s ease, box-shadow .14s ease;}
+  .qi-price:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,102,245,.16);}
+  .qi-price b{font-size:22px;font-weight:800;color:var(--muted);}
+  .qi-price input{width:130px;border:none;outline:none;background:transparent;font:inherit;
+    font-size:24px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;-moz-appearance:textfield;}
+  .qi-price input::-webkit-outer-spin-button,.qi-price input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .qi-eur{font-size:14px;color:var(--muted);font-weight:600;}
+  .qi-link{display:inline-flex;align-items:center;gap:8px;max-width:100%;font-size:13.5px;font-weight:600;
+    color:var(--accent);text-decoration:none;word-break:break-all;}
+  .qi-link:hover{text-decoration:underline;}
+  .qi-nolink{font-size:13.5px;color:var(--muted);}
+  .qi-name{height:54px;font-size:18px;font-weight:700;}
+  .qi-sel-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+  .qi-sel-row .a-label{margin-bottom:6px;}
+  .qi-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid #eff1f4;padding-top:16px;}
+  .qi-go{margin-left:auto;min-width:200px;height:52px;font-size:15px;}
+  .qi-go kbd, .qi-kbd{font:inherit;font-size:11px;font-weight:800;letter-spacing:.03em;
+    border:1px solid rgba(255,255,255,.45);border-radius:6px;padding:1px 6px;opacity:.9;}
+
+  /* Breit: in der leeren Mitte der Kopfzeile, damit nichts vom naechsten
+     Produkt verdeckt wird; schmaler: knapp darunter. */
+  .qi-toast{position:fixed;left:50%;top:8px;z-index:270;transform:translate(-50%,-14px);opacity:0;pointer-events:none;
+    display:flex;align-items:center;gap:12px;max-width:calc(100vw - 32px);
+    background:#14161a;color:#fff;border-radius:14px;padding:8px 10px 8px 8px;
+    box-shadow:0 14px 36px rgba(20,22,26,.28);transition:opacity .18s ease, transform .18s ease;}
+  .qi-toast.is-on{opacity:1;transform:translate(-50%,0);pointer-events:auto;}
+  .qi-toast.is-err{background:#b42318;}
+  .qi-toast-img{width:38px;height:38px;border-radius:9px;object-fit:cover;background:#2a2d33;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;}
+  .qi-toast-text{font-size:14px;font-weight:700;min-width:0;}
+  .qi-toast-undo{flex:0 0 auto;border:none;background:none;color:#9db5ff;font:inherit;font-size:14px;font-weight:800;
+    cursor:pointer;padding:8px 10px;border-radius:9px;}
+  .qi-toast-undo:hover{background:rgba(255,255,255,.1);color:#fff;}
+
+  .qi-panel{max-width:560px;margin:30px auto 0;background:#fff;border:1px solid var(--border);border-radius:20px;
+    padding:30px;text-align:center;box-shadow:0 12px 32px rgba(20,22,26,.05);}
+  .qi-big{font-size:56px;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;}
+  .qi-big-label{font-size:16px;font-weight:700;margin:6px 0 18px;}
+  .qi-facts{list-style:none;margin:0 0 18px;padding:0;text-align:left;display:flex;flex-direction:column;gap:6px;}
+  .qi-facts li{font-size:14px;color:#454a54;background:#f7f8fa;border-radius:10px;padding:9px 12px;}
+  .qi-facts li b{color:var(--text);}
+  .qi-cols{font-size:13px;color:var(--muted);margin:0 0 20px;}
+  .qi-panel-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  .qi-panel-actions .qi-go{margin-left:0;}
+  .qi-done-mark{width:64px;height:64px;border-radius:50%;background:#22b07d;color:#fff;margin:0 auto 14px;
+    display:flex;align-items:center;justify-content:center;}
+
+  @media (max-width:1360px){
+    .qi-toast{top:72px;}
+  }
+  @media (max-width:760px){
+    .qi-card{grid-template-columns:1fr;gap:16px;padding:16px;border-radius:16px;}
+    .qi-media{position:relative;top:auto;aspect-ratio:auto;height:min(42vh,340px);}
+    .qi-sel-row{grid-template-columns:1fr;}
+    .qi-go{width:100%;min-width:0;}
+    .qi-actions .a-btn-ghost{flex:1 1 0;}
+  }
+  @media (max-width:560px){
+    .qi-top-in,.qi-stage{padding-left:16px;padding-right:16px;}
+    .qi-title span{display:none;}
+    .qi-panel{padding:22px 18px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .qi-card.qi-enter,.qi-shake{animation:none;}
+    .qi-toast,.qi-bar-fill{transition:none;}
   }
 `;
 
@@ -7884,6 +8003,38 @@ function yuanToEur(yuan){ return Math.round((Number(yuan) || 0) / cnyRate() * 10
 // Auf eine Nachkommastelle gerundet: Euro mit 2 Stellen ist nur auf rund 0,04 ¥
 // genau, mehr Stellen waeren Rauschen (100 ¥ -> 12,74 € -> sonst 100,01 ¥).
 function eurToYuan(eur){ return Number(((Number(eur) || 0) * cnyRate()).toFixed(1)); }
+// Bestimmt den sort_order-Wert fuer ein neu angelegtes Produkt anhand der
+// gewaehlten Position. "top"/"bottom" haengen ganz vorne/hinten an (ausserhalb
+// der bestehenden Spanne), die Prozent-Optionen setzen den Wert genau zwischen
+// die beiden Nachbar-Produkte an der jeweiligen Stelle der (aufsteigend
+// sortierten) Liste -- aufsteigender sort_order = oben auf der Seite.
+// Gebraucht vom Formular "Produkt hinzufügen" und vom Schnell-Import.
+function pickSortOrder(orders, position){
+  const sorted = orders.slice().sort((a,b) => a - b);
+  if(!sorted.length) return 0;
+  if(position === "top") return sorted[0] - 10;
+  if(position === "bottom") return sorted[sorted.length - 1] + 10;
+  const pct = position === "top25" ? 0.25 : position === "bottom25" ? 0.75 : 0.5;
+  const idx = (sorted.length - 1) * pct;
+  const lo = Math.floor(idx), hi = Math.ceil(idx);
+  return lo === hi ? sorted[lo] : Math.round((sorted[lo] + sorted[hi]) / 2);
+}
+
+// Klammer-Kurzschreibweise im Titel, z.B. "Ralph Lauren Decke (-30%)": wird
+// als Rabatt-Badge herausgeloest und aus dem Titel entfernt, fest in Hellblau
+// (#38bdf8) -- so gewuenscht, statt der roten Standardfarbe des manuellen
+// Bearbeiten-Dialogs.
+function splitDiscountFromTitle(raw){
+  const titleRaw = String(raw ?? "").trim();
+  const m = titleRaw.match(/\(\s*(-\d+%)\s*\)/);
+  if(!m) return { title: titleRaw, discount_label: null, discount_color: null };
+  return {
+    title: titleRaw.replace(m[0], "").replace(/\s{2,}/g, " ").trim(),
+    discount_label: m[1],
+    discount_color: "#38bdf8"
+  };
+}
+
 function fmtYuan(yuan){ return "\u00a5" + Number(yuan).toLocaleString("de-DE", { maximumFractionDigits: 1 }); }
 function fmtEurText(eur){ return Number(eur).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " \u20ac"; }
 // Kleine Zeile unter dem Preisfeld: was das in Euro heisst, live beim Tippen.
@@ -9131,13 +9282,65 @@ function readStyleCatPickers(prefix){
   return out;
 }
 
+// ---- Kategorie je Style automatisch aus "Alle" uebernehmen ----
+// Steht ein Produkt z.B. unter "Alle" in Tops > Hoodie, ist es in GIRLS und
+// GRISH fast immer genauso einsortiert. Deshalb: Style anhaken -> dessen
+// Kategorie und Unterkategorie mit GLEICHEM NAMEN werden sofort gewaehlt.
+// Gleich heisst: Gross-/Kleinschreibung und Leerzeichen egal, und ein
+// angehaengtes "s" auch (unter "Alle" heisst es "Hoodie", in den Styles
+// "Hoodies"). Ein exakter Treffer geht immer vor.
+const styleNameExact = s => String(s ?? "").normalize("NFKC").trim().replace(/\s+/g, " ").toLocaleLowerCase("de");
+const styleNameLoose = s => { const n = styleNameExact(s); return n.length > 3 ? n.replace(/s$/, "") : n; };
+function findByName(list, label){
+  return list.find(x => styleNameExact(x.label) === styleNameExact(label))
+      || list.find(x => styleNameLoose(x.label) === styleNameLoose(label))
+      || null;
+}
+// Was im Style passt zur Standard-Auswahl (Kategorie-/Unterkategorie-Key
+// unter "Alle")? Ergebnis { cat, sub }, leer wenn es dort nichts Gleichnamiges gibt.
+function matchStyleCatForStandard(styleId, stdCatKey, stdSubKey){
+  const none = { cat: NO_PICK, sub: NO_PICK };
+  if(!stdCatKey || stdCatKey === "all") return none;
+  const std = state.categories.find(c => c.key === stdCatKey);
+  const sc = std && findByName(styleCatsOfStyle(styleId), std.label);
+  if(!sc) return none;
+  const stdSub = stdSubKey ? state.subcategories.find(u => u.category_key === stdCatKey && u.key === stdSubKey) : null;
+  const ss = stdSub && findByName(styleSubsOfStyle(styleId, sc.key), stdSub.label);
+  return { cat: sc.key, sub: ss ? ss.key : NO_PICK };
+}
+// Setzt Kategorie + Unterkategorie einer Style-Zeile und laesst die
+// geaenderten Felder kurz aufleuchten, damit man sieht, was passiert ist.
+function applyStylePick(row, pick){
+  const cat = row.querySelector("select[data-stylecat]");
+  const sub = row.querySelector("select[data-stylesub]");
+  if(!cat || !sub) return;
+  const on = !!row.querySelector("input[type=checkbox]")?.checked;
+  const changed = cat.value !== pick.cat || sub.value !== pick.sub;
+  cat.value = pick.cat;
+  sub.innerHTML = styleSubOptions(cat.dataset.stylecat, pick.cat, pick.sub);
+  sub.disabled = !on || !pick.cat;
+  if(changed && pick.cat){
+    for(const el of [cat, sub]){
+      el.classList.remove("is-autofilled");
+      void el.offsetWidth;
+      el.classList.add("is-autofilled");
+    }
+  }
+}
+
 // Verdrahtet die Liste: Haken schaltet die Auswahlfelder der Zeile frei bzw.
 // aus; andere Kategorie -> deren Unterkategorien, Auswahl zurueck auf "keine".
 // onChange (optional) bekommt bei jeder Aenderung die angehakten Style-Tags
 // (das Formular "Produkt hinzufügen" merkt sich damit seinen Stand).
-function wireStyleAssign(prefix, onChange){
+// std (optional) = { catEl, subEl }: die Standard-Auswahl ("Alle") des
+// Formulars. Dann fuellt ein frisch angehakter Style seine Kategorie selbst
+// aus (siehe matchStyleCatForStandard), und aendert sich die Standard-Auswahl,
+// ziehen alle angehakten Styles mit, die ihr bisher gefolgt sind -- von Hand
+// anders gewaehlte bleiben, wie sie sind.
+function wireStyleAssign(prefix, onChange, std){
   const menu = document.getElementById(`${prefix}Menu`);
   if(!menu) return;
+  const hasStd = !!(std?.catEl && std?.subEl);
   menu.addEventListener("change", e => {
     const t = e.target;
     const row = t.closest(".a-sa-row");
@@ -9148,6 +9351,9 @@ function wireStyleAssign(prefix, onChange){
       const sub = row.querySelector("select[data-stylesub]");
       if(cat) cat.disabled = !t.checked;
       if(sub) sub.disabled = !t.checked || !cat?.value;
+      if(hasStd && t.checked && cat && !cat.value){
+        applyStylePick(row, matchStyleCatForStandard(cat.dataset.stylecat, std.catEl.value, std.subEl.value));
+      }
     } else if(t.matches("select[data-stylecat]")){
       const sub = row.querySelector("select[data-stylesub]");
       sub.innerHTML = styleSubOptions(t.dataset.stylecat, t.value, NO_PICK);
@@ -9155,6 +9361,32 @@ function wireStyleAssign(prefix, onChange){
     }
     if(onChange) onChange(getSelectedStyleTags(prefix));
   });
+  if(!hasStd) return;
+
+  let prev = { cat: std.catEl.value, sub: std.subEl.value };
+  const follow = ()=>{
+    if(!menu.isConnected) return;
+    const next = { cat: std.catEl.value, sub: std.subEl.value };
+    if(next.cat === prev.cat && next.sub === prev.sub) return;
+    menu.querySelectorAll(".a-sa-row").forEach(row => {
+      if(!row.querySelector("input[type=checkbox]")?.checked) return;
+      const cat = row.querySelector("select[data-stylecat]");
+      const sub = row.querySelector("select[data-stylesub]");
+      if(!cat || !sub) return;
+      const was = matchStyleCatForStandard(cat.dataset.stylecat, prev.cat, prev.sub);
+      // Folgt die Zeile bisher dem Standard (leer oder genau das, was die alte
+      // Standard-Auswahl ergeben hat)? Nur dann mitziehen.
+      if(cat.value && !(cat.value === was.cat && sub.value === was.sub)) return;
+      applyStylePick(row, matchStyleCatForStandard(cat.dataset.stylecat, next.cat, next.sub));
+    });
+    prev = next;
+    if(onChange) onChange(getSelectedStyleTags(prefix));
+  };
+  // Erst nach den anderen change-Handlern lesen: ein Kategoriewechsel baut
+  // die Unterkategorie-Liste neu auf und setzt sie zurueck.
+  const later = ()=> queueMicrotask(follow);
+  std.catEl.addEventListener("change", later);
+  std.subEl.addEventListener("change", later);
 }
 
 // Gespeicherte Zuordnungen eines Produkts als styleId -> { cat, sub }.
@@ -9725,6 +9957,8 @@ function renderDashboard(){
 
       ${(active || isAllMode) ? `
       ${!isAllMode ? `
+      ${qiEntryCardHtml(active)}
+
       <div class="a-card">
         <div class="a-head">
           <h2 class="a-h2">Produkt hinzufügen <span class="a-target">\u2192 ${aesc(active.name)}</span></h2>
@@ -12520,7 +12754,8 @@ function wireImageDropZone(zoneId, inputId){
 // wireImageDropZone(), da diese Bilddateien voraussetzt (MIME-Check auf
 // "image/") und den Upload-Flow (Supabase Storage) direkt anstoesst. Hier
 // reicht ein simpler Callback mit der abgelegten Datei.
-function wireCsvDropZone(zoneId, inputId, onFile){
+// acceptRe/rejectText: der Schnell-Import nimmt zusaetzlich .xlsx an.
+function wireCsvDropZone(zoneId, inputId, onFile, acceptRe = /\.csv$/i, rejectText = "Nur .csv-Dateien werden unterstützt."){
   const zone  = document.getElementById(zoneId);
   const input = document.getElementById(inputId);
   if(!zone || !input) return;
@@ -12535,8 +12770,8 @@ function wireCsvDropZone(zoneId, inputId, onFile){
     zone.classList.remove("is-dragover");
     const f = e.dataTransfer?.files?.[0];
     if(!f) return;
-    if(!/\.csv$/i.test(f.name) && f.type !== "text/csv"){
-      atoast("Nur .csv-Dateien werden unterstützt.", "err");
+    if(!acceptRe.test(f.name) && !(f.type === "text/csv" && acceptRe.test(".csv"))){
+      atoast(rejectText, "err");
       return;
     }
     onFile(f);
@@ -12792,6 +13027,45 @@ async function compressImageForUpload(file){
   }
 }
 
+// Wie compressImageForUpload, aber nur fuer PRODUKTBILDER: freigestellte
+// Bilder (PNG/WebP mit durchsichtigem Hintergrund) bekommen einen weissen
+// Hintergrund und werden als JPEG gespeichert -- auf der Seite stehen sie
+// sonst auf dem grauen Kachel-Hintergrund. Nur wenn wirklich durchsichtige
+// Pixel drin sind; ein normales Foto bleibt wie es ist. Logos, Avatare,
+// Kategorie- und Style-Bilder laufen bewusst NICHT hierueber, ihre
+// Transparenz soll bleiben.
+const ALPHA_FORMATS = /^image\/(png|webp|gif|avif)$/i;
+async function prepareProductImage(file){
+  if(!ALPHA_FORMATS.test(file.type)) return compressImageForUpload(file);
+  try{
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, IMAGE_MAX_DIMENSION / Math.max(bitmap.width, bitmap.height));
+    const w = Math.max(1, Math.round(bitmap.width * scale));
+    const h = Math.max(1, Math.round(bitmap.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    bitmap.close?.();
+
+    const px = ctx.getImageData(0, 0, w, h).data;
+    let transparent = false;
+    for(let i = 3; i < px.length; i += 4){ if(px[i] < 250){ transparent = true; break; } }
+    if(!transparent) return compressImageForUpload(file);
+
+    // Weiss HINTER das Bild legen (destination-over) -- halbtransparente
+    // Kanten und Schatten werden so sauber auf Weiss verrechnet.
+    ctx.globalCompositeOperation = "destination-over";
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, w, h);
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", IMAGE_JPEG_QUALITY));
+    if(!blob) return compressImageForUpload(file);
+    return new File([blob], (file.name.replace(/\.\w+$/, "") || "bild") + ".jpg", { type: "image/jpeg" });
+  } catch {
+    return compressImageForUpload(file);
+  }
+}
+
 // Hostname des eigenen Supabase-Storage -- alles andere gilt als "fremd".
 const OWN_STORAGE_HOST = new URL(SUPABASE_URL).host;
 
@@ -12823,8 +13097,10 @@ async function rehostForeignImageIfNeeded(url, creatorSlugForPath){
     if(!blob.type.startsWith("image/")) return trimmed; // z.B. eine HTML-Fehlerseite statt eines Bilds
     const nameFromUrl = decodeURIComponent(parsed.pathname.split("/").pop() || "") || "image.jpg";
     const file = new File([blob], nameFromUrl, { type: blob.type });
-    const compressed = await compressImageForUpload(file);
-    const ext = (compressed.name.split(".").pop() || "jpg").toLowerCase();
+    const compressed = await prepareProductImage(file);
+    // Bild-Server wie Weidians liefern oft Namen ohne Endung -- dann aus dem Typ.
+    const nameExt = /\.([a-z0-9]{2,5})$/i.exec(compressed.name)?.[1];
+    const ext = (nameExt || (compressed.type.split("/")[1] || "jpg").replace("jpeg", "jpg")).toLowerCase();
     const path = `${creatorSlugForPath}/${crypto.randomUUID()}.${ext}`;
     const { error } = await sb.storage.from("products").upload(path, compressed, { cacheControl:"31536000" });
     if(error) return trimmed;
@@ -13461,7 +13737,7 @@ function wireDashboard(){
     if(!f) return;
     const status = document.getElementById("p-uploadlabel");
     status.textContent = "Lädt hoch …";
-    const compressed = await compressImageForUpload(f);
+    const compressed = await prepareProductImage(f);
     const ext = (compressed.name.split(".").pop() || "jpg").toLowerCase();
     const active = state.creators.find(c => c.id === state.activeId);
     const path = `${active ? active.slug : "alle-creator"}/${crypto.randomUUID()}.${ext}`;
@@ -13490,6 +13766,9 @@ function wireDashboard(){
   }
   wireCsvDropZone("csvDropZone", "csvFileInput", (file)=> importProductsFromCSV(file));
 
+  // ---- Schnell-Import aus Excel ----
+  wireQiEntryCard();
+
   // ---- Inline-Bearbeitung eines Produkts ----
   const editingProduct = state.products.find(p => p.id === editingProductId);
   let editedImageUrl = editingProduct?.image_url || "";
@@ -13499,7 +13778,7 @@ function wireDashboard(){
     if(!f) return;
     const status = document.getElementById("e-uploadlabel");
     status.textContent = "Lädt hoch …";
-    const compressed = await compressImageForUpload(f);
+    const compressed = await prepareProductImage(f);
     const ext = (compressed.name.split(".").pop() || "jpg").toLowerCase();
     const active = state.creators.find(c => c.id === state.activeId);
     const path = `${active ? active.slug : "alle-creator"}/${crypto.randomUUID()}.${ext}`;
@@ -13963,22 +14242,6 @@ function wireDashboard(){
   };
   if(pSubcatEl) pSubcatEl.onchange = ()=>{ newProductSubcat = pSubcatEl.value; };
 
-  // Bestimmt den sort_order-Wert fuer ein neu angelegtes Produkt anhand der
-  // gewaehlten Position. "top"/"bottom" haengen ganz vorne/hinten an (ausserhalb
-  // der bestehenden Spanne), die Prozent-Optionen setzen den Wert genau zwischen
-  // die beiden Nachbar-Produkte an der jeweiligen Stelle der (aufsteigend
-  // sortierten) Liste -- aufsteigender sort_order = oben auf der Seite.
-  function pickSortOrder(orders, position){
-    const sorted = orders.slice().sort((a,b) => a - b);
-    if(!sorted.length) return 0;
-    if(position === "top") return sorted[0] - 10;
-    if(position === "bottom") return sorted[sorted.length - 1] + 10;
-    const pct = position === "top25" ? 0.25 : position === "bottom25" ? 0.75 : 0.5;
-    const idx = (sorted.length - 1) * pct;
-    const lo = Math.floor(idx), hi = Math.ceil(idx);
-    return lo === hi ? sorted[lo] : Math.round((sorted[lo] + sorted[hi]) / 2);
-  }
-
   const pForm = document.getElementById("productForm");
   if(pForm) pForm.onsubmit = async (e)=>{
     e.preventDefault();
@@ -14000,15 +14263,8 @@ function wireDashboard(){
 
     const position = document.getElementById("p-position").value; // "top" oder "bottom"
 
-    // Klammer-Kurzschreibweise im Titel, z.B. "Ralph Lauren Decke (-30%)":
-    // wird als Rabatt-Badge herausgelöst und aus dem Titel entfernt, fest in
-    // Hellblau (#38bdf8) -- so gewuenscht, statt der roten Standardfarbe des
-    // manuellen Bearbeiten-Dialogs.
-    const titleRaw = document.getElementById("p-title").value.trim();
-    const discountMatch = titleRaw.match(/\(\s*(-\d+%)\s*\)/);
-    const title = discountMatch
-      ? titleRaw.replace(discountMatch[0], "").replace(/\s{2,}/g, " ").trim()
-      : titleRaw;
+    // "(-30%)" im Titel wird zum Rabatt-Badge (siehe splitDiscountFromTitle).
+    const { title, discount_label, discount_color } = splitDiscountFromTitle(document.getElementById("p-title").value);
 
     const baseFields = {
       title,
@@ -14019,8 +14275,8 @@ function wireDashboard(){
       style_tags: getSelectedStyleTags("p-style"),
       image_url: uploadedUrl || null,
       is_trend: document.getElementById("p-trend").checked,
-      discount_label: discountMatch ? discountMatch[1] : null,
-      discount_color: discountMatch ? "#38bdf8" : null
+      discount_label,
+      discount_color
     };
 
     let error;
@@ -14157,8 +14413,10 @@ function wireDashboard(){
   // wireStyleAssign() macht selbst nichts, wenn das Element fehlt). Das
   // Hinzufuegen-Formular merkt sich Haken und Wahl je Style fuer den
   // naechsten Render.
-  wireStyleAssign("p-style", chosen => { newProductStyles = chosen; newProductStyleCats = readStyleCatPickers("p"); });
-  wireStyleAssign("e-style");
+  wireStyleAssign("p-style", chosen => { newProductStyles = chosen; newProductStyleCats = readStyleCatPickers("p"); },
+    { catEl: document.getElementById("p-cat"), subEl: document.getElementById("p-subcat") });
+  wireStyleAssign("e-style", undefined,
+    { catEl: document.getElementById("e-cat"), subEl: document.getElementById("e-subcat") });
   wireYuanHint("p-price", "p-price-eur");
   wireYuanHint("e-price", "e-price-eur");
   // Foto-Suche-Karte: Stand zeigen; nur neu abfragen, wenn er noch fehlt oder
@@ -14278,6 +14536,1135 @@ function wireDashboard(){
     await refreshActiveProducts();
     render();
   };
+}
+
+// ============================================================================
+//  Schnell-Import aus Excel ("Produkt hinzufügen"-Modus)
+// ============================================================================
+//  Ablauf: Excel (.xlsx) oder CSV mit Bild-Link, Preis in Yuan und Weidian-
+//  Link hochladen -> doppelte Links fliegen raus (im Sheet selbst UND alles,
+//  was der Creator schon hat) -> eine Vollbild-Ebene zeigt ein Produkt nach
+//  dem anderen. Name eintippen, Kategorie/Styles/Position stehen vom letzten
+//  Produkt noch drin, Enter laedt hoch und das naechste Produkt steht sofort
+//  da. Gespeichert wird im Hintergrund, nacheinander in einer Kette -- so
+//  bleibt die Reihenfolge stabil und "Rückgängig" weiss immer, welche Zeile
+//  es loeschen muss.
+//
+//  Der offene Rest wird pro Creator im Browser gemerkt (localStorage): Tab zu,
+//  Akku leer, morgen weitermachen -- beim Fortsetzen wird erneut gegen die
+//  Datenbank abgeglichen, damit nichts doppelt hochgeladen wird.
+//
+//  Excel wird ohne externe Bibliothek gelesen (kein Build-Schritt, siehe
+//  parseCsv): eine .xlsx ist ein ZIP mit XML-Dateien, entpackt wird mit dem
+//  im Browser eingebauten DecompressionStream.
+
+const QI_STORE_PREFIX = "sf_quick_import_v1:";
+const QI_MAX_ROWS = 5000;      // Schutz gegen versehentlich riesige Dateien
+const QI_MAX_COLS = 60;
+const QI_DEFAULT_POSITION = "top25";
+const QI_TOAST_MS = 6500;
+const QI_POSITIONS = [
+  ["top25", "In obere 25%"],
+  ["top", "Ganz oben"],
+  ["middle50", "In mittlere 50%"],
+  ["bottom25", "In untere 25%"],
+  ["bottom", "Ganz unten"]
+];
+
+let qi = null;               // laufende Sitzung (siehe qiOpenSession), sonst null
+let qiUid = 0;
+
+// ---------- Excel lesen ----------
+
+// Liest das Inhaltsverzeichnis einer ZIP-Datei und gibt eine Funktion zurueck,
+// die einzelne Dateien daraus als Text entpackt.
+function qiZipReader(buf){
+  const bytes = new Uint8Array(buf);
+  const dv = new DataView(buf);
+  if(bytes.length >= 4 && dv.getUint32(0, false) === 0xD0CF11E0){
+    throw new Error("Das ist eine alte Excel-Datei (.xls) oder sie ist passwortgeschützt. Bitte in Excel als .xlsx speichern.");
+  }
+  let eocd = -1;
+  for(let i = bytes.length - 22; i >= Math.max(0, bytes.length - 65557); i--){
+    if(dv.getUint32(i, true) === 0x06054b50){ eocd = i; break; }
+  }
+  if(eocd < 0) throw new Error("Die Datei ist keine gültige Excel-Datei (.xlsx).");
+  const count = dv.getUint16(eocd + 10, true);
+  let p = dv.getUint32(eocd + 16, true);
+  if(count === 0xFFFF || p === 0xFFFFFFFF) throw new Error("Die Excel-Datei ist zu groß.");
+  const dec = new TextDecoder();
+  const entries = new Map();
+  for(let n = 0; n < count; n++){
+    if(p + 46 > bytes.length || dv.getUint32(p, true) !== 0x02014b50) throw new Error("Die Excel-Datei ist beschädigt.");
+    const nameLen = dv.getUint16(p + 28, true);
+    const name = dec.decode(bytes.subarray(p + 46, p + 46 + nameLen)).replace(/^\/+/, "");
+    entries.set(name.toLowerCase(), {
+      method: dv.getUint16(p + 10, true),
+      size: dv.getUint32(p + 20, true),
+      local: dv.getUint32(p + 42, true)
+    });
+    p += 46 + nameLen + dv.getUint16(p + 30, true) + dv.getUint16(p + 32, true);
+  }
+  return async function read(name){
+    const e = entries.get(String(name).replace(/^\/+/, "").toLowerCase());
+    if(!e) return null;
+    if(e.local + 30 > bytes.length || dv.getUint32(e.local, true) !== 0x04034b50) throw new Error("Die Excel-Datei ist beschädigt.");
+    const start = e.local + 30 + dv.getUint16(e.local + 26, true) + dv.getUint16(e.local + 28, true);
+    const data = bytes.subarray(start, start + e.size);
+    if(e.method === 0) return dec.decode(data);
+    if(e.method !== 8) throw new Error("Die Excel-Datei ist in einem unbekannten Format gepackt.");
+    if(typeof DecompressionStream === "undefined"){
+      throw new Error("Dieser Browser kann Excel-Dateien nicht öffnen. Bitte Chrome, Safari oder Firefox aktualisieren – oder die Datei als CSV speichern.");
+    }
+    const stream = new Blob([data]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+    return await new Response(stream).text();
+  };
+}
+
+function qiParseXml(text){
+  const doc = new DOMParser().parseFromString(text, "application/xml");
+  if(doc.getElementsByTagName("parsererror").length) throw new Error("Die Excel-Datei ist beschädigt.");
+  return doc;
+}
+// Elemente nach lokalem Namen -- Excel schreibt ohne Praefix, manche andere
+// Programme mit ("x:row"); so passt beides.
+const qiEls = (node, name) => Array.from(node.getElementsByTagNameNS("*", name));
+const qiKids = (node, name) => Array.from(node.childNodes).filter(n => n.nodeType === 1 && n.localName === name);
+// "r:id" -- das Praefix ist nicht fest, gemeint ist immer das id-Attribut
+// aus dem Beziehungs-Namensraum.
+function qiRelId(el){
+  for(const a of Array.from(el.attributes)) if(a.localName === "id" && a.prefix) return a.value;
+  return null;
+}
+// Liest eine .rels-Datei: Id -> { target, external }.
+async function qiReadRels(read, path){
+  const text = await read(path);
+  const out = new Map();
+  if(!text) return out;
+  for(const r of qiEls(qiParseXml(text), "Relationship")){
+    out.set(r.getAttribute("Id"), {
+      target: r.getAttribute("Target") || "",
+      type: r.getAttribute("Type") || "",
+      external: (r.getAttribute("TargetMode") || "").toLowerCase() === "external"
+    });
+  }
+  return out;
+}
+// Loest einen relativen Pfad aus einer .rels-Datei gegen deren Ordner auf.
+function qiResolvePath(baseDir, target){
+  if(target.startsWith("/")) return target.slice(1);
+  const parts = (baseDir ? baseDir.split("/") : []).concat(target.split("/"));
+  const out = [];
+  for(const part of parts){
+    if(!part || part === ".") continue;
+    if(part === "..") out.pop(); else out.push(part);
+  }
+  return out.join("/");
+}
+const qiDirOf = path => path.includes("/") ? path.slice(0, path.lastIndexOf("/")) : "";
+// Text einer Zelle/eines Shared Strings: alle <t> aneinander, ausser der
+// japanischen Lautschrift (<rPh>), die Excel daneben ablegen kann.
+function qiRichText(node){
+  return qiEls(node, "t").filter(t => t.parentNode?.localName !== "rPh").map(t => t.textContent).join("");
+}
+// "AB12" -> Spalte 27 (0-basiert), Zeile 11.
+function qiCellPos(ref){
+  const m = /^\$?([A-Z]{1,3})\$?(\d+)$/i.exec(String(ref || "").trim());
+  if(!m) return null;
+  let col = 0;
+  for(const ch of m[1].toUpperCase()) col = col * 26 + (ch.charCodeAt(0) - 64);
+  return { col: col - 1, row: Number(m[2]) - 1 };
+}
+const qiColName = i => { let s = ""; i++; while(i > 0){ const r = (i - 1) % 26; s = String.fromCharCode(65 + r) + s; i = Math.floor((i - 1) / 26); } return s; };
+
+// Liest das erste sichtbare Tabellenblatt einer .xlsx-Datei. Ergebnis: Zeilen
+// mit Zellen { text, num, link, formula } -- link ist das Ziel eines Excel-
+// Hyperlinks (Zelle zeigt z.B. nur "Link"), formula der Formeltext (z.B.
+// =HYPERLINK("https://…";"Link") oder =IMAGE("https://…")).
+async function qiReadXlsx(file){
+  const read = qiZipReader(await file.arrayBuffer());
+
+  const rootRels = await qiReadRels(read, "_rels/.rels");
+  const officeDoc = Array.from(rootRels.values()).find(r => /\/officeDocument$/.test(r.type));
+  const wbPath = officeDoc ? qiResolvePath("", officeDoc.target) : "xl/workbook.xml";
+  const wbText = await read(wbPath);
+  if(!wbText) throw new Error("Die Datei ist keine gültige Excel-Datei (.xlsx).");
+  const wbDir = qiDirOf(wbPath);
+  const wbRels = await qiReadRels(read, qiResolvePath(wbDir, "_rels/" + wbPath.split("/").pop() + ".rels"));
+
+  const sheets = qiEls(qiParseXml(wbText), "sheet");
+  const sheetEl = sheets.find(s => !/hidden/i.test(s.getAttribute("state") || "")) || sheets[0];
+  if(!sheetEl) throw new Error("Die Excel-Datei enthält kein Tabellenblatt.");
+  const sheetRel = wbRels.get(qiRelId(sheetEl));
+  const sheetPath = sheetRel ? qiResolvePath(wbDir, sheetRel.target) : "xl/worksheets/sheet1.xml";
+  const sheetText = await read(sheetPath);
+  if(!sheetText) throw new Error("Das Tabellenblatt konnte nicht gelesen werden.");
+
+  const sharedRel = Array.from(wbRels.values()).find(r => /\/sharedStrings$/.test(r.type));
+  const sharedText = await read(sharedRel ? qiResolvePath(wbDir, sharedRel.target) : "xl/sharedStrings.xml");
+  const shared = sharedText ? qiEls(qiParseXml(sharedText), "si").map(qiRichText) : [];
+
+  const sheetDoc = qiParseXml(sheetText);
+  const rows = [];
+  let nextRow = 0;
+  for(const rowEl of qiEls(sheetDoc, "row")){
+    const rAttr = Number(rowEl.getAttribute("r"));
+    const r = Number.isInteger(rAttr) && rAttr > 0 ? rAttr - 1 : nextRow;
+    nextRow = r + 1;
+    if(r >= QI_MAX_ROWS) break;
+    const cells = [];
+    let nextCol = 0;
+    for(const c of qiKids(rowEl, "c")){
+      const pos = qiCellPos(c.getAttribute("r"));
+      const col = pos ? pos.col : nextCol;
+      nextCol = col + 1;
+      if(col >= QI_MAX_COLS) continue;
+      const t = c.getAttribute("t") || "n";
+      const v = qiKids(c, "v")[0]?.textContent ?? "";
+      const f = qiKids(c, "f")[0]?.textContent ?? "";
+      let text = "", num = null;
+      if(t === "s") text = shared[Number(v)] ?? "";
+      else if(t === "inlineStr") text = qiKids(c, "is")[0] ? qiRichText(qiKids(c, "is")[0]) : "";
+      else if(t === "str" || t === "d") text = v;
+      else if(t === "n"){ text = v; if(v !== "" && Number.isFinite(Number(v))) num = Number(v); }
+      // "b" (Wahrheitswert) und "e" (Fehler wie #NV) sind fuer den Import wertlos.
+      cells[col] = { text: text.trim(), num, link: "", formula: f };
+    }
+    rows[r] = cells;
+  }
+
+  // Hyperlinks haengen nicht an der Zelle, sondern stehen gesammelt am Ende
+  // des Blatts; das Ziel steht in der .rels-Datei des Blatts.
+  const hyperlinks = qiEls(sheetDoc, "hyperlink");
+  if(hyperlinks.length){
+    const sheetRels = await qiReadRels(read, qiResolvePath(qiDirOf(sheetPath), "_rels/" + sheetPath.split("/").pop() + ".rels"));
+    for(const h of hyperlinks){
+      const rel = sheetRels.get(qiRelId(h));
+      if(!rel || !rel.external || !rel.target) continue;
+      const [a, b] = String(h.getAttribute("ref") || "").split(":");
+      const from = qiCellPos(a), to = qiCellPos(b || a);
+      if(!from || !to) continue;
+      for(let r = from.row; r <= Math.min(to.row, QI_MAX_ROWS - 1); r++){
+        for(let col = from.col; col <= Math.min(to.col, QI_MAX_COLS - 1); col++){
+          rows[r] = rows[r] || [];
+          rows[r][col] = rows[r][col] || { text: "", num: null, link: "", formula: "" };
+          rows[r][col].link = rel.target;
+        }
+      }
+    }
+  }
+  return rows;
+}
+
+function qiRowsFromCsv(text){
+  return parseCsv(text).slice(0, QI_MAX_ROWS).map(r => r.slice(0, QI_MAX_COLS).map(v => {
+    const s = String(v ?? "").trim();
+    return { text: s, num: null, link: "", formula: "" };
+  }));
+}
+
+// ---------- Spalten erkennen ----------
+
+// Macht aus einem Zelltext eine saubere http(s)-Adresse oder "".
+function qiNormalizeUrl(raw){
+  let s = String(raw ?? "").trim().replace(/^["'<\s]+|["'>\s]+$/g, "");
+  if(!s) return "";
+  if(s.startsWith("//")) s = "https:" + s;
+  if(!/^https?:\/\//i.test(s)){
+    // Ohne "https://" kopiert, z.B. "weidian.com/item.html?itemID=…"
+    if(/^([a-z0-9-]+\.)*(weidian|vdian|geilicdn|youshop\d*|koudai)\.com(\/|$)/i.test(s)) s = "https://" + s;
+    else return "";
+  }
+  try {
+    const u = new URL(s);
+    return (u.protocol === "http:" || u.protocol === "https:") && u.hostname.includes(".") ? u.href : "";
+  } catch { return ""; }
+}
+// Erste Adresse in einem Text ("Link: https://…", Formel, nackte Adresse).
+function qiFindUrl(raw){
+  const s = String(raw ?? "");
+  const whole = qiNormalizeUrl(s);
+  if(whole) return whole;
+  const m = s.match(/https?:\/\/[^\s"'<>]+/i) || s.match(/(?:[a-z0-9-]+\.)*(?:weidian|vdian|geilicdn)\.com\/[^\s"'<>]*/i);
+  return m ? qiNormalizeUrl(m[0].replace(/[),;]+$/, "")) : "";
+}
+function qiCellUrl(cell){
+  if(!cell) return "";
+  return qiNormalizeUrl(cell.link) || qiFindUrl(cell.text) || qiFindUrl(cell.formula);
+}
+function qiHost(u){ try { return new URL(u).hostname.toLowerCase(); } catch { return ""; } }
+function qiIsWeidianUrl(u){ return /(^|\.)(weidian\.com|vdian\.com|koudai\.com|youshop\d*\.com)$/.test(qiHost(u)); }
+function qiIsImageUrl(u){
+  try {
+    const x = new URL(u);
+    return /\.(jpe?g|png|webp|gif|avif|bmp|heic)$/i.test(x.pathname)
+        || /(^|\.)geilicdn\.com$/i.test(x.hostname)
+        || x.pathname.includes("/storage/v1/object/");
+  } catch { return false; }
+}
+// Preis aus einer Zelle: echte Zahl oder Text wie "¥129", "129元", "1.299,00".
+const QI_PRICE_TEXT_RE = /^(¥|￥|rmb|cny|yuan|元|约|ca\.?|\$|€|eur)?\s*\d[\d.,\s']*\s*(¥|￥|rmb|cny|yuan|元|块)?$/i;
+function qiCellPrice(cell){
+  if(!cell) return null;
+  if(cell.num !== null && Number.isFinite(cell.num)) return cell.num >= 0 ? Math.round(cell.num * 100) / 100 : null;
+  const s = cell.text;
+  if(!s || qiFindUrl(s)) return null;
+  if(!QI_PRICE_TEXT_RE.test(s)) return null;
+  const n = parsePriceInput(s.replace(/[\s']/g, ""));
+  return Number.isFinite(n) && n >= 0 ? Math.round(n * 100) / 100 : null;
+}
+
+const QI_HEADER_WORDS = [
+  ["link",  /(link|url|weidian|微店|链接|地址)/i],
+  ["image", /(bild|image|img|foto|photo|picture|pic|图)/i],
+  ["price", /(preis|price|yuan|cny|rmb|¥|￥|价)/i],
+  ["name",  /(name|titel|title|produkt|product|bezeichnung|artikel|名|标题)/i]
+];
+
+// Findet heraus, welche Spalte Link, Bild, Preis und (optional) Name ist.
+// Zuerst nach Inhalt (Weidian-Adressen, Bild-Adressen, Zahlen), die
+// Ueberschrift entscheidet nur mit, wenn ihr Inhalt dazu passt -- so klappt
+// es auch ohne Kopfzeile oder mit chinesischen Ueberschriften.
+function qiDetectColumns(rows){
+  // Original-Zeilennummer mitnehmen (leere Zeilen fallen gleich raus), damit
+  // der Modus "Zeile 14" wie in Excel anzeigen kann.
+  const filled = [];
+  rows.forEach((r, i) => { if(r && r.some(c => c && (c.text || c.link || c.formula))) filled.push(Object.assign(r, { sheetRow: i + 1 })); });
+  if(!filled.length) return { error: "Die Datei ist leer." };
+  const first = filled[0];
+  const width = Math.min(QI_MAX_COLS, Math.max(...filled.map(r => r.length)));
+
+  const headerField = [];
+  let hasHeader = false;
+  for(let c = 0; c < width; c++){
+    const cell = first[c];
+    if(!cell || !cell.text || qiCellUrl(cell) || qiCellPrice(cell) !== null) continue;
+    const hit = QI_HEADER_WORDS.find(([, re]) => re.test(cell.text));
+    if(hit){ headerField[c] = hit[0]; hasHeader = true; }
+  }
+  const data = hasHeader ? filled.slice(1) : filled;
+  if(!data.length) return { error: "Unter der Überschrift stehen keine Produkte." };
+
+  const stat = [];
+  for(let c = 0; c < width; c++){
+    const s = { weidian: 0, image: 0, url: 0, price: 0, text: 0, filled: 0 };
+    for(const r of data){
+      const cell = r[c];
+      if(!cell || !(cell.text || cell.link || cell.formula)) continue;
+      s.filled++;
+      const u = qiCellUrl(cell);
+      if(u){
+        s.url++;
+        if(qiIsImageUrl(u)) s.image++;
+        else if(qiIsWeidianUrl(u)) s.weidian++;
+      } else if(qiCellPrice(cell) !== null) s.price++;
+      else if(cell.text) s.text++;
+    }
+    stat[c] = s;
+  }
+  const cols = [...Array(width).keys()];
+  const used = new Set();
+  const pick = (score, minScore = 1) => {
+    let best = -1, bestScore = 0;
+    for(const c of cols){
+      if(used.has(c)) continue;
+      const v = score(c);
+      if(v >= minScore && v > bestScore){ best = c; bestScore = v; }
+    }
+    if(best >= 0) used.add(best);
+    return best;
+  };
+  // Ueberschrift gibt einen kleinen Bonus, Inhalt bleibt entscheidend.
+  const bonus = (c, field) => headerField[c] === field ? 0.5 : 0;
+
+  // Bild-Spalte zuerst: steht "Bild" drueber, zaehlt jede Adresse darin, auch
+  // ohne Dateiendung (manche Bildserver haben keine).
+  const imageCol = pick(c => {
+    const n = headerField[c] === "image" ? stat[c].url : stat[c].image;
+    return n ? n + bonus(c, "image") : 0;
+  });
+  let linkCol = pick(c => stat[c].weidian ? stat[c].weidian + bonus(c, "link") : 0);
+  if(linkCol < 0) linkCol = pick(c => {
+    const n = stat[c].url - stat[c].image;
+    return n > 0 ? n + bonus(c, "link") : 0;
+  });
+  const priceCol = pick(c => stat[c].price && stat[c].price >= stat[c].filled * 0.5 ? stat[c].price + bonus(c, "price") * 2 : 0);
+  let nameCol = cols.find(c => !used.has(c) && headerField[c] === "name" && stat[c].text > 0) ?? -1;
+  if(nameCol < 0) nameCol = pick(c => stat[c].text >= data.length * 0.5 && !stat[c].url ? stat[c].text : 0);
+
+  if(linkCol < 0 && imageCol < 0){
+    return { error: "In der Datei wurde keine Spalte mit Weidian-Links oder Bild-Links gefunden." };
+  }
+  return { hasHeader, data, linkCol, imageCol, priceCol, nameCol };
+}
+
+// Schluessel fuer "doppelt": bei Weidian zaehlt die Artikel-ID (derselbe
+// Artikel kommt oft mit unterschiedlichen Zusatz-Parametern daher), sonst die
+// Adresse ohne #Anker und ohne abschliessenden Schraegstrich.
+function qiLinkKey(url){
+  if(!url) return "";
+  if(qiIsWeidianUrl(url)){
+    const id = extractWeidianItemId(url);
+    if(id) return "wd:" + id;
+  }
+  try {
+    const u = new URL(url);
+    return "u:" + u.hostname.toLowerCase().replace(/^www\./, "") + u.pathname.replace(/\/+$/, "") + u.search;
+  } catch { return "u:" + url; }
+}
+
+// Alle Produkte des Creators (fuer den Doppel-Check und die Position) --
+// seitenweise, weil die Datenbank sonst nach 1000 Zeilen still abschneidet.
+async function qiLoadCreatorProducts(creatorId){
+  const out = [];
+  for(let from = 0; ; from += PRODUCTS_LOAD_CHUNK){
+    const { data, error } = await sb.from("products")
+      .select("id,product_url,sort_order")
+      .eq("creator_id", creatorId)
+      .order("id")
+      .range(from, from + PRODUCTS_LOAD_CHUNK - 1);
+    if(error) throw error;
+    out.push(...(data || []));
+    if(!data || data.length < PRODUCTS_LOAD_CHUNK) break;
+  }
+  return out;
+}
+
+function qiBuildQueue(det, existingKeys){
+  const seen = new Set();
+  const items = [];
+  let dupSheet = 0, dupShop = 0, empty = 0, noPrice = 0;
+  for(const row of det.data){
+    const cell = c => (c >= 0 ? row[c] : null);
+    const url = qiCellUrl(cell(det.linkCol));
+    const image = qiCellUrl(cell(det.imageCol));
+    if(!url && !image){
+      if(row.some(c => c && (c.text || c.link))) empty++;
+      continue;
+    }
+    const key = qiLinkKey(url);
+    if(key){
+      if(existingKeys.has(key)){ dupShop++; continue; }
+      if(seen.has(key)){ dupSheet++; continue; }
+      seen.add(key);
+    }
+    const price = qiCellPrice(cell(det.priceCol));
+    if(price === null || price === 0) noPrice++;
+    const nameCell = cell(det.nameCol);
+    items.push({
+      uid: ++qiUid,
+      row: row.sheetRow || 0,
+      url,
+      image,
+      price: price === null ? null : price,
+      name: nameCell && !qiCellUrl(nameCell) ? nameCell.text.slice(0, 200) : "",
+      draft: null
+    });
+  }
+  return { items, dupSheet, dupShop, empty, noPrice };
+}
+
+// ---------- Fortschritt im Browser merken ----------
+
+const qiStoreKey = creatorId => QI_STORE_PREFIX + creatorId;
+const qiPlainItem = it => ({ uid: it.uid, row: it.row, url: it.url, image: it.image, price: it.price, name: it.name, draft: it.draft || null, hosted: it.hosted || null });
+
+function qiLoadSaved(creatorId){
+  try {
+    const raw = localStorage.getItem(qiStoreKey(creatorId));
+    if(!raw) return null;
+    const data = JSON.parse(raw);
+    if(!data || data.v !== 1 || !Array.isArray(data.queue)) return null;
+    const open = data.queue.length + (data.inflight || []).length;
+    return open ? data : null;
+  } catch { return null; }
+}
+function qiClearSaved(creatorId){
+  try { localStorage.removeItem(qiStoreKey(creatorId)); } catch {}
+}
+function qiPersist(){
+  if(!qi) return;
+  // Was gerade im Hintergrund gespeichert wird, kommt mit -- schliesst jemand
+  // den Tab mittendrin, gleicht das Fortsetzen es mit der Datenbank ab.
+  const inflight = qi.records.filter(r => r.state === "saving" && !r.undone).map(r => ({ ...qiPlainItem(r.item), draft: r.draft }));
+  if(!qi.queue.length && !inflight.length){ qiClearSaved(qi.creatorId); return; }
+  try {
+    localStorage.setItem(qiStoreKey(qi.creatorId), JSON.stringify({
+      v: 1, savedAt: Date.now(), fileName: qi.fileName,
+      uploaded: qi.uploaded, removed: qi.removed, sticky: qi.sticky,
+      queue: qi.queue.map(qiPlainItem), inflight
+    }));
+  } catch { /* Speicher voll oder gesperrt -- der Import laeuft trotzdem */ }
+}
+
+// ---------- Karte im Dashboard ----------
+
+function qiEntryCardHtml(active){
+  const saved = qiLoadSaved(active.id);
+  const open = saved ? saved.queue.length + (saved.inflight || []).length : 0;
+  return `
+      <div class="a-card" id="qiEntryCard">
+        <div class="a-head">
+          <h2 class="a-h2">Schnell-Import aus Excel <span class="a-target">→ ${aesc(active.name)}</span></h2>
+          <p class="a-sub">Excel mit Bild-Link, Preis in ¥ und Weidian-Link hochladen. Danach Produkt für Produkt benennen, einsortieren und mit Enter hochladen.</p>
+        </div>
+        ${open ? `
+        <div class="qi-resume">
+          <span><b>${open}</b> Produkt${open === 1 ? "" : "e"} aus deinem letzten Import ${open === 1 ? "ist" : "sind"} noch offen.</span>
+          <button type="button" class="a-btn a-btn-primary" id="qiResumeBtn">Weitermachen</button>
+          <button type="button" class="a-btn a-btn-ghost" id="qiDiscardBtn">Verwerfen</button>
+        </div>` : ""}
+        <label class="a-upload a-csv-dropzone" id="qiDropZone">
+          ${UPLOAD_SVG}
+          <span>Excel-Datei wählen</span>
+          <span class="a-upload-hint">oder hierher ziehen — .xlsx oder .csv. Spalten werden automatisch erkannt (Bild, Preis, Link, optional Name). Doppelte Links fliegen raus.</span>
+          <input id="qiFileInput" type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv">
+        </label>
+        <p class="a-hint qi-entry-status" id="qiEntryStatus" aria-live="polite"></p>
+      </div>`;
+}
+
+function qiSetEntryStatus(text, isErr = false){
+  const el = document.getElementById("qiEntryStatus");
+  if(!el) return;
+  el.textContent = text;
+  el.classList.toggle("is-err", isErr);
+}
+
+function wireQiEntryCard(){
+  if(!document.getElementById("qiEntryCard")) return;
+  wireCsvDropZone("qiDropZone", "qiFileInput", file => qiStartFromFile(file), /./);
+  document.getElementById("qiResumeBtn")?.addEventListener("click", ()=> qiResume());
+  document.getElementById("qiDiscardBtn")?.addEventListener("click", ()=>{
+    const saved = qiLoadSaved(state.activeId);
+    const open = saved ? saved.queue.length + (saved.inflight || []).length : 0;
+    if(!confirm(`Die ${open} offenen Produkte aus dem letzten Import verwerfen?\n\nSchon hochgeladene Produkte bleiben.`)) return;
+    qiClearSaved(state.activeId);
+    render();
+  });
+}
+
+let qiEntryBusy = false;
+async function qiStartFromFile(file){
+  if(qiEntryBusy || qi) return;
+  const creatorId = state.activeId;
+  if(!creatorId || creatorId === ALL_CREATOR_ID) return;
+  if(!/\.(xlsx|csv)$/i.test(file.name)){
+    return qiSetEntryStatus(/\.xls$/i.test(file.name)
+      ? "Alte Excel-Datei (.xls): bitte in Excel als .xlsx speichern."
+      : "Bitte eine Excel-Datei (.xlsx) oder CSV wählen.", true);
+  }
+  const saved = qiLoadSaved(creatorId);
+  if(saved){
+    const open = saved.queue.length + (saved.inflight || []).length;
+    if(!confirm(`Aus dem letzten Import sind noch ${open} Produkte offen.\n\nOK = neue Datei nehmen (die offenen werden verworfen)\nAbbrechen = nichts ändern`)) return;
+  }
+  qiEntryBusy = true;
+  qiSetEntryStatus("Datei wird gelesen …");
+  try {
+    const rows = /\.csv$/i.test(file.name) ? qiRowsFromCsv(await file.text()) : await qiReadXlsx(file);
+    const det = qiDetectColumns(rows);
+    if(det.error) return qiSetEntryStatus(det.error, true);
+    qiSetEntryStatus("Abgleich mit den Produkten im Shop …");
+    const existing = await qiLoadCreatorProducts(creatorId);
+    if(state.activeId !== creatorId) return qiSetEntryStatus("");   // Creator wurde inzwischen gewechselt
+    const existingKeys = new Set(existing.map(p => qiLinkKey(p.product_url)).filter(Boolean));
+    const built = qiBuildQueue(det, existingKeys);
+    qiSetEntryStatus("");
+    qiClearSaved(creatorId);
+    qiOpenSession({
+      creatorId, fileName: file.name, queue: built.items, existing,
+      uploaded: 0, removed: 0, sticky: null,
+      summary: {
+        rows: det.data.length, ready: built.items.length, dupSheet: built.dupSheet,
+        dupShop: built.dupShop, empty: built.empty, noPrice: built.noPrice,
+        cols: { link: det.linkCol, image: det.imageCol, price: det.priceCol, name: det.nameCol }
+      }
+    });
+  } catch(e){
+    console.error("Schnell-Import: Datei konnte nicht gelesen werden:", e);
+    qiSetEntryStatus(e?.message || "Die Datei konnte nicht gelesen werden.", true);
+  } finally {
+    qiEntryBusy = false;
+  }
+}
+
+async function qiResume(){
+  if(qiEntryBusy || qi) return;
+  const creatorId = state.activeId;
+  const saved = qiLoadSaved(creatorId);
+  if(!saved) return render();
+  qiEntryBusy = true;
+  qiSetEntryStatus("Abgleich mit den Produkten im Shop …");
+  try {
+    const existing = await qiLoadCreatorProducts(creatorId);
+    if(state.activeId !== creatorId) return qiSetEntryStatus("");
+    const existingKeys = new Set(existing.map(p => qiLinkKey(p.product_url)).filter(Boolean));
+    let uploaded = Number(saved.uploaded) || 0;
+    const queue = [];
+    const seen = new Set();
+    const take = (raw, wasInflight) => {
+      const it = { ...qiPlainItem(raw), uid: ++qiUid };
+      const key = qiLinkKey(it.url);
+      if(key && existingKeys.has(key)) return;           // ist inzwischen im Shop
+      if(key && seen.has(key)) return;
+      if(key) seen.add(key);
+      // Lief beim Schliessen noch und ist NICHT angekommen: wieder offen.
+      if(wasInflight) uploaded = Math.max(0, uploaded - 1);
+      queue.push(it);
+    };
+    (saved.inflight || []).forEach(r => take(r, true));
+    saved.queue.forEach(r => take(r, false));
+    qiSetEntryStatus("");
+    qiOpenSession({
+      creatorId, fileName: saved.fileName || "", queue, existing,
+      uploaded, removed: Number(saved.removed) || 0, sticky: saved.sticky || null,
+      summary: null
+    });
+  } catch(e){
+    console.error("Schnell-Import: Fortsetzen fehlgeschlagen:", e);
+    qiSetEntryStatus(e?.message || "Fortsetzen hat nicht geklappt.", true);
+  } finally {
+    qiEntryBusy = false;
+  }
+}
+
+// ---------- Sitzung ----------
+
+function qiOpenSession(opts){
+  const creator = state.creators.find(c => c.id === opts.creatorId);
+  qi = {
+    creatorId: opts.creatorId,
+    creatorSlug: creator?.slug || "alle-creator",
+    creatorName: creator?.name || "",
+    fileName: opts.fileName,
+    queue: opts.queue,
+    uploaded: opts.uploaded,
+    removed: opts.removed,
+    total: 0,
+    orders: opts.existing.map(p => p.sort_order ?? 0),
+    sticky: qiValidSticky(opts.sticky),
+    records: [],
+    chain: Promise.resolve(),
+    hostCache: new Map(),
+    toastRec: null,
+    toastTimer: null,
+    view: opts.summary ? "summary" : "card",
+    summary: opts.summary,
+    closing: false,
+    root: null
+  };
+  qi.total = qi.uploaded + qi.removed + qi.queue.length;
+
+  const root = document.createElement("div");
+  root.className = "qi";
+  root.id = "qiRoot";
+  root.setAttribute("role", "dialog");
+  root.setAttribute("aria-modal", "true");
+  root.setAttribute("aria-label", "Produkt hinzufügen-Modus");
+  root.innerHTML = `
+    <div class="qi-top">
+      <div class="qi-top-in">
+        <div class="qi-title">Produkt hinzufügen-Modus <span>→ ${aesc(qi.creatorName)}</span></div>
+        <div class="qi-count" id="qiCount"></div>
+        <button type="button" class="a-btn a-btn-ghost qi-close" id="qiCloseBtn">Beenden</button>
+      </div>
+      <div class="qi-bar"><div class="qi-bar-fill" id="qiBarFill"></div></div>
+    </div>
+    <div class="qi-toast" id="qiToast" role="status" aria-live="polite"></div>
+    <div class="qi-stage" id="qiStage"></div>`;
+  document.body.appendChild(root);
+  qi.root = root;
+  root.querySelector("#qiCloseBtn").addEventListener("click", ()=> qiClose());
+  root.addEventListener("keydown", qiOnKeydown);
+  qiPersist();
+  qiShow();
+}
+
+// Gemerkte Auswahl (Kategorie, Styles, Position) gegen den aktuellen Stand
+// pruefen -- ein inzwischen geloeschter Style soll nicht wieder auftauchen.
+function qiValidSticky(s){
+  const cats = state.categories;
+  const effectiveCat = (newProductCategory && cats.some(c => c.key === newProductCategory)) ? newProductCategory : cats[0]?.key || "all";
+  const out = {
+    category: s?.category && cats.some(c => c.key === s.category) ? s.category : effectiveCat,
+    subcategory: "",
+    styles: [],
+    styleCats: {},
+    position: QI_POSITIONS.some(([k]) => k === s?.position) ? s.position : QI_DEFAULT_POSITION
+  };
+  if(s?.subcategory && state.subcategories.some(u => u.category_key === out.category && u.key === s.subcategory)) out.subcategory = s.subcategory;
+  const known = new Set(state.styles.map(st => st.label));
+  out.styles = (s?.styles || []).filter(t => known.has(t));
+  for(const [styleId, w] of Object.entries(s?.styleCats || {})){
+    if(!w?.cat || !styleCatsOfStyle(styleId).some(c => c.key === w.cat)) continue;
+    out.styleCats[styleId] = { cat: w.cat, sub: styleSubsOfStyle(styleId, w.cat).some(u => u.key === w.sub) ? w.sub : NO_PICK };
+  }
+  return out;
+}
+
+function qiDone(){ return qi.uploaded + qi.removed; }
+
+function qiUpdateProgress(){
+  if(!qi) return;
+  const done = qiDone();
+  const count = qi.root.querySelector("#qiCount");
+  const fill = qi.root.querySelector("#qiBarFill");
+  const current = Math.min(done + 1, qi.total);
+  count.innerHTML = qi.queue.length && qi.view === "card"
+    ? `${current} <small>/ ${qi.total}</small>`
+    : `${qi.uploaded} <small>hochgeladen</small>`;
+  fill.style.width = qi.total ? (done / qi.total * 100).toFixed(2) + "%" : "0";
+}
+
+function qiShow(animate = false){
+  if(!qi) return;
+  if(qi.view === "summary") qiRenderSummary();
+  else if(qi.queue.length) qiRenderCard(animate);
+  else qiRenderFinish();
+  qiUpdateProgress();
+}
+
+function qiRenderSummary(){
+  const s = qi.summary;
+  const colText = [
+    s.cols.image >= 0 ? `Bild = Spalte ${qiColName(s.cols.image)}` : "kein Bild",
+    s.cols.price >= 0 ? `Preis = Spalte ${qiColName(s.cols.price)}` : "kein Preis",
+    s.cols.link >= 0 ? `Link = Spalte ${qiColName(s.cols.link)}` : "kein Link",
+    s.cols.name >= 0 ? `Name = Spalte ${qiColName(s.cols.name)}` : null
+  ].filter(Boolean).join(" · ");
+  const facts = [
+    `<li><b>${s.rows}</b> Zeile${s.rows === 1 ? "" : "n"} gelesen</li>`,
+    s.dupSheet ? `<li><b>${s.dupSheet}</b> doppelte Link${s.dupSheet === 1 ? "" : "s"} im Sheet entfernt</li>` : "",
+    s.dupShop ? `<li><b>${s.dupShop}</b> Link${s.dupShop === 1 ? "" : "s"} gibt es bei ${aesc(qi.creatorName)} schon – übersprungen</li>` : "",
+    s.empty ? `<li><b>${s.empty}</b> Zeile${s.empty === 1 ? "" : "n"} ohne Link und Bild übersprungen</li>` : "",
+    s.noPrice ? `<li><b>${s.noPrice}</b> Produkt${s.noPrice === 1 ? "" : "e"} ohne Preis – kannst du gleich eintragen</li>` : ""
+  ].join("");
+  const stage = qi.root.querySelector("#qiStage");
+  stage.innerHTML = `
+    <div class="qi-panel">
+      <div class="qi-big">${s.ready}</div>
+      <div class="qi-big-label">Produkt${s.ready === 1 ? "" : "e"} bereit zum Hochladen</div>
+      <ul class="qi-facts">${facts}</ul>
+      <p class="qi-cols">Erkannt: ${aesc(colText)}</p>
+      <div class="qi-panel-actions">
+        <button type="button" class="a-btn a-btn-ghost" id="qiCancelBtn">Abbrechen</button>
+        ${s.ready ? `<button type="button" class="a-btn a-btn-primary qi-go" id="qiStartBtn">Los geht's <kbd>Enter</kbd></button>` : ""}
+      </div>
+    </div>`;
+  stage.querySelector("#qiCancelBtn").addEventListener("click", ()=> qiClose());
+  const start = stage.querySelector("#qiStartBtn");
+  if(start){
+    start.addEventListener("click", ()=>{ qi.view = "card"; qiShow(true); });
+    start.focus();
+  }
+}
+
+function qiPositionOptions(selected){
+  return QI_POSITIONS.map(([k, label]) => `<option value="${k}" ${k === selected ? "selected" : ""}>${label}</option>`).join("");
+}
+function qiSubcatOptions(catKey, selected){
+  return `<option value="">Keine</option>` + state.subcategories.filter(s => s.category_key === catKey)
+    .map(s => `<option value="${aesc(s.key)}" ${s.key === selected ? "selected" : ""}>${aesc(s.label)}</option>`).join("");
+}
+function qiEurText(yuan){
+  return yuan > 0 ? `≈ ${fmtEurText(yuanToEur(yuan))}` : "Kein Preis";
+}
+
+function qiRenderCard(animate){
+  const it = qi.queue[0];
+  // Ein zurueckgeholtes Produkt bringt seine eigene Auswahl mit, sonst gilt
+  // die vom letzten Produkt.
+  const d = it.draft ? qiValidSticky(it.draft) : qi.sticky;
+  const name = it.draft ? it.draft.name : it.name;
+  const price = it.draft ? it.draft.price : it.price;
+  const href = safeUrl(it.url);
+  const wdId = qiIsWeidianUrl(it.url) ? extractWeidianItemId(it.url) : null;
+  const linkLabel = qiHost(it.url).replace(/^www\./, "") + (wdId ? ` · Artikel ${wdId}` : "");
+  const img = safeUrl(it.image);
+
+  const stage = qi.root.querySelector("#qiStage");
+  stage.innerHTML = `
+    <form class="qi-card ${animate ? "qi-enter" : ""}" id="qiForm" autocomplete="off" novalidate>
+      <div class="qi-media">
+        ${img ? `<img id="qiImg" src="${aesc(img)}" alt="" referrerpolicy="no-referrer" decoding="async">` : `<div class="qi-noimg">Kein Bild im Sheet</div>`}
+        ${it.row ? `<span class="qi-row-badge">Zeile ${it.row}</span>` : ""}
+      </div>
+      <div class="qi-body">
+        <div class="qi-price-row">
+          <label class="qi-price" title="Preis in Yuan">
+            <b>¥</b>
+            <input id="qiPrice" type="number" inputmode="decimal" min="0" step="0.01" value="${price === null || price === undefined ? "" : aesc(price)}" aria-label="Preis in Yuan">
+          </label>
+          <span class="qi-eur" id="qiEur">${qiEurText(Number(price) || 0)}</span>
+        </div>
+        ${href
+          ? `<a class="qi-link" href="${aesc(href)}" target="_blank" rel="noopener noreferrer">${aesc(linkLabel)} ↗</a>`
+          : `<span class="qi-nolink">Kein Link – der Kaufen-Button bleibt inaktiv.</span>`}
+        <div>
+          <label class="a-label" for="qiName">Name *</label>
+          <input id="qiName" class="a-field qi-name" maxlength="200" placeholder="z. B. Ralph Lauren Pullover" value="${aesc(name || "")}" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="qi-sel-row">
+          <div>
+            <label class="a-label" for="qiCat">Kategorie</label>
+            <select id="qiCat" class="a-field">${state.categories.map(c => `<option value="${aesc(c.key)}" ${c.key === d.category ? "selected" : ""}>${aesc(c.label)}</option>`).join("")}</select>
+          </div>
+          <div>
+            <label class="a-label" for="qiSubcat">Unterkategorie</label>
+            <select id="qiSubcat" class="a-field">${qiSubcatOptions(d.category, d.subcategory)}</select>
+          </div>
+          <div>
+            <label class="a-label" for="qiPos">Position</label>
+            <select id="qiPos" class="a-field">${qiPositionOptions(d.position)}</select>
+          </div>
+        </div>
+        <div>
+          <label class="a-label">Styles &amp; ihre Kategorien</label>
+          ${buildStyleAssignHtml("qi-style", d.styles, d.styleCats)}
+        </div>
+        <div class="qi-actions">
+          <button type="button" class="a-btn a-btn-ghost" id="qiRemoveBtn" title="Dieses Produkt nicht hochladen">Entfernen</button>
+          <button type="button" class="a-btn a-btn-ghost" id="qiLaterBtn" title="Ans Ende der Liste schieben" ${qi.queue.length < 2 ? "disabled" : ""}>Später</button>
+          <button type="submit" class="a-btn a-btn-primary qi-go" id="qiGoBtn">Hochladen <kbd>Enter</kbd></button>
+        </div>
+      </div>
+    </form>`;
+
+  const form = stage.querySelector("#qiForm");
+  const imgEl = stage.querySelector("#qiImg");
+  if(imgEl) imgEl.addEventListener("error", ()=>{
+    imgEl.replaceWith(Object.assign(document.createElement("div"), { className: "qi-noimg", textContent: "Bild lässt sich nicht laden" }));
+  }, { once: true });
+  const priceEl = form.querySelector("#qiPrice");
+  priceEl.addEventListener("input", ()=>{ form.querySelector("#qiEur").textContent = qiEurText(Number(priceEl.value) || 0); });
+  const catEl = form.querySelector("#qiCat"), subEl = form.querySelector("#qiSubcat");
+  catEl.addEventListener("change", ()=>{ subEl.innerHTML = qiSubcatOptions(catEl.value, ""); });
+  wireStyleAssign("qi-style", undefined, { catEl, subEl });
+  form.addEventListener("submit", e => { e.preventDefault(); qiSubmit(); });
+  form.querySelector("#qiRemoveBtn").addEventListener("click", ()=> qiRemoveCurrent());
+  form.querySelector("#qiLaterBtn").addEventListener("click", ()=> qiLater());
+
+  const nameEl = form.querySelector("#qiName");
+  nameEl.focus({ preventScroll: true });
+  if(nameEl.value) nameEl.select();
+  qi.root.scrollTop = 0;
+
+  qiPrepareAhead();
+}
+
+// Bilder der naechsten Produkte vorladen und das aktuelle (plus das naechste)
+// schon mal in den eigenen Speicher kopieren, waehrend der Name getippt wird.
+function qiPrepareAhead(){
+  qi.queue.slice(1, 4).forEach(it => { const u = safeUrl(it.image); if(u){ const im = new Image(); im.referrerPolicy = "no-referrer"; im.src = u; } });
+  qi.queue.slice(0, 2).forEach(it => qiHostedImage(qi, it));
+}
+
+// Bild in den eigenen Speicher kopieren (einmal pro Produkt, auch bei
+// Rueckgaengig + erneutem Hochladen). Klappt das nicht (fremder Server ohne
+// Freigabe), bleibt die Original-Adresse -- wie beim CSV-Import.
+function qiHostedImage(session, it){
+  if(!it.image) return Promise.resolve("");
+  if(it.hosted) return Promise.resolve(it.hosted);
+  let p = session.hostCache.get(it.image);
+  if(!p){
+    p = rehostForeignImageIfNeeded(it.image, session.creatorSlug).then(u => u || it.image, ()=> it.image);
+    session.hostCache.set(it.image, p);
+  }
+  return p.then(u => { it.hosted = u; return u; });
+}
+
+function qiReadForm(){
+  const f = qi.root.querySelector("#qiForm");
+  if(!f) return null;
+  const priceRaw = f.querySelector("#qiPrice").value.trim();
+  const price = priceRaw === "" ? null : Number(priceRaw);
+  return {
+    name: f.querySelector("#qiName").value,
+    price: Number.isFinite(price) && price >= 0 ? price : null,
+    category: f.querySelector("#qiCat").value,
+    subcategory: f.querySelector("#qiSubcat").value,
+    styles: getSelectedStyleTags("qi-style"),
+    styleCats: readStyleCatPickers("qi"),
+    position: f.querySelector("#qiPos").value
+  };
+}
+
+// Haelt fest, was beim aktuellen Produkt schon eingetippt ist, bevor es aus
+// dem Blick rutscht (Rueckgaengig holt ein anderes nach vorne, "Später").
+function qiCaptureCurrent(){
+  const it = qi.queue[0];
+  const d = qiReadForm();
+  if(it && d) it.draft = d;
+}
+
+function qiShake(el){
+  if(!el) return;
+  el.classList.remove("qi-shake");
+  void el.offsetWidth;
+  el.classList.add("qi-shake");
+  el.focus();
+}
+
+function qiSubmit(){
+  if(!qi || qi.closing || qi.view !== "card") return;
+  const it = qi.queue[0];
+  const d = qiReadForm();
+  if(!it || !d) return;
+  const { title, discount_label, discount_color } = splitDiscountFromTitle(d.name);
+  if(!title){ qiShake(qi.root.querySelector("#qiName")); return; }
+
+  qi.sticky = { category: d.category, subcategory: d.subcategory, styles: d.styles, styleCats: d.styleCats, position: d.position };
+  const sort_order = pickSortOrder(qi.orders, d.position);
+  qi.orders.push(sort_order);
+  const rec = {
+    item: it, draft: d, sort_order, state: "saving", productId: null, undone: false,
+    fields: {
+      title, discount_label, discount_color,
+      price: yuanToEur(d.price ?? 0),
+      product_url: it.url || null,
+      category: d.category,
+      subcategory: d.subcategory || null,
+      style_tags: d.styles,
+      is_trend: false
+    }
+  };
+  qi.queue.shift();
+  qi.uploaded++;
+  qi.records.push(rec);
+  rec.done = qiEnqueueSave(qi, rec);
+  qiPersist();
+  qiToast(rec, "upload");
+  qiShow(true);
+}
+
+// Speichern laeuft nacheinander in einer Kette: Reihenfolge bleibt die des
+// Hochladens, und Rueckgaengig wartet einfach auf "sein" Glied.
+function qiEnqueueSave(session, rec){
+  const run = async ()=>{
+    if(rec.undone){ rec.state = "skipped"; return; }   // vor dem Speichern zurueckgenommen
+    try {
+      const image_url = (await qiHostedImage(session, rec.item)) || null;
+      const { data, error } = await sb.from("products")
+        .insert({ ...rec.fields, image_url, creator_id: session.creatorId, sort_order: rec.sort_order })
+        .select("id")
+        .single();
+      if(error) throw error;
+      rec.productId = data.id;
+      rec.state = "saved";
+      if(hasStyleCatPick(rec.draft.styleCats)){
+        const fehler = await saveStyleCats(data.id, rec.draft.styleCats, rec.draft.styles);
+        if(fehler && session === qi) qiToastError(`„${rec.fields.title}“ ist oben, aber die Kategorie je Style nicht: ${fehler}`);
+      }
+    } catch(e){
+      rec.state = "failed";
+      console.error("Schnell-Import: Hochladen fehlgeschlagen:", e);
+      qiSaveFailed(session, rec, e);
+    }
+    if(session === qi) qiPersist();
+  };
+  session.chain = session.chain.then(run, run);
+  return session.chain;
+}
+
+// Hochladen hat nicht geklappt: das Produkt kommt mit allen Eingaben direkt
+// hinter das aktuelle zurueck, damit nichts Getipptes verloren geht.
+function qiSaveFailed(session, rec, e){
+  qiRemoveOrder(session, rec.sort_order);
+  session.uploaded = Math.max(0, session.uploaded - 1);
+  rec.item.draft = rec.draft;
+  if(rec.undone || !session.queue.length){
+    // Sollte ohnehin zurueckgeholt werden (oder es ist das letzte): nach vorne.
+    if(session === qi && !session.closing) qiCaptureCurrent();
+    session.queue.unshift(rec.item);
+  } else {
+    session.queue.splice(1, 0, rec.item);
+  }
+  if(session !== qi || session.closing) return;
+  qiToastError(`„${rec.fields.title}“ konnte nicht hochgeladen werden (${e?.message || "Netzwerkfehler"}). Es ist wieder in der Liste.`);
+  if(session.queue[0] === rec.item) qiShow(true);
+  else { qiUpdateProgress(); session.root.querySelector("#qiLaterBtn")?.removeAttribute("disabled"); }
+  qiPersist();
+}
+
+function qiRemoveOrder(session, value){
+  const i = session.orders.indexOf(value);
+  if(i !== -1) session.orders.splice(i, 1);
+}
+
+function qiRemoveCurrent(){
+  if(!qi || qi.closing) return;
+  const it = qi.queue[0];
+  if(!it) return;
+  qiCaptureCurrent();
+  qi.queue.shift();
+  qi.removed++;
+  qiPersist();
+  qiToast({ item: it }, "remove");
+  qiShow(true);
+}
+
+function qiLater(){
+  if(!qi || qi.closing || qi.queue.length < 2) return;
+  qiCaptureCurrent();
+  qi.queue.push(qi.queue.shift());
+  qiPersist();
+  qiShow(true);
+}
+
+async function qiUndo(rec, kind){
+  if(!qi) return;
+  const session = qi;
+  qiHideToast();
+  if(kind === "remove"){
+    qiCaptureCurrent();
+    session.queue.unshift(rec.item);
+    session.removed = Math.max(0, session.removed - 1);
+    session.view = "card";
+    qiPersist();
+    qiShow(true);
+    return;
+  }
+  if(rec.undone) return;
+  rec.undone = true;
+  rec.undoing = (async ()=>{
+    await rec.done;                       // erst fertig speichern lassen, dann loeschen
+    if(rec.state === "failed") return;    // ist schon wieder vorne in der Liste
+    if(rec.state === "saved"){
+      const { error } = await sb.from("products").delete().eq("id", rec.productId).eq("creator_id", session.creatorId);
+      if(error){
+        rec.undone = false;
+        if(session === qi) qiToastError("Rückgängig hat nicht geklappt: " + error.message);
+        return;
+      }
+      state.productStyleCats = state.productStyleCats.filter(r => r.product_id !== rec.productId);
+    }
+    rec.state = "undone";
+    qiRemoveOrder(session, rec.sort_order);
+    session.uploaded = Math.max(0, session.uploaded - 1);
+    if(session === qi && !session.closing) qiCaptureCurrent();
+    rec.item.draft = rec.draft;
+    session.queue.unshift(rec.item);
+    if(session !== qi || session.closing) return;   // qiClose speichert den Stand selbst
+    session.view = "card";
+    qiPersist();
+    qiShow(true);
+  })();
+  await rec.undoing;
+}
+
+// ---------- Rueckmeldung oben ----------
+
+function qiToast(rec, kind){
+  const el = qi.root.querySelector("#qiToast");
+  clearTimeout(qi.toastTimer);
+  const img = safeUrl(rec.item.image);
+  const text = kind === "remove" ? "Produkt entfernt" : "Produkt erfolgreich hochgeladen";
+  el.className = "qi-toast is-on";
+  el.innerHTML = `
+    ${img
+      ? `<img class="qi-toast-img" src="${aesc(img)}" alt="" referrerpolicy="no-referrer">`
+      : `<span class="qi-toast-img" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>`}
+    <span class="qi-toast-text">${text}</span>
+    <button type="button" class="qi-toast-undo">Rückgängig</button>`;
+  const imgEl = el.querySelector("img.qi-toast-img");
+  if(imgEl) imgEl.addEventListener("error", ()=>{ imgEl.style.visibility = "hidden"; }, { once: true });
+  el.querySelector(".qi-toast-undo").addEventListener("click", ()=> qiUndo(rec, kind));
+  qi.toastRec = rec;
+  const arm = ()=>{ clearTimeout(qi?.toastTimer); if(qi) qi.toastTimer = setTimeout(qiHideToast, QI_TOAST_MS); };
+  el.onmouseenter = ()=> clearTimeout(qi?.toastTimer);
+  el.onmouseleave = arm;
+  arm();
+}
+
+function qiToastError(text){
+  if(!qi) return;
+  const el = qi.root.querySelector("#qiToast");
+  clearTimeout(qi.toastTimer);
+  el.className = "qi-toast is-on is-err";
+  el.innerHTML = `<span class="qi-toast-text"></span>`;
+  el.querySelector(".qi-toast-text").textContent = text;
+  el.onmouseenter = el.onmouseleave = null;
+  qi.toastRec = null;
+  qi.toastTimer = setTimeout(qiHideToast, 9000);
+}
+
+function qiHideToast(){
+  if(!qi) return;
+  clearTimeout(qi.toastTimer);
+  qi.root.querySelector("#qiToast").className = "qi-toast";
+  qi.toastRec = null;
+}
+
+// ---------- Tastatur ----------
+
+function qiOnKeydown(e){
+  if(!qi || e.key !== "Enter" || e.isComposing || e.keyCode === 229) return;
+  const t = e.target;
+  // Knoepfe und Links erledigen Enter selbst (Klick).
+  if(t.closest("button, a, textarea")) return;
+  if(qi.view === "summary"){
+    e.preventDefault();
+    if(!e.repeat) qi.root.querySelector("#qiStartBtn")?.click();
+    return;
+  }
+  if(qi.view !== "card" || !t.closest("#qiForm")) return;
+  e.preventDefault();
+  if(e.repeat) return;    // gedrueckt gehaltenes Enter laedt nicht reihenweise hoch
+  qiSubmit();
+}
+
+// ---------- Ende ----------
+
+function qiRenderFinish(){
+  const pending = qi.records.some(r => r.state === "saving");
+  const stage = qi.root.querySelector("#qiStage");
+  stage.innerHTML = `
+    <div class="qi-panel">
+      <div class="qi-done-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <div class="qi-big">${qi.uploaded}</div>
+      <div class="qi-big-label">Produkt${qi.uploaded === 1 ? "" : "e"} hochgeladen${qi.removed ? ` · ${qi.removed} entfernt` : ""}</div>
+      <p class="qi-cols" id="qiFinishNote">${pending ? "Die letzten werden noch gespeichert …" : "Alles gespeichert."}</p>
+      <div class="qi-panel-actions">
+        <button type="button" class="a-btn a-btn-primary qi-go" id="qiFinishBtn">Zum Dashboard</button>
+      </div>
+    </div>`;
+  stage.querySelector("#qiFinishBtn").addEventListener("click", ()=> qiClose());
+  stage.querySelector("#qiFinishBtn").focus();
+  if(pending){
+    const session = qi;
+    session.chain.then(()=>{
+      if(qi !== session || qi.view !== "card" || qi.queue.length) return;
+      const note = qi.root.querySelector("#qiFinishNote");
+      if(note) note.textContent = "Alles gespeichert.";
+      const big = qi.root.querySelector(".qi-big");
+      if(big) big.textContent = String(qi.uploaded);
+    });
+  }
+}
+
+async function qiClose(){
+  if(!qi || qi.closing) return;
+  const session = qi;
+  if(session.queue.length && session.view === "card") qiCaptureCurrent();
+  session.closing = true;
+  const btn = session.root.querySelector("#qiCloseBtn");
+  btn.disabled = true;
+  if(session.records.some(r => r.state === "saving")) btn.textContent = "Speichert noch …";
+  await session.chain;
+  // Ein Rueckgaengig, das gerade noch loescht, abwarten.
+  await Promise.all(session.records.map(r => r.undoing).filter(Boolean));
+  if(session.view === "summary") qiClearSaved(session.creatorId);
+  else qiPersist();
+  clearTimeout(session.toastTimer);
+  session.root.removeEventListener("keydown", qiOnKeydown);
+  session.root.remove();
+  qi = null;
+  if(session.uploaded || session.records.length){
+    await refreshActiveProducts();
+    photoPrepAfterChange();
+  }
+  render();
 }
 
 // ============================================================================
