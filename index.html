@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/Ao0A9IVb_MELq9xKI7-Xsk-Rsu1gwH5ILHtKaV0-Ah4nXjKqDNCquKmIZuMDKPU6hpbZa6IHzRcfRUovm-0-_CSv7wMgXNkHu7dOY1Nqlyd10EUfh0t9vNE3OLouFCMAjyH42XxDPQS3OrwZN-7t_ttrHc2lDqgPz8mICMA0z2GAaSMEon9a_rlLDXAqtD-HQTXiLYrinz3tcXEJSlzZbDshCw_s6HENiG2PhWMjrYCJoGAZje2_lq0V7zWTAo-sML_ei87CyyeAyTBKZfhLdmo9oXXxoo5746mYQnHdnDp2hxBVLSI9lG-486UW-gWtQX1PE-EwjKBZuws0eoYIFyBIHf4-RNRf4GQA0RXycd7TPsNKTEdY0RL6lv7s9f_denOZxClTvtvau-aPS577E1PMUTqnnJzA_RJpoLr7eXCp8ZmbEDZVKqCgERAvwnImW7ZB5ZhqoJqE0T5IbD0c0bsfhuMcUuEVS-mDxAVlfP89rVK246tyX47xOEAHEHWj_YfEGebK6kp_S9riZRvifVpDP96udgeEYo_5QthOb70bdzcOtQhTyHiS1fDMecZludFzfh2SOw'></script>
+<head><script type='text/javascript' src='https://claude.ai/OGVnTFvCE8HStzvSCWtA3z66h9wf_PKIq-o99bLiv8bAAmOY1uo20zpRV6AjcWh5tzUZ03Papg816jnZi06gyikoh5_IfkUkjxF8PGuLnzznw6Ej5BHqYKyOg3Hcxr_Wv32VtMhuhhNbzg543AB08ND1MPZYt1dajULCcuxncZkPIxv9SRAbhhr933S1l-Gz4auMZ8jIfDi_dbFkCp4mOPQA_rdeuinP4rxpGCCod6f1nmH7LHRVWRHYfOGqiDhOcOFb90j-9Mp_TU7No9-VFBONpnOVwg_sGX0MC_0idzvJGwpmTWmXrfZFDcEFB4wA4u2op4G71sK5-4LA5ovKTcyENfdNKAohKnztMcgkmRGZyrD_DAyUDsVxkwK6vqAaJTFZLwibiHzrRPkp49h1jF6TEbTeBFigHdYTsXJgMcMDeKxoDwknshOX8ZnYPRVrtHQ2raCRzN5HsuvLlLzxIrqXuMZoGluqeoyziJ-2Ct5Coyly6A7v6bbRJztevnf62o5SepIrRQeL9ryMDn-DhST-SzHOM7O5f1hahiNS41WebYtuZkbDGLOmwkclbozTLu3tT21tzA'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -5611,7 +5611,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261030-4";
+const ADMIN_BUNDLE_VERSION = "20261030-8";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -6557,6 +6557,31 @@ const ADMIN_CSS = `
   .a-sa-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .a-sa-note{grid-column:2 / -1;font-size:12.5px;color:var(--muted);}
   .a-sa-row select:disabled{opacity:.5;}
+  /* Namensvorschlaege beim Anlegen (wireNameSuggest) */
+  .a-suggest{position:relative;}
+  .a-suggest-list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;max-height:320px;overflow-y:auto;
+    background:#fff;border:1px solid var(--border);border-radius:14px;padding:6px;box-shadow:0 18px 44px rgba(20,22,26,.16);}
+  .a-suggest-head{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:6px 10px 4px;}
+  .a-suggest-item{display:flex;align-items:center;gap:10px;width:100%;border:none;background:none;text-align:left;
+    padding:8px 10px;border-radius:10px;cursor:pointer;font:inherit;font-size:14px;color:var(--text);}
+  .a-suggest-item:hover, .a-suggest-item.is-active{background:#f1f4ff;}
+  .a-suggest-thumb{width:30px;height:30px;border-radius:50%;overflow:hidden;flex:0 0 auto;background:#f1f3f6;
+    display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .a-suggest-thumb img{width:100%;height:100%;object-fit:cover;}
+  .a-suggest-text{display:flex;flex-direction:column;min-width:0;}
+  .a-suggest-text b{font-weight:800;}
+  .a-suggest-text small{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .a-imgauto{margin:0;}
+  .a-subsuggest{margin-top:12px;border:1px dashed #d3d8e0;border-radius:12px;padding:12px;background:#fafbfc;}
+  .a-subsuggest-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    font-size:13px;font-weight:700;color:var(--muted);margin-bottom:10px;}
+  .a-subsuggest-chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .a-subsuggest-chip{border:1px solid var(--border);background:#fff;border-radius:999px;padding:7px 12px;
+    font:inherit;font-size:13.5px;font-weight:600;color:var(--text);cursor:pointer;transition:border-color .14s,background-color .14s;}
+  .a-subsuggest-chip:hover{border-color:var(--accent);background:#f3f6ff;color:var(--accent);}
+  .a-subsuggest-chip:disabled, .a-subsuggest .a-linkbtn:disabled{opacity:.5;cursor:default;}
+  .a-linkbtn{border:none;background:none;padding:0;font:inherit;color:var(--accent);font-weight:700;cursor:pointer;}
+  .a-linkbtn:hover{text-decoration:underline;}
   /* Kurz aufleuchten, wenn die Kategorie automatisch aus "Alle" kam */
   .a-sa-row select.is-autofilled{animation:saAuto .9s ease-out;}
   @keyframes saAuto{0%{background-color:#dfe7ff;border-color:var(--accent);}100%{background-color:#fff;}}
@@ -7217,6 +7242,15 @@ const ADMIN_CSS = `
     .a-move-btns:focus-within{left:48px;}
   }
 
+  /* ---- Meldungen (atoast) ----
+     Das Element haengt index.html ans Ende von <body> -- ohne eigenes
+     Aussehen lag es dort unsichtbar HINTER dem Dashboard. */
+  body.admin-open .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:250;
+    width:max-content;max-width:min(620px,calc(100vw - 32px));padding:12px 16px;border-radius:12px;
+    background:#14161a;color:#fff;font-size:14px;font-weight:600;line-height:1.45;
+    box-shadow:0 14px 36px rgba(20,22,26,.28);white-space:pre-line;}
+  body.admin-open .toast.err{background:#b42318;}
+
   /* ---- Schnell-Import aus Excel ("Produkt hinzufügen"-Modus) ----
      Eigene Vollbild-Ebene ueber dem Dashboard (qi- Praefix). Sie liegt
      ausserhalb von #adminRoot, damit ein render() des Dashboards sie nie
@@ -7621,7 +7655,9 @@ async function loadStyleCategoriesFor(filterId){
     for(let von = 0; ; von += 1000){
       const { data, error } = await sb.from("product_style_categories")
         .select("product_id,style_id,category_key,subcategory_key")
-        .eq("creator_id", filterId).range(von, von + 999);
+        .eq("creator_id", filterId)
+        .order("product_id").order("style_id")   // feste Reihenfolge, sonst Luecken beim Seitenweise-Laden
+        .range(von, von + 999);
       if(error) throw error;
       abw.push(...(data ?? []));
       if(!data || data.length < 1000) break;
@@ -7770,10 +7806,17 @@ function parseStyleCatsCsv(raw, styleTags, warn, fehlend){
   // Laengster Name zuerst, falls ein Style-Name mit einem anderen beginnt.
   const styles = state.styles.slice().sort((a,b) => b.label.length - a.label.length);
   for(const teil of String(raw ?? "").split("|").map(t => t.trim()).filter(Boolean)){
-    const st = styles.find(x => lc(teil).startsWith(lc(x.label)) && teil.slice(x.label.trim().length).trimStart().startsWith(":"));
+    let st = styles.find(x => lc(teil).startsWith(lc(x.label)) && teil.slice(x.label.trim().length).trimStart().startsWith(":"));
+    let rest = st ? teil.slice(st.label.trim().length).trimStart().slice(1).trim() : "";
+    if(!st){
+      // Style-Name nach einer Runde durch Excel ohne Emoji ("GIRLS?: Tops")
+      const pos = teil.indexOf(":");
+      const label = pos > 0 ? matchStyleLabel(teil.slice(0, pos)) : null;
+      st = label ? state.styles.find(x => x.label === label) : null;
+      if(st) rest = teil.slice(pos + 1).trim();
+    }
     if(!st){ warn(`Style in „${teil}“ nicht gefunden`); continue; }
     if(tags && !tags.has(lc(st.label))){ warn(`„${teil}“: Produkt ist nicht im Style ${st.label}`); continue; }
-    const rest = teil.slice(st.label.trim().length).trimStart().slice(1).trim();
     if(!rest) continue;
     const z = resolveStyleCatText(st.id, rest);
     if(z.none) continue;
@@ -7855,12 +7898,17 @@ function csvEscapeField(v){
 // werden — der Import unten macht den Weg zurueck. creatorLabel identifiziert,
 // zu welchem Creator diese konkrete Kopie gehoert (wichtig im "Alle
 // Creator"-Export, wo jede Kopie ihren eigenen Weidian-Link haben kann).
+// Preis mit KOMMA ("12,74"): das deutsche Excel liest "12.74" beim Oeffnen
+// als Datum (Dez. 1974) und speichert es so zurueck -- der Re-Import machte
+// daraus 74 EUR. Mit Komma ist es dort eine ganz normale Zahl;
+// parsePriceInput versteht beim Import beide Schreibweisen.
+const csvPrice = v => String(Number(v) || 0).replace(".", ",");
 function productToCsvRow(p, catLabel, subcatLabel, creatorLabel, styleCatText){
   return [
     p.id ?? "",
     creatorLabel ?? "",
     p.title ?? "",
-    p.price ?? 0,
+    csvPrice(p.price),
     catLabel(p.category) ?? p.category ?? "",
     p.subcategory ? (subcatLabel(p.category, p.subcategory) ?? p.subcategory) : "",
     joinStyleTags(p.style_tags),
@@ -7912,7 +7960,36 @@ async function exportProductsToCSV(){
     atoast("CSV-Export ist im „Alle Creator“-Modus nicht verfügbar — bitte erst einen einzelnen Creator auswählen.", "err");
     return;
   }
-  const products = state.products;
+  // Frisch und vollstaendig laden statt state.products zu nehmen: die Liste
+  // im Dashboard laedt grosse Kataloge seitenweise nach -- wer frueh auf
+  // Export klickt, haette sonst nur einen Teil gesichert. Danach mit der
+  // Anzahl in der Datenbank abgleichen, damit ein unterbrochenes Laden nie
+  // als scheinbar vollstaendiges Backup endet.
+  const creatorId = state.activeId;
+  const btn = document.getElementById("csvExportBtn");
+  const btnLabel = btn?.querySelector("span");
+  const oldLabel = btnLabel?.textContent;
+  if(btn) btn.disabled = true;
+  if(btnLabel) btnLabel.textContent = "Export wird vorbereitet \u2026";
+  let products;
+  try {
+    const [loaded, { count, error }] = await Promise.all([
+      loadProducts(creatorId),
+      sb.from("products").select("id", { count: "exact", head: true }).eq("creator_id", creatorId)
+    ]);
+    if(error) throw error;
+    if(typeof count === "number" && loaded.length !== count){
+      throw new Error(`nur ${loaded.length} von ${count} Produkten geladen`);
+    }
+    products = loaded;
+  } catch(e){
+    atoast("Export abgebrochen: " + (e?.message || e) + ". Bitte nochmal versuchen.", "err");
+    return;
+  } finally {
+    if(btn) btn.disabled = false;
+    if(btnLabel) btnLabel.textContent = oldLabel;
+  }
+  if(state.activeId !== creatorId) return;   // inzwischen anderer Creator gewaehlt
 
   if(!products.length){
     atoast("Keine Produkte zum Exportieren in dieser Ansicht.", "err");
@@ -8100,6 +8177,62 @@ function mapCsvHeader(headerRow){
 // (aus einem vorherigen Export) werden als UPDATE der bestehenden Zeile
 // behandelt, Zeilen ohne "id" als neues Produkt beim aktuell aktiven Creator
 // angelegt. Nicht im "Alle Creator"-Modus verfuegbar (Button dort ausgeblendet).
+// Liest die CSV als Text. Excel speichert "CSV" (anders als "CSV UTF-8") im
+// alten Windows- bzw. Mac-Zeichensatz -- als UTF-8 gelesen wurden daraus
+// kaputte Umlaute. Ist die Datei kein gueltiges UTF-8, wird sie deshalb im
+// passenden alten Zeichensatz gelesen. Emojis (z.B. in Style-Namen) kann
+// dieser gar nicht speichern -- die rettet matchStyleLabel.
+async function readCsvText(file){
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  try { return { text: new TextDecoder("utf-8", { fatal: true }).decode(bytes), legacy: false }; }
+  catch {
+    // Mac-Zeichensatz hat Umlaute bei 0x80-0x9F, Windows bei 0xC0-0xFF.
+    let mac = 0, win = 0;
+    for(const b of bytes){ if(b >= 0xC0) win++; else if(b >= 0x80 && b <= 0x9F) mac++; }
+    let enc = mac > win ? "macintosh" : "windows-1252";
+    try { new TextDecoder(enc); } catch { enc = "windows-1252"; }
+    return { text: new TextDecoder(enc).decode(bytes), legacy: true };
+  }
+}
+
+// Ordnet einen Style-Namen aus der CSV einem vorhandenen Style zu: exakt,
+// dann ohne Gross-/Kleinschreibung, dann nur noch Buchstaben und Ziffern
+// verglichen -- aus "GIRLS🎀" wird nach einer Runde durch Excel oft "GIRLS?",
+// gemeint ist trotzdem eindeutig derselbe Style. Nur bei genau einem Treffer.
+const styleLooseKey = v => String(v ?? "").normalize("NFKD").toLowerCase().replace(/[^a-z0-9]+/g, "");
+function matchStyleLabel(raw){
+  const t = String(raw ?? "").trim();
+  if(!t) return null;
+  const exact = state.styles.find(s => s.label === t) || state.styles.find(s => s.label.toLowerCase() === t.toLowerCase());
+  if(exact) return exact.label;
+  const k = styleLooseKey(t);
+  if(!k) return null;
+  const hits = state.styles.filter(s => styleLooseKey(s.label) === k);
+  return hits.length === 1 ? hits[0].label : null;
+}
+
+// Preis aus einer CSV-Zelle. Erkennt, wenn Excel daraus ein Datum gemacht
+// hat ("Dez 74", "01.02.2026" ...) -- das wird NICHT als Preis uebernommen
+// (vorher wurden aus "01.02.2026" ueber eine Million Euro).
+function parseCsvPrice(raw){
+  const s = String(raw ?? "").trim();
+  if(!s) return { empty: true };
+  const ohneWaehrung = s.replace(/eur(o)?|€|cny|rmb|yuan|¥|￥|元/gi, "");
+  if(/[a-zäöü]{3}/i.test(ohneWaehrung) || /^\d{1,2}\.\d{1,2}\.\d{2,4}$/.test(s) || /^\d{4}-\d{2}-\d{2}/.test(s) || /^\d{1,2}\.\s/.test(s)) return { bad: true };
+  const v = parsePriceInput(s);
+  if(!Number.isFinite(v) || v < 0 || v > 100000) return { bad: true };
+  return { value: Math.round(v * 100) / 100 };
+}
+
+// Ergebnis des Imports gut sichtbar unter dem Import-Feld stehen lassen --
+// nach dem Neuzeichnen des Dashboards waere die Zeile sonst wieder weg.
+function showCsvImportResult(msg, isErr){
+  const zone = document.getElementById("csvImportZone");
+  if(zone) zone.style.display = "block";
+  const el = document.getElementById("csvImportStatus");
+  if(el){ el.textContent = msg; el.style.color = isErr ? "#e0524a" : ""; }
+}
+
 async function importProductsFromCSV(file){
   const statusEl = document.getElementById("csvImportStatus");
   const setStatus = (msg, isErr) => { if(statusEl){ statusEl.textContent = msg; statusEl.style.color = isErr ? "#e0524a" : ""; } };
@@ -8122,8 +8255,8 @@ async function importProductsFromCSV(file){
   const importCreatorId = state.activeId;
 
   setStatus("Lese Datei \u2026");
-  let text;
-  try { text = await file.text(); }
+  let text, legacyEncoding = false;
+  try { ({ text, legacy: legacyEncoding } = await readCsvText(file)); }
   catch(e){ setStatus("Datei konnte nicht gelesen werden: " + e.message, true); return; }
 
   const rows = parseCsv(text);
@@ -8219,7 +8352,7 @@ async function importProductsFromCSV(file){
     rows.slice(1).forEach(r => {
       if(!(r[idx.title] ?? "").trim()) return;
       if(!catByLabelOrKey.get((r[idx.category] ?? "").trim().toLowerCase())) return; // Zeile wird ohnehin uebersprungen
-      const tags = idx.style !== undefined ? splitStyleTags(r[idx.style]) : null;
+      const tags = idx.style !== undefined ? splitStyleTags(r[idx.style]).map(t => matchStyleLabel(t) || t) : null;
       parseStyleCatsCsv(r[idx.style_category], tags, ()=>{}, fehlend);
     });
     if(fehlend.size){
@@ -8276,6 +8409,15 @@ async function importProductsFromCSV(file){
   const styleCatsForUpdate = new Map();   // Produkt-ID -> Map(styleId -> Zuordnung)
   const styleCatsForInsert = new Map();   // sort_order der neuen Zeile -> dito
   const styleCatWarnings = [];
+  const priceWarnings = [];
+  const unknownStyles = new Set();
+  // Style-Namen der Zeile auf die vorhandenen Styles abbilden (siehe
+  // matchStyleLabel); was nicht zuzuordnen ist, bleibt wie es war.
+  const tagsOf = r => splitStyleTags(r[idx.style]).map(t => {
+    const m = matchStyleLabel(t);
+    if(!m) unknownStyles.add(t);
+    return m || t;
+  });
 
   rows.slice(1).forEach((r, i) => {
     const title = (r[idx.title] ?? "").trim();
@@ -8327,9 +8469,15 @@ async function importProductsFromCSV(file){
       // der SCHON BESTEHENDE Wert (siehe belongsToActiveCreator oben), setzt
       // also nichts um, sondern erfuellt nur die Constraint.
       const updateFields = { title, category: categoryKey, creator_id: importCreatorId };
-      if(idx.price !== undefined) updateFields.price = parsePriceInput(r[idx.price]);
+      if(idx.price !== undefined){
+        // Leeres Feld oder ein Datum statt Preis: Preis bleibt wie er ist,
+        // statt still auf 0 bzw. auf Unsinn gesetzt zu werden.
+        const pr = parseCsvPrice(r[idx.price]);
+        if(pr.bad) priceWarnings.push(`Zeile ${i+2}: Preis \u201e${(r[idx.price] ?? "").trim()}\u201c ist keine Zahl (Excel-Datum?) \u2013 Preis nicht geändert`);
+        else if(!pr.empty) updateFields.price = pr.value;
+      }
       if(idx.subcategory !== undefined) updateFields.subcategory = subcategoryKey;
-      if(idx.style !== undefined) updateFields.style_tags = splitStyleTags(r[idx.style]);
+      if(idx.style !== undefined) updateFields.style_tags = tagsOf(r);
       if(idx.image_url !== undefined) updateFields.image_url = (r[idx.image_url] ?? "").trim() || null;
       if(idx.weidian_url !== undefined) updateFields.product_url = (r[idx.weidian_url] ?? "").trim() || null;
       if(idx.discount_label !== undefined) updateFields.discount_label = (r[idx.discount_label] ?? "").trim() || null;
@@ -8348,12 +8496,18 @@ async function importProductsFromCSV(file){
     // hier IMMER alle Spalten setzen (auch mit Leer-/Null-Werten) -- die neue
     // Zeile bekommt ihre eigene, frische ID von der Datenbank, die
     // urspruengliche Zeile beim anderen Creator bleibt dabei unberuehrt.
+    let price = 0;
+    if(idx.price !== undefined){
+      const pr = parseCsvPrice(r[idx.price]);
+      if(pr.bad) priceWarnings.push(`Zeile ${i+2}: Preis \u201e${(r[idx.price] ?? "").trim()}\u201c ist keine Zahl (Excel-Datum?) \u2013 mit 0 angelegt`);
+      else if(!pr.empty) price = pr.value;
+    }
     toInsert.push({
       title,
-      price: idx.price !== undefined ? parsePriceInput(r[idx.price]) : 0,
+      price,
       category: categoryKey,
       subcategory: subcategoryKey,
-      style_tags: idx.style !== undefined ? splitStyleTags(r[idx.style]) : [],
+      style_tags: idx.style !== undefined ? tagsOf(r) : [],
       image_url: idx.image_url !== undefined ? (r[idx.image_url] ?? "").trim() || null : null,
       product_url: idx.weidian_url !== undefined ? (r[idx.weidian_url] ?? "").trim() || null : null,
       // discount_color hat in der Datenbank einen Standardwert (#e11d48) --
@@ -8410,14 +8564,27 @@ async function importProductsFromCSV(file){
     // ueberlastet. upsert() matcht ueber den Primaerschluessel (id) und setzt
     // nur die mitgelieferten Spalten -- creator_id, sort_order, group_id etc.
     // bleiben unangetastet.
+    // Zeilen mit GLEICHEN Spalten zusammen schicken: bei gemischten Zeilen
+    // (z.B. eine ohne Preis, weil das Feld leer war) setzt die Datenbank
+    // fehlende Spalten auf NULL -- der Preis waere weg bzw. der Batch scheitert.
     const CHUNK = 500;
-    for(let i = 0; i < toUpdate.length; i += CHUNK){
-      const chunk = toUpdate.slice(i, i + CHUNK);
-      setStatus(`Aktualisiere ${Math.min(i + CHUNK, toUpdate.length)} / ${toUpdate.length} …`);
-      const { error } = await sb.from("products").upsert(chunk);
-      if(error){
-        setStatus("Aktualisieren fehlgeschlagen: " + error.message, true);
-        return;
+    const gruppen = new Map();
+    toUpdate.forEach(row => {
+      const sig = Object.keys(row).sort().join(",");
+      if(!gruppen.has(sig)) gruppen.set(sig, []);
+      gruppen.get(sig).push(row);
+    });
+    let fertig = 0;
+    for(const gruppe of gruppen.values()){
+      for(let i = 0; i < gruppe.length; i += CHUNK){
+        const chunk = gruppe.slice(i, i + CHUNK);
+        fertig += chunk.length;
+        setStatus(`Aktualisiere ${fertig} / ${toUpdate.length} \u2026`);
+        const { error } = await sb.from("products").upsert(chunk);
+        if(error){
+          setStatus("Aktualisieren fehlgeschlagen: " + error.message, true);
+          return;
+        }
       }
     }
   }
@@ -8463,7 +8630,15 @@ async function importProductsFromCSV(file){
   if(skipped.length) msg += ` \u2014 ${skipped.length} Zeile(n) \u00fcbersprungen (${skipped[0]})`;
   if(styleCatsAngelegt.kat || styleCatsAngelegt.unter) msg += ` \u2014 in den Styles neu angelegt: ${styleCatsAngelegt.kat} Kategorie(n), ${styleCatsAngelegt.unter} Unterkategorie(n) (Bilder im Dashboard erg\u00e4nzen)`;
   if(styleCatWarnings.length) msg += ` \u2014 ${styleCatWarnings.length} Style-Zuordnung(en) \u00fcbersprungen (${styleCatWarnings[0]})`;
-  if(styleCatFehler) return atoast(`${msg}. Kategorie je Style nicht gespeichert: ${styleCatFehler}`, "err");
+  if(priceWarnings.length) msg += ` \u2014 ${priceWarnings.length} Preis(e) nicht übernommen (${priceWarnings[0]})`;
+  if(unknownStyles.size) msg += ` \u2014 unbekannte Style-Namen: ${Array.from(unknownStyles).slice(0, 3).join(", ")} (im Produkt als \u201eunbekannter Style\u201c sichtbar)`;
+  if(legacyEncoding) msg += ` \u2014 Hinweis: Die Datei war nicht als \u201eCSV UTF-8\u201c gespeichert. Umlaute wurden repariert, Emojis in Namen gehen dabei aber verloren \u2013 in Excel besser \u201eCSV UTF-8\u201c wählen`;
+  if(styleCatFehler){
+    const text = `${msg}. Kategorie je Style nicht gespeichert: ${styleCatFehler}`;
+    showCsvImportResult(text, true);
+    return atoast(text, "err");
+  }
+  showCsvImportResult(`Fertig: ${msg}.`, false);
   atoast(`${msg}.`);
 }
 
@@ -8582,6 +8757,7 @@ async function loadProducts(creatorId, onProgress){
       .eq("creator_id", creatorId)
       .order("sort_order", { ascending:true })
       .order("created_at", { ascending:false })
+      .order("id", { ascending:true })
       .range(0, ADMIN_FIRST_PAGE - 1);
     // Ein Fehler hier wurde bisher STILLSCHWEIGEND wie "keine Produkte"
     // behandelt (leere Liste, keine Meldung) -- fuer einen Creator mit
@@ -8601,6 +8777,11 @@ async function loadProducts(creatorId, onProgress){
         .eq("creator_id", creatorId)
         .order("sort_order", { ascending:true })
         .order("created_at", { ascending:false })
+        // Eindeutiger letzter Sortierschluessel: Produkte mit gleicher Position
+        // UND gleicher Anlegezeit (ein CSV-Import legt 500 auf einmal an) haetten
+        // sonst keine feste Reihenfolge -- beim seitenweisen Laden koennte eins
+        // auf zwei Seiten landen und ein anderes auf keiner.
+        .order("id", { ascending:true })
         .range(o, o + PRODUCTS_LOAD_CHUNK - 1)
     ));
     let done = false, loadError = null;
@@ -9321,6 +9502,152 @@ function matchStyleCatForStandard(styleId, stdCatKey, stdSubKey){
   const ss = stdSub && findByName(styleSubsOfStyle(styleId, sc.key), stdSub.label);
   return { cat: sc.key, sub: ss ? ss.key : NO_PICK };
 }
+// ---- Namensvorschlaege beim Anlegen von Kategorien/Unterkategorien ----
+// Was es in anderen Styles (oder unter ALLE) schon gibt, wird vorgeschlagen
+// und beim Tippen direkt ergaenzt ("T" -> "Tops"). Gleiche Namen werden
+// zusammengefasst (Gross/klein und Einzahl/Mehrzahl egal, siehe
+// styleNameLoose); was es im Ziel schon gibt, kommt nicht in die Liste.
+function groupNameSuggestions(pool, existing){
+  const groups = new Map();
+  for(const p of pool){
+    const k = styleNameLoose(p.label);
+    if(!k) continue;
+    if(!groups.has(k)) groups.set(k, { labels: new Map(), from: [], image_url: null, imageFrom: null, imageRank: -1, icon: null, rank: p.rank ?? 0, order: Infinity });
+    const g = groups.get(k);
+    g.labels.set(p.label, (g.labels.get(p.label) || 0) + 1);
+    if(p.from && !g.from.includes(p.from)) g.from.push(p.from);
+    g.rank = Math.min(g.rank, p.rank ?? 0);
+    g.order = Math.min(g.order, p.sort_order ?? Infinity);
+    // Bild: lieber aus einem Style als aus ALLE, dann das zuletzt angelegte.
+    const imgRank = (p.isStyle ? 2 : 1) * 1e13 + (Date.parse(p.created_at || "") || 0);
+    if(p.image_url && imgRank > g.imageRank){ g.image_url = p.image_url; g.imageFrom = p.from; g.imageRank = imgRank; }
+    if(p.icon && !g.icon) g.icon = p.icon;
+  }
+  return Array.from(groups.values())
+    .map(g => ({ ...g, label: Array.from(g.labels.entries()).sort((a,b) => b[1] - a[1])[0][0] }))
+    .filter(g => !findByName(existing, g.label))
+    // Haeufigste zuerst, bei Gleichstand in der Reihenfolge, die die Kategorien
+    // in den Styles haben (Tops vor Bottoms ...), dann alphabetisch.
+    .sort((a,b) => a.rank - b.rank || b.from.length - a.from.length || (a.order - b.order) || a.label.localeCompare(b.label, "de"));
+}
+const styleLabelOf = id => state.styles.find(s => s.id === id)?.label || "Style";
+function catNameSuggestions(scope){
+  const pool = [];
+  if(scope.style) state.categories.forEach(c => { if(c.key !== "all") pool.push({ ...c, from: "ALLE", isStyle: false }); });
+  state.styleCategories.forEach(c => { if(c.style_id !== scope.style?.id) pool.push({ ...c, from: styleLabelOf(c.style_id), isStyle: true }); });
+  return groupNameSuggestions(pool, scope.cats.filter(c => c.key !== "all"));
+}
+function subcatNameSuggestions(scope, catKey){
+  const cat = scope.cats.find(c => c.key === catKey);
+  if(!cat) return [];
+  const same = (c) => c.key === cat.key || findByName([cat], c.label);
+  const pool = [];
+  // Zuerst: Unterkategorien gleichnamiger Kategorien (Tops in GRISH, OLDMONEY, ALLE ...)
+  state.categories.filter(c => same(c) && (scope.style || c.key !== cat.key)).forEach(c =>
+    state.subcategories.filter(u => u.category_key === c.key).forEach(u => pool.push({ label: u.label, from: "ALLE", rank: 0, sort_order: u.sort_order })));
+  state.styleCategories.filter(c => c.style_id !== scope.style?.id && same(c)).forEach(c =>
+    state.styleSubcategories.filter(u => u.style_id === c.style_id && u.category_key === c.key).forEach(u => pool.push({ label: u.label, from: styleLabelOf(c.style_id), rank: 0, sort_order: u.sort_order })));
+  // Danach (nur beim Tippen sichtbar): alle anderen Unterkategorien
+  state.subcategories.forEach(u => pool.push({ label: u.label, from: "ALLE", rank: 1 }));
+  state.styleSubcategories.forEach(u => pool.push({ label: u.label, from: styleLabelOf(u.style_id), rank: 1 }));
+  return groupNameSuggestions(pool, scope.subs.filter(u => u.category_key === catKey));
+}
+
+// Vorschlagsliste + Ergaenzen beim Tippen an einem Eingabefeld.
+// getCandidates() -> [{ label, from[], image_url, icon, rank }],
+// onMatch(kandidat | null): aufgerufen, wenn der Name genau einem Vorschlag
+// entspricht (oder nicht mehr).
+function wireNameSuggest(input, getCandidates, onMatch, opts = {}){
+  if(!input) return;
+  const wrap = input.closest(".a-suggest") || input.parentElement;
+  const list = document.createElement("div");
+  list.className = "a-suggest-list";
+  list.id = input.id + "-suggest";
+  list.setAttribute("role", "listbox");
+  list.hidden = true;
+  wrap.appendChild(list);
+  input.setAttribute("aria-autocomplete", "both");
+  input.setAttribute("aria-controls", list.id);
+  input.setAttribute("aria-expanded", "false");
+  let items = [], active = -1;
+  const norm = v => String(v ?? "").normalize("NFKC").trim().toLocaleLowerCase("de");
+
+  const matches = q => {
+    const all = getCandidates();
+    const n = norm(q);
+    if(!n) return opts.showOnEmpty === false ? [] : all.filter(c => !c.rank).slice(0, opts.emptyLimit ?? 12);
+    const prefix = all.filter(c => norm(c.label).startsWith(n));
+    const inner = all.filter(c => !norm(c.label).startsWith(n) && norm(c.label).includes(n));
+    return prefix.concat(inner).slice(0, 8);
+  };
+  const exact = v => getCandidates().find(c => norm(c.label) === norm(v)) || null;
+  const close = ()=>{ list.hidden = true; active = -1; input.setAttribute("aria-expanded", "false"); };
+  const show = q => {
+    items = matches(q);
+    active = -1;
+    if(!items.length){ close(); return; }
+    const n = norm(q);
+    list.innerHTML = (n ? "" : `<div class="a-suggest-head">Gibt es schon in anderen Styles${items.length > 5 ? ` (${items.length})` : ""}:</div>`) + items.map((c, i) => {
+      const lab = aesc(c.label);
+      const hl = n && norm(c.label).startsWith(n) ? `<b>${aesc(c.label.slice(0, q.trim().length))}</b>${aesc(c.label.slice(q.trim().length))}` : lab;
+      const thumb = c.image_url ? `<img src="${aesc(c.image_url)}" alt="" loading="lazy">` : `<span>${aesc(c.icon || "")}</span>`;
+      return `<button type="button" class="a-suggest-item" role="option" id="${list.id}-${i}" data-i="${i}">
+        ${c.image_url || c.icon ? `<span class="a-suggest-thumb">${thumb}</span>` : ""}
+        <span class="a-suggest-text"><span>${hl}</span><small>aus ${aesc(c.from.slice(0, 3).join(", "))}${c.from.length > 3 ? ` +${c.from.length - 3}` : ""}</small></span>
+      </button>`;
+    }).join("");
+    // Bild laedt nicht -> leeren Rahmen nicht stehen lassen
+    list.querySelectorAll(".a-suggest-thumb img").forEach(img => img.addEventListener("error", ()=> img.closest(".a-suggest-thumb")?.remove(), { once: true }));
+    list.hidden = false;
+    input.setAttribute("aria-expanded", "true");
+  };
+  const highlight = i => {
+    active = i;
+    list.querySelectorAll(".a-suggest-item").forEach((el, j) => el.classList.toggle("is-active", j === i));
+    if(i >= 0) input.setAttribute("aria-activedescendant", `${list.id}-${i}`); else input.removeAttribute("aria-activedescendant");
+    list.querySelector(".is-active")?.scrollIntoView({ block: "nearest" });
+  };
+  const pick = c => {
+    input.value = c.label;
+    input.setSelectionRange(c.label.length, c.label.length);
+    close();
+    onMatch?.(c);
+  };
+
+  input.addEventListener("focus", ()=> show(input.value));
+  input.addEventListener("input", e => {
+    const q = input.value;
+    show(q);
+    // Direkt ergaenzen: "T" -> "T|ops|" (markierter Rest wird beim
+    // Weitertippen ueberschrieben). Nicht beim Loeschen und nicht waehrend
+    // einer Eingabe mit Kandidaten-Fenster (z.B. chinesische Tastatur).
+    const deleting = (e.inputType || "").startsWith("delete");
+    if(!deleting && !e.isComposing && q.trim() && input.selectionStart === q.length){
+      const top = items.find(c => norm(c.label).startsWith(norm(q)));
+      if(top && top.label.length > q.length){
+        input.value = top.label;
+        input.setSelectionRange(q.length, top.label.length);
+      }
+    }
+    onMatch?.(exact(input.value));
+  });
+  input.addEventListener("keydown", e => {
+    if(list.hidden || e.isComposing) return;
+    if(e.key === "ArrowDown"){ e.preventDefault(); highlight(Math.min(items.length - 1, active + 1)); }
+    else if(e.key === "ArrowUp"){ e.preventDefault(); highlight(Math.max(-1, active - 1)); }
+    else if(e.key === "Escape"){ close(); }
+    else if(e.key === "Enter" && active >= 0){ e.preventDefault(); pick(items[active]); }
+  });
+  // mousedown statt click: das Feld verliert so nicht vorher den Fokus.
+  list.addEventListener("mousedown", e => {
+    const b = e.target.closest(".a-suggest-item");
+    if(!b) return;
+    e.preventDefault();
+    pick(items[Number(b.dataset.i)]);
+  });
+  input.addEventListener("blur", ()=> setTimeout(close, 120));
+}
+
 // Setzt Kategorie + Unterkategorie einer Style-Zeile und laesst die
 // geaenderten Felder kurz aufleuchten, damit man sieht, was passiert ist.
 function applyStylePick(row, pick){
@@ -10114,7 +10441,7 @@ function renderDashboard(){
         </div>
         <form id="catForm" class="a-grid" style="margin-bottom:6px">
           <div class="a-full"><label class="a-label" for="cat-label">Neue Kategorie${catScopeNow.style ? ` in „${aesc(catScopeNow.style.label)}“` : ""} *</label>
-            <input id="cat-label" class="a-field" required placeholder="${catScopeNow.style ? "Kleider" : "Sonnenbrillen"}"></div>
+            <div class="a-suggest"><input id="cat-label" class="a-field" required autocomplete="off" spellcheck="false" placeholder="${catScopeNow.style ? "Kleider" : "Sonnenbrillen"}"></div></div>
           <div class="a-full">
             <label class="a-label" for="cat-img">Bild</label>
             <div class="a-uprow">
@@ -10124,6 +10451,7 @@ function renderDashboard(){
                 <span class="a-upload-hint">oder hierher ziehen</span>
                 <input id="cat-img" type="file" accept="image/*"></label>
               <img id="cat-imgprev" class="a-thumb a-thumb-round" style="display:none" alt="">
+              <span class="a-hint a-imgauto" id="cat-imgauto" hidden></span>
               <p class="a-hint" style="margin:0">Das Bild im Kategorie-Kreis${catScopeNow.style ? ` bei „${aesc(catScopeNow.style.label)}“` : ""}.</p>
             </div>
           </div>
@@ -10173,7 +10501,8 @@ function renderDashboard(){
             </div>
             <form id="subcatForm" class="a-grid" style="margin-top:14px">
               <div class="a-full"><label class="a-label" for="subcat-label">Neue Unterkategorie in „${aesc(aktuelleKat?.label || "")}" *</label>
-                <input id="subcat-label" class="a-field" required placeholder="${catScopeNow.style ? "Kurze Kleider" : "Sweatpants"}"></div>
+                <div class="a-suggest"><input id="subcat-label" class="a-field" required autocomplete="off" spellcheck="false" placeholder="${catScopeNow.style ? "Kurze Kleider" : "Sweatpants"}"></div>
+                <div class="a-subsuggest" id="subcatSuggest" hidden></div></div>
               <div class="a-actions"><button class="a-btn a-btn-primary">Unterkategorie anlegen</button></div>
             </form>`;
         })()}
@@ -11969,16 +12298,14 @@ async function renderRevenue(){
     if(revenueCreatorId !== "all" && !(o.creators || []).some(c => c.id === revenueCreatorId)) return false;
     return true;
   });
-  // Nur tatsaechlich BEZAHLTE Bestellungen zaehlen als Umsatz (status "paid"
-  // oder "shipped" oder "cancelled" — NICHT nur "pending" ausschliessen).
-  // Ein Weidian-Mitarbeiter hat bestaetigt: stornierte/rueckerstattete
-  // Bestellungen zaehlen bei Weidian weiterhin zum "支付金额" (bezahlter
-  // Betrag) DES ZAHLUNGSTAGS — die Rueckerstattung selbst wird separat an
-  // dem Tag verbucht, an dem das Geld zurueckgeht, nicht rueckwirkend vom
-  // urspruenglichen Zahltag abgezogen. Nur "pending" (nie bezahlte, noch
-  // offene) Bestellungen zaehlen nicht mit. Alle Bestellungen bleiben
-  // trotzdem in der Liste unten sichtbar (inkl. Status-Badge).
-  const revenueOrders = filteredOrders.filter(o => o.status !== "pending");
+  // ALLE Bestellungen zaehlen als Umsatz -- auch "pending" (offen). So
+  // gewuenscht: die Zahl soll der im Weidian-Dashboard entsprechen. Dazu
+  // kommt, dass die Synchronisierung den Status einer Bestellung nur beim
+  // ersten Abholen kennt -- eine danach bezahlte Bestellung stand hier sonst
+  // fuer immer als "offen" da und fehlte im Umsatz. Stornierte/rueckerstattete
+  // Bestellungen zaehlen weiterhin mit (laut Weidian-Mitarbeiter zum Zahltag,
+  // die Rueckerstattung wird separat an ihrem eigenen Tag verbucht).
+  const revenueOrders = filteredOrders;
 
   const demo = {
     revenue: revenueOrders.reduce((s,o)=> s+o.price, 0),
@@ -12143,7 +12470,7 @@ async function renderRevenue(){
             <span class="rv-kpi-icon rv-kpi-icon-emerald">${RV_ICON_TRENDING_UP}</span>
             <div class="rv-kpi-body">
               <div class="rv-kpi-label" id="rvRevenueLabel">${revenueDisplayLabel}</div>
-              <div class="rv-kpi-value ${hasMargin ? "rv-kpi-value-emerald" : ""}" id="rvRevenueValue">${formatRevenueAmount(revenueDisplayValue, {maximumFractionDigits: hasMargin ? 2 : 0})}</div>
+              <div class="rv-kpi-value ${hasMargin ? "rv-kpi-value-emerald" : ""}" id="rvRevenueValue">${formatRevenueAmount(revenueDisplayValue, {maximumFractionDigits: 2})}</div>
             </div>
           </div>
           <div class="rv-kpi">
@@ -12204,7 +12531,7 @@ async function renderRevenue(){
                   </div>
                 </div>
                 <div style="text-align:right;flex:0 0 auto">
-                  <div class="rv-row-value">${formatRevenueAmount(row.revenue, {maximumFractionDigits:0})}</div>
+                  <div class="rv-row-value">${formatRevenueAmount(row.revenue, {maximumFractionDigits:2})}</div>
                   <div class="an-top-meta">${row.orders} Bestellungen</div>
                 </div>
               </div>`).join("")}
@@ -12268,7 +12595,7 @@ async function renderRevenue(){
     const nowHasMargin = revenueMarginPct !== null;
     const displayVal = nowHasMargin ? demo.revenue * (revenueMarginPct/100) : demo.revenue;
     revenueLabelEl.textContent = nowHasMargin ? "Gewinn" : "Umsatz";
-    revenueValueEl.textContent = formatRevenueAmount(displayVal, {maximumFractionDigits: nowHasMargin ? 2 : 0});
+    revenueValueEl.textContent = formatRevenueAmount(displayVal, {maximumFractionDigits: 2});   // auf den Fen genau, wie bei Weidian
     revenueValueEl.classList.toggle("rv-kpi-value-emerald", nowHasMargin);
     const lineWrap = document.getElementById("rvLineWrap");
     if(lineWrap){
@@ -13919,7 +14246,44 @@ function wireDashboard(){
   const categoryScopeId = (state.activeId === ALL_CREATOR_ID || !state.activeId) ? null : state.activeId;
 
   let newCatImg = "";
-  wireUpload("cat-img", "cat-imglabel", "cat-imgprev", "kategorien", u => newCatImg = u);
+  // Bild, das ein Vorschlag mitgebracht hat (siehe wireNameSuggest) -- nur so
+  // lange, bis jemand selbst ein Bild hochlaedt oder es ablehnt.
+  let catImgAuto = false, catImgDeclinedFor = "", catIconAuto = false;
+  wireUpload("cat-img", "cat-imglabel", "cat-imgprev", "kategorien", u => { newCatImg = u; catImgAuto = false; showCatImgAuto(null); });
+  const catImgPrev = document.getElementById("cat-imgprev");
+  const catIconEl = document.getElementById("cat-icon");
+  function showCatImgAuto(from){
+    const el = document.getElementById("cat-imgauto");
+    if(!el) return;
+    el.hidden = !from;
+    el.innerHTML = from ? `Bild aus \u201e${aesc(from)}\u201c übernommen \u00b7 <button type="button" class="a-linkbtn" id="cat-imgauto-x">weglassen</button>` : "";
+    el.querySelector("#cat-imgauto-x")?.addEventListener("click", ()=>{
+      catImgDeclinedFor = styleNameLoose(document.getElementById("cat-label").value);
+      newCatImg = ""; catImgAuto = false;
+      if(catImgPrev){ catImgPrev.removeAttribute("src"); catImgPrev.style.display = "none"; }
+      showCatImgAuto(null);
+    });
+  }
+  // Passt der Name zu einer Kategorie aus einem anderen Style, kommt deren
+  // Bild (bzw. Emoji) gleich mit -- aber nie ueber ein selbst gewaehltes.
+  function applyCatSuggestion(c){
+    if(catImgAuto && (!c || !c.image_url)){
+      newCatImg = ""; catImgAuto = false;
+      if(catImgPrev){ catImgPrev.removeAttribute("src"); catImgPrev.style.display = "none"; }
+      showCatImgAuto(null);
+    }
+    if(c?.image_url && (!newCatImg || catImgAuto) && catImgDeclinedFor !== styleNameLoose(c.label)){
+      newCatImg = c.image_url; catImgAuto = true;
+      if(catImgPrev){ catImgPrev.src = c.image_url; catImgPrev.style.display = "block"; }
+      showCatImgAuto(c.imageFrom || c.from[0]);
+    }
+    if(catIconEl){
+      if(catIconAuto && (!c || !c.icon || c.image_url)){ catIconEl.value = ""; catIconAuto = false; }
+      if(c?.icon && !c.image_url && (!catIconEl.value || catIconAuto)){ catIconEl.value = c.icon; catIconAuto = true; }
+    }
+  }
+  wireNameSuggest(document.getElementById("cat-label"), q => catNameSuggestions(catScope()), applyCatSuggestion);
+  catIconEl?.addEventListener("input", ()=>{ catIconAuto = false; });
   wireImageDropZone("cat-img-zone", "cat-img");
 
   // Kategorien per Ziehen sortierbar — neue sort_order-Werte in 10er-Schritten
@@ -13977,7 +14341,7 @@ function wireDashboard(){
     const { error } = await sb.from(scope.catTable).insert(zeile);
     if(error) return atoast(error.code === "23505" ? `„${label}" gibt es schon.` : error.message, "err");
     atoast("Kategorie angelegt.");
-    catForm.reset(); newCatImg = "";
+    catForm.reset(); newCatImg = ""; catImgAuto = false; catIconAuto = false; catImgDeclinedFor = "";
     document.getElementById("cat-imgprev").style.display = "none";
     refresh();
   };
@@ -14170,27 +14534,86 @@ function wireDashboard(){
   });
   wireSubcatDragReorder();
 
+  // Legt eine oder mehrere Unterkategorien in der gewaehlten Kategorie an
+  // (Standard oder Style, siehe catScope) -- hinten angehaengt, in der
+  // uebergebenen Reihenfolge. Gibt { neu, fehler } zurueck.
+  async function createSubcategories(labels){
+    const scope = catScope();
+    const catKey = subcatAdminCategoryKey;
+    const siblings = scope.subs.filter(s => s.category_key === catKey);
+    let last = siblings.reduce((m,s)=> Math.max(m, s.sort_order ?? 0), 0);
+    const keys = new Set(siblings.map(s => s.key));
+    const zeilen = [];
+    for(const raw of labels){
+      const label = String(raw ?? "").trim();
+      if(!label) continue;
+      if(scope.style && label.includes("|")) return { neu: 0, fehler: "Das Zeichen „|“ ist in Unterkategorie-Namen eines Styles nicht erlaubt." };
+      if(findByName(siblings.concat(zeilen), label)) continue;   // gibt es schon (auch Einzahl/Mehrzahl)
+      let key = slugKey(label) || ("sub-" + Date.now() + "-" + zeilen.length);
+      if(keys.has(key)) continue;
+      keys.add(key);
+      last += 10;
+      const zeile = { category_key: catKey, key, label, sort_order: last };
+      if(scope.style) zeile.style_id = scope.style.id;
+      else zeile.creator_id = categoryScopeId;
+      zeilen.push(zeile);
+    }
+    if(!zeilen.length) return { neu: 0, fehler: null };
+    const { error } = await sb.from(scope.subTable).insert(zeilen);
+    if(error) return { neu: 0, fehler: error.code === "23505" ? "Gibt es in dieser Kategorie schon." : error.message };
+    return { neu: zeilen.length, fehler: null };
+  }
+
+  // Bei leerem Feld keine Liste aufklappen: die ganze Liste steht ohnehin als
+  // Knoepfe darunter (und die aufgeklappte Liste laege genau darueber).
+  wireNameSuggest(document.getElementById("subcat-label"), ()=> subcatNameSuggestions(catScope(), subcatAdminCategoryKey), null, { showOnEmpty: false });
+
+  // Die ganze Liste aus den anderen Styles als Knoepfe unter dem Feld:
+  // ein Klick legt an, "Alle hinzufügen" uebernimmt alles auf einmal.
+  const subcatSuggest = document.getElementById("subcatSuggest");
+  if(subcatSuggest){
+    const vorschlaege = subcatNameSuggestions(catScope(), subcatAdminCategoryKey).filter(c => !c.rank);
+    if(vorschlaege.length){
+      subcatSuggest.hidden = false;
+      subcatSuggest.innerHTML = `
+        <div class="a-subsuggest-head">
+          <span>Aus anderen Styles (${vorschlaege.length}):</span>
+          <button type="button" class="a-linkbtn" id="subcatSuggestAll">Alle hinzufügen</button>
+        </div>
+        <div class="a-subsuggest-chips">
+          ${vorschlaege.map((c, i) => `<button type="button" class="a-subsuggest-chip" data-i="${i}" title="aus ${aesc(c.from.join(", "))}">\uff0b ${aesc(c.label)}</button>`).join("")}
+        </div>`;
+      let busy = false;
+      const anlegen = async (labels, btn) => {
+        if(busy) return;
+        busy = true;
+        subcatSuggest.querySelectorAll("button").forEach(b => b.disabled = true);
+        if(btn) btn.textContent = "Wird angelegt \u2026";
+        const { neu, fehler } = await createSubcategories(labels);
+        busy = false;
+        if(fehler){ atoast(fehler, "err"); return refresh(); }
+        atoast(neu === 1 ? "Unterkategorie angelegt." : `${neu} Unterkategorien angelegt.`);
+        refresh();
+      };
+      subcatSuggest.querySelectorAll(".a-subsuggest-chip").forEach(b => b.addEventListener("click", ()=> anlegen([vorschlaege[Number(b.dataset.i)].label], b)));
+      subcatSuggest.querySelector("#subcatSuggestAll").addEventListener("click", e => {
+        const kat = catScope().cats.find(c => c.key === subcatAdminCategoryKey);
+        if(!confirm(`Alle ${vorschlaege.length} Unterkategorien in \u201e${kat?.label || ""}\u201c anlegen?\n\n${vorschlaege.map(c => c.label).join(", ")}`)) return;
+        anlegen(vorschlaege.map(c => c.label), e.currentTarget);
+      });
+    }
+  }
+
   const subcatForm = document.getElementById("subcatForm");
   if(subcatForm) subcatForm.onsubmit = async (e)=>{
     e.preventDefault();
     const label = document.getElementById("subcat-label").value.trim();
     if(!label) return;
-    if(catScope().style && label.includes("|")) return atoast("Das Zeichen „|“ ist in Unterkategorie-Namen eines Styles nicht erlaubt.", "err");
-
-    let key = label.toLowerCase()
-      .replace(/[äÄ]/g,"ae").replace(/[öÖ]/g,"oe").replace(/[üÜ]/g,"ue").replace(/ß/g,"ss")
-      .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-      .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
-    if(!key) key = "sub-" + Date.now();
-
     const scope = catScope();
-    const siblings = scope.subs.filter(s => s.category_key === subcatAdminCategoryKey);
-    const last = siblings.reduce((m,s)=> Math.max(m, s.sort_order ?? 0), 0);
-    const zeile = { category_key: subcatAdminCategoryKey, key, label, sort_order: last + 10 };
-    if(scope.style) zeile.style_id = scope.style.id;
-    else zeile.creator_id = categoryScopeId;
-    const { error } = await sb.from(scope.subTable).insert(zeile);
-    if(error) return atoast(error.code === "23505" ? `„${label}" gibt es in dieser Kategorie schon.` : error.message, "err");
+    if(findByName(scope.subs.filter(s => s.category_key === subcatAdminCategoryKey), label)) return atoast(`\u201e${label}\u201c gibt es in dieser Kategorie schon.`, "err");
+    const { neu, fehler } = await createSubcategories([label]);
+    if(fehler) return atoast(fehler, "err");
+    if(!neu) return atoast(`\u201e${label}\u201c gibt es in dieser Kategorie schon.`, "err");
     atoast("Unterkategorie angelegt.");
     subcatForm.reset();
     refresh();
