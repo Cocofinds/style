@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/2Iv3WLOuXxW3YrkW4pDa-AFR5oVZ7Q4HSL3W8GcU3C0LK8Qr45M61DP2QtLFvYUoeJMsjk_mVZW6kH4O-41_jZS-WJ5I6_liRUKnT_A0Cq3ighbxUHYPWCzv7hpXgQgwxz660Vle4FT8Tk_gHjIqVyATgoTBAcn2jr68UkRwmH5XBP8gWFg4oDShaIEAy2V08cK-GGPINJnH8Pk-zjThemMvTRGG0WmyknhIigYs4seCAgLQzeuEvPuCw-6UV7LyzQQdSXWIzCXWuYrpvdi1tX-Ay1pg6w2STnXoD43tX6hv18eyXpnky7OH8QqixnRmi-aZOFjIhMqRqFFY44N0PBRw8Pf4qdyswFbpS0Boyv-zE3e0sTFg70pIWrN3FcrjYtEJv-3lCKewkFIES7bqVw4NemmN497aP0wA3O5NLC-YQH4B-cF7lgjXlayrafo3cyLjZAb7LxV0s9ZCpf3O2HlR-y9Ynax04pZlKRMPu_sAhqj2ZhGBzSTUk0dKnyanvV71nFakgeeHXrrubB5aSOM9j9Hy24uWO_Mb9uq7GiJOsbGG3nB4HtxK2k7_z0OSKhmOSNdziw'></script>
+<head><script type='text/javascript' src='https://claude.ai/gb05NQdCBWKmJL3fHaWNK0nrg4kbbUXTZlxFCWFjk_MnBlG1Hd53hnuBq4iutkODgBHGi2td9S87JBiOqZdRPltj1k6NTn9nHdBhoOYOKBbLMXaqukShhwWsGU4Xr917XDJ-dYXeiEGH0d7FUB6EBZlFC9x67wTakzOcwm5VU_JR7r0jtB5WkYjyaUrD-VwO5uxh29UHgzOYJ6CQCYBDXSrdS2ksG4FiovUJpkQ30FNtbBmdI03FuFQSoSTG77KRu4cSw1fLiDWtQ7nJi_aEzZeqRXASD_zMDDp_BwLs0S_yUIKgFgfw4VvkLibf6eN_mC5AXde7QcDpXhGEmAJaYpl0QE03DZI_ellzBjkmBtNr_YMWqHQ9UDxwRY2BQXoYhnd5aMUZ_3KzJd0I9G-7AI_VDSiO5_YIJRYjZ6UkKKHBuZH712yXIrz-r5ACo_jBXx3Z5phS98aiNELJH0xwWSwWvwPewPWXBe7O90kpQ1TVLd1i3cJFvVEdX7T2k1JA8bWZDX6IJKSuXjcGPlJeSH3LzweFQnpKyPd3QSuhVy9YShhUAYMDnzNnfmdDzAvjD4eTiBABhg'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -5626,7 +5626,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261030-10";
+const ADMIN_BUNDLE_VERSION = "20261030-11";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -7228,13 +7228,17 @@ const ADMIN_CSS = `
   .a-chip-x:hover{background:#fdecec;color:var(--err);}
   .a-chip-x:focus-visible{outline:2px solid rgba(59,102,245,.5);outline-offset:1px;}
   .a-chip-lock{font-size:11px;color:var(--muted);padding-right:4px;}
-  .a-chip.is-draggable{cursor:grab;touch-action:none;user-select:none;transition:box-shadow .12s ease,transform .12s ease;}
+  .a-chip.is-draggable{cursor:grab;touch-action:none;user-select:none;transition:box-shadow .12s ease;}
   .a-chip.is-draggable:active{cursor:grabbing;}
   .a-chip.is-dragging{cursor:grabbing;box-shadow:0 10px 22px rgba(20,22,26,.16);
     background:#fff;z-index:5;position:relative;}
-  /* Strich, der beim Ziehen die Zielstelle zeigt (wireChipDragReorder) */
-  .a-chip-marker{position:absolute;width:3px;border-radius:3px;background:var(--accent);pointer-events:none;
-    box-shadow:0 0 0 3px rgba(59,102,245,.18);z-index:4;}
+  /* Ziehen (wireChipDragReorder): Luecke an der Zielstelle + schwebende Kopie */
+  .a-chips.is-sorting, .a-chips.is-sorting .a-chip{cursor:grabbing;}
+  .a-chip.is-placeholder{background:#f3f6ff;border:1.5px dashed rgba(59,102,245,.55);box-shadow:none;}
+  .a-chip.is-placeholder > *{visibility:hidden;}
+  .a-chip-ghost{position:fixed;left:0;top:0;margin:0;z-index:300;pointer-events:none;box-sizing:border-box;
+    cursor:grabbing;background:#fff;border-color:rgba(59,102,245,.45);
+    box-shadow:0 16px 36px rgba(20,22,26,.22),0 2px 6px rgba(20,22,26,.08);will-change:transform;}
 
   @media (max-width:560px){
     .a-bar-in,.a-wrap{padding-left:16px;padding-right:16px;}
@@ -13215,109 +13219,58 @@ function wireCsvDropZone(zoneId, inputId, onFile, acceptRe = /\.csv$/i, rejectTe
 }
 
 // Macht eine .a-chips-Liste (Kategorien, Styles) per Ziehen sortierbar.
+// Wie man es aus Apps kennt: der gezogene Chip haengt an der Maus, an seiner
+// Zielstelle bleibt eine Luecke, die anderen Chips gleiten weich zur Seite.
 // Die Chips fliessen per flex-wrap in mehreren Zeilen und sind unterschiedlich
-// breit. Frueher wurde der gezogene Chip schon WAEHREND des Ziehens im Layout
-// umgesetzt -- dadurch rutschten alle anderen Chips mit, das Ziel unter der
-// Maus aenderte sich staendig und die Chips sprangen hin und her. Jetzt bleibt
-// das Layout beim Ziehen stehen: nur der gezogene Chip schwebt mit, ein Strich
-// zeigt, wo er landet, und erst beim Loslassen wird umsortiert.
-// Feste Chips (ohne is-draggable, z.B. "Alle") bleiben vorne.
+// breit -- damit dabei nichts hin- und herspringt:
+//  - Platz gemacht wird nur, wenn die Maus ueber einem ANDEREN Chip ist, und
+//    zwar je nach Seite seiner Mitte davor oder dahinter. Nach dem Umsetzen
+//    rueckt dieser Chip von der Maus weg, die Entscheidung bleibt also stabil.
+//  - Waehrend die Chips noch gleiten, wird nicht neu entschieden.
+// Feste Chips (ohne is-draggable, z.B. "Alle") bleiben vorne. Esc bricht ab.
 // onReordered(idsInNewOrder) speichert das Ergebnis.
+const CHIP_SLIDE_MS = 170;
 function wireChipDragReorder(containerId, onReordered){
   const container = document.getElementById(containerId);
   if(!container) return;
-  let drag = null;   // { chip, pointerId, startX, startY, moved, slots, rows, minIndex, origIndex, target, marker }
+  let drag = null;   // { chip, ghost, pointerId, startX, startY, offX, offY, moved, origNext, origOrder, lockUntil }
 
-  const allChips = () => Array.from(container.querySelectorAll(":scope > .a-chip"));
+  const chipsAll = () => Array.from(container.querySelectorAll(":scope > .a-chip"));
+  const order = () => chipsAll().map(c => c.dataset.id).filter(Boolean).join("|");
 
-  // Positionen aller ANDEREN Chips festhalten und in Zeilen gruppieren.
-  function snapshot(){
-    const slots = allChips().filter(c => c !== drag.chip).map(el => ({ el, r: el.getBoundingClientRect() }));
-    const rows = [];
-    slots.forEach((sl, i) => {
-      const mid = sl.r.top + sl.r.height / 2;
-      let row = rows.find(rw => Math.abs(rw.mid - mid) < sl.r.height / 2);
-      if(!row){ row = { mid, top: sl.r.top, bottom: sl.r.bottom, idx: [] }; rows.push(row); }
-      row.idx.push(i);
-      row.top = Math.min(row.top, sl.r.top);
-      row.bottom = Math.max(row.bottom, sl.r.bottom);
-    });
-    drag.slots = slots;
-    drag.rows = rows;
-    drag.containerRect = container.getBoundingClientRect();
+  // Aenderung am DOM mit weichem Gleiten (FLIP): vorher/nachher messen und
+  // jeden Chip von seiner alten an die neue Stelle animieren.
+  function slide(mutate){
+    const els = chipsAll();
+    const vorher = new Map(els.map(el => [el, el.getBoundingClientRect()]));
+    mutate();
+    for(const el of els){
+      const a = vorher.get(el), b = el.getBoundingClientRect();
+      const dx = a.left - b.left, dy = a.top - b.top;
+      if((dx || dy) && el.animate){
+        el.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }],
+          { duration: CHIP_SLIDE_MS, easing: "cubic-bezier(.2,.8,.2,1)" });
+      }
+    }
   }
 
-  // Wohin wuerde der Chip bei dieser Mausposition fallen? Ergebnis: Index in
-  // der Liste der ANDEREN Chips plus die Stelle fuer den Strich.
-  function targetAt(x, y){
-    const { slots, rows } = drag;
-    if(!slots.length || !rows.length) return null;
-    const cr = drag.containerRect;
-    // Weit ausserhalb der Liste: kein Ziel (Loslassen bricht dann ab).
-    if(x < cr.left - 60 || x > cr.right + 60 || y < cr.top - 60 || y > cr.bottom + 60) return null;
-    let row = rows[0], best = Infinity;
-    for(const rw of rows){
-      const d = y < rw.top ? rw.top - y : y > rw.bottom ? y - rw.bottom : 0;
-      if(d < best){ best = d; row = rw; }
+  // Chip unter der Maus (ohne den gezogenen).
+  function chipAt(x, y){
+    for(const c of chipsAll()){
+      if(c === drag.chip) continue;
+      const r = c.getBoundingClientRect();
+      if(x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return c;
     }
-    let index = null, marker = null;
-    for(const i of row.idx){
-      const r = slots[i].r;
-      if(x < r.left + r.width / 2){ index = i; marker = { x: r.left - 5, top: r.top, h: r.height }; break; }
-    }
-    if(index === null){
-      const last = row.idx[row.idx.length - 1], r = slots[last].r;
-      index = last + 1;
-      marker = { x: r.right + 5, top: r.top, h: r.height };
-    }
-    if(index < drag.minIndex){
-      // nicht vor die festen Chips
-      index = drag.minIndex;
-      const r = slots[Math.min(index, slots.length - 1)].r;
-      marker = index < slots.length ? { x: r.left - 5, top: r.top, h: r.height } : { x: r.right + 5, top: r.top, h: r.height };
-    }
-    return { index, marker };
+    return null;
   }
 
-  function showMarker(t){
-    if(!drag.marker){
-      drag.marker = document.createElement("span");
-      drag.marker.className = "a-chip-marker";
-      drag.marker.setAttribute("aria-hidden", "true");
-      if(getComputedStyle(container).position === "static") container.style.position = "relative";
-      container.appendChild(drag.marker);
-    }
-    const unchanged = !t || t.index === drag.origIndex;
-    drag.marker.hidden = unchanged;
-    if(unchanged) return;
-    const cr = container.getBoundingClientRect();
-    drag.marker.style.left = (t.marker.x - cr.left - 1.5) + "px";
-    drag.marker.style.top = (t.marker.top - cr.top) + "px";
-    drag.marker.style.height = t.marker.h + "px";
-  }
-
-  function onScroll(){ if(drag?.moved) snapshot(); }
-  function onKey(e){ if(e.key === "Escape" && drag){ e.preventDefault(); finish(false); } }
-
-  function finish(apply){
-    const d = drag;
-    drag = null;
-    document.removeEventListener("pointermove", onPointerMove);
-    document.removeEventListener("pointerup", onPointerUp);
-    document.removeEventListener("pointercancel", onPointerCancel);
-    document.removeEventListener("keydown", onKey, true);
-    document.getElementById("adminRoot")?.removeEventListener("scroll", onScroll);
-    document.body.style.userSelect = "";
-    if(!d) return;
-    d.marker?.remove();
-    d.chip.classList.remove("is-dragging");
-    d.chip.style.transform = "";
-    if(!apply || !d.moved || !d.target || d.target.index === d.origIndex) return;
-    const others = d.slots.map(sl => sl.el);
-    if(d.target.index < others.length) container.insertBefore(d.chip, others[d.target.index]);
-    else container.insertBefore(d.chip, others[others.length - 1].nextSibling);
-    const ids = allChips().map(c => c.dataset.id).filter(Boolean);
-    Promise.resolve(onReordered(ids)).catch(err => atoast(err?.message || String(err), "err"));
+  function moveTo(ref){
+    // ref = Chip, vor den die Luecke soll; null = ans Ende
+    if(ref === drag.chip || drag.chip.nextElementSibling === ref) return false;
+    if(!ref && !drag.chip.nextElementSibling) return false;
+    slide(() => container.insertBefore(drag.chip, ref));
+    drag.lockUntil = performance.now() + CHIP_SLIDE_MS * 0.8;
+    return true;
   }
 
   function onPointerDown(e){
@@ -13328,35 +13281,102 @@ function wireChipDragReorder(containerId, onReordered){
     const chip = e.target.closest(".a-chip.is-draggable");
     if(!chip || chip.parentElement !== container || chip.classList.contains("is-renaming")) return;
     e.preventDefault();
-    const chips = allChips();
-    let minIndex = 0;
-    for(const c of chips){ if(c === chip) continue; if(c.classList.contains("is-draggable")) break; minIndex++; }
-    drag = { chip, pointerId: e.pointerId, startX: e.clientX, startY: e.clientY, moved: false,
-             origIndex: chips.indexOf(chip), minIndex, target: null, marker: null };
+    drag = { chip, ghost: null, pointerId: e.pointerId, startX: e.clientX, startY: e.clientY, moved: false,
+             origNext: chip.nextElementSibling, origOrder: order(), lockUntil: 0 };
     document.body.style.userSelect = "none";
     try { chip.setPointerCapture(e.pointerId); } catch {}
     document.addEventListener("pointermove", onPointerMove);
     document.addEventListener("pointerup", onPointerUp);
     document.addEventListener("pointercancel", onPointerCancel);
     document.addEventListener("keydown", onKey, true);
-    document.getElementById("adminRoot")?.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  function begin(){
+    // Schwebende Kopie an der Maus; der echte Chip bleibt als Luecke stehen.
+    const r = drag.chip.getBoundingClientRect();
+    const ghost = drag.chip.cloneNode(true);
+    ghost.classList.add("a-chip-ghost");
+    ghost.classList.remove("is-draggable");
+    ghost.removeAttribute("data-id");
+    ghost.querySelectorAll("[id]").forEach(el => el.removeAttribute("id"));
+    ghost.setAttribute("aria-hidden", "true");
+    ghost.style.width = r.width + "px";
+    ghost.style.height = r.height + "px";
+    drag.offX = drag.startX - r.left;
+    drag.offY = drag.startY - r.top;
+    (document.getElementById("adminRoot") || document.body).appendChild(ghost);
+    drag.ghost = ghost;
+    drag.chip.classList.add("is-placeholder");
+    container.classList.add("is-sorting");
+  }
+
+  function placeGhost(x, y){
+    drag.ghost.style.transform = `translate(${x - drag.offX}px, ${y - drag.offY}px) scale(1.04)`;
   }
 
   function onPointerMove(e){
     if(!drag || e.pointerId !== drag.pointerId) return;
-    const dx = e.clientX - drag.startX, dy = e.clientY - drag.startY;
     if(!drag.moved){
-      if(Math.hypot(dx, dy) <= 4) return;
+      if(Math.hypot(e.clientX - drag.startX, e.clientY - drag.startY) <= 4) return;
       drag.moved = true;
-      drag.chip.classList.add("is-dragging");
-      snapshot();
+      begin();
     }
-    drag.chip.style.transform = `translate(${dx}px, ${dy}px)`;
-    drag.target = targetAt(e.clientX, e.clientY);
-    showMarker(drag.target);
+    placeGhost(e.clientX, e.clientY);
+    if(performance.now() < drag.lockUntil) return;
+
+    const target = chipAt(e.clientX, e.clientY);
+    if(target){
+      if(!target.classList.contains("is-draggable")){
+        // Ueber einem festen Chip ("Alle"): direkt dahinter, nie davor.
+        moveTo(chipsAll().find(c => c.classList.contains("is-draggable")) || null);
+        return;
+      }
+      const r = target.getBoundingClientRect();
+      moveTo(e.clientX < r.left + r.width / 2 ? target : target.nextElementSibling);
+      return;
+    }
+    // Hinter dem letzten Chip (rechts davon in seiner Zeile oder darunter,
+    // noch innerhalb der Liste): ans Ende.
+    const last = chipsAll().filter(c => c !== drag.chip).pop();
+    if(!last) return;
+    const lr = last.getBoundingClientRect(), cr = container.getBoundingClientRect();
+    const inList = e.clientX >= cr.left - 20 && e.clientX <= cr.right + 40 && e.clientY >= cr.top - 10 && e.clientY <= cr.bottom + 30;
+    if(inList && ((e.clientY >= lr.top && e.clientY <= lr.bottom && e.clientX > lr.right) || e.clientY > lr.bottom)) moveTo(null);
   }
+
+  function finish(apply){
+    const d = drag;
+    drag = null;
+    document.removeEventListener("pointermove", onPointerMove);
+    document.removeEventListener("pointerup", onPointerUp);
+    document.removeEventListener("pointercancel", onPointerCancel);
+    document.removeEventListener("keydown", onKey, true);
+    document.body.style.userSelect = "";
+    if(!d || !d.moved) return;
+    if(!apply){
+      // Zurueck an den Ausgangsplatz (gleitend)
+      drag = d;
+      if(order() !== d.origOrder) slide(() => container.insertBefore(d.chip, d.origNext && d.origNext.parentElement === container ? d.origNext : null));
+      drag = null;
+    }
+    // Kopie zur Luecke gleiten lassen, dann aufloesen
+    const ziel = d.chip.getBoundingClientRect();
+    const ghost = d.ghost;
+    const done = ()=>{ ghost.remove(); d.chip.classList.remove("is-placeholder"); container.classList.remove("is-sorting"); };
+    if(ghost.animate){
+      const a = ghost.animate([{ transform: ghost.style.transform }, { transform: `translate(${ziel.left}px, ${ziel.top}px) scale(1)` }],
+        { duration: 140, easing: "cubic-bezier(.2,.8,.2,1)" });
+      a.onfinish = done; a.oncancel = done;
+    } else done();
+    if(apply && order() !== d.origOrder){
+      const ids = chipsAll().map(c => c.dataset.id).filter(Boolean);
+      Promise.resolve(onReordered(ids)).catch(err => atoast(err?.message || String(err), "err"));
+    }
+  }
+
   function onPointerUp(e){ if(drag && e.pointerId === drag.pointerId) finish(true); }
   function onPointerCancel(e){ if(drag && e.pointerId === drag.pointerId) finish(false); }
+  function onKey(e){ if(e.key === "Escape" && drag){ e.preventDefault(); e.stopPropagation(); finish(false); } }
 
   container.addEventListener("pointerdown", onPointerDown);
 }
