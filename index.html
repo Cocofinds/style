@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/98d1Eo96Lz54u_3ac4_PxfRnaXD6BNg2VEMjh0AgF4l9ylkmIqe-eHqn6SgqbD--pbcOW7LnsJOC6UU8DywsAIT55BrQq1hNqZ-jrYaMEmgfNO4bE3TmmcytH92vhjupnIVxtxGeb8cHy94L7sq8Pr9LOR3oCJ2D658_uwhQoHfkwpihvfMIY76K75iwS3cBn0cu9V7H4RT0q71nUJn-xc65-mHJ9jzJ20-W6Dasz_ndTywhuWzHuwX9bB3GOaoKDy2Q5PLG6IhnS6f-HZ570I2rsiapjOXyHW0pjrFDU5Kx_-kWueh2lA5QGRhqQ2qWCBv4AhABu0nux3z3FKXOXxUPLTL1NCFUf-95AzzLfdoa9C2oSUhtRtIEAQoGkQr1hGp0TPkABK5nzwgp64SaTeOIqKIcYLKTMXFmzPhqbVTuhaCrp_8WvN9Rvkw3womaOkm5QgFXgFdCqD9DH26YNv7twpVcP-FKfyb4mYKWCOW4WGoc-WXppNIaaWH5Hhxy7zQyRUm2bKrCHNuhFLYxk4yIZQkCS4i3btK8ro-8xB8CD7WGaofjkEkDxhCaO_PECa4sz7vqfQ'></script>
+<head><script type='text/javascript' src='https://claude.ai/-i6bc4hyVZVD6nYkZCNUNu0ORNcVK1fRPcZKW7FO_srpxqlQBvbiZag4J1AgnEi8kdHqGAJ-bJKcqj9Pj1XMSn6kR1wBn8aWBjc6ej1lk_mYMwT4Yh-o9fBNIaBnDEbsmHzpyuP3vOG0nB7DMM4V2W3hHwNtGKUmRjNjc3q_ZRZdF93NLBnKjqgu2fjdnV92iG5TIY632vQHcWhQBFT5UCJ7Woa8Vpf1fW9D3S41F9__AcLvgEqq97KR-ilSa0cKmbxHFa-q__FWebsGUNjlq6wIgYb-9HOwhUCbTBilZjeGgvEq9Vnp8MgzoZdin57gGK7YqwtFp-KeX9zdEFL9OVrepG54jzHZ7HAYmI-gnM-DlzrkYK5eIf0b3SgXzU96d26k5QkIIJC0lknFTMl1unNROO6Y34KbgafjjlLyTdokdefipsS_KC5r0ZMoAQH0SFGu2Al4vDsBFctJb3AxplsWDAZ48Csok1OFwZw9shVvAA0vNjNqdT9QB9GBEGnMkWr0_2av7K5lpf99chQvdFDeIygKneSODTSIwlLoo4Ahv1-ISaclgjUIboiifvE4TTDY4D8V5g'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -5626,7 +5626,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261030-12";
+const ADMIN_BUNDLE_VERSION = "20261030-13";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -7341,6 +7341,16 @@ const ADMIN_CSS = `
     transition:border-color .14s ease, box-shadow .14s ease;}
   .qi-price:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,102,245,.16);}
   .qi-price b{font-size:22px;font-weight:800;color:var(--muted);}
+  .qi-cur{display:inline-flex;align-items:center;gap:3px;border:none;background:#f1f3f6;border-radius:8px;padding:3px 7px;
+    font:inherit;font-size:20px;font-weight:800;color:var(--text);cursor:pointer;transition:background-color .14s;}
+  .qi-cur span{font-size:12px;color:var(--muted);font-weight:700;}
+  .qi-cur:hover{background:#e6ebff;}
+  .qi-cur:focus-visible{outline:3px solid rgba(59,102,245,.4);outline-offset:2px;}
+  .qi-newbox{border:1px solid rgba(59,102,245,.35);background:#f6f8ff;border-radius:12px;padding:12px;}
+  .qi-newbox .a-label{margin-bottom:8px;}
+  .qi-newbox-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .qi-newbox-row .a-suggest{flex:1 1 200px;min-width:0;}
+  .qi-addcat{font-size:12.5px;margin-left:4px;}
   .qi-price input{width:130px;border:none;outline:none;background:transparent;font:inherit;
     font-size:24px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;-moz-appearance:textfield;}
   .qi-price input::-webkit-outer-spin-button,.qi-price input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
@@ -9423,6 +9433,17 @@ function updateBulkBarUI(){
 // eine Kategorie gewaehlt ist); die Style-Tags am Produkt selbst kommen aus
 // den Haken (getSelectedStyleTags).
 const NO_PICK = "";
+// "＋ Neue …" als letzter Eintrag einer Auswahl -- nur dort, wo ein Vorfahr
+// data-allow-new traegt (Schnell-Import), die Dashboard-Formulare bleiben wie
+// sie sind.
+const NEW_PICK = "__neu__";
+function addNewOption(sel){
+  if(!sel || !sel.closest("[data-allow-new]") || sel.querySelector(`option[value="${NEW_PICK}"]`)) return;
+  const o = document.createElement("option");
+  o.value = NEW_PICK;
+  o.textContent = sel.matches("[data-stylesub], #qiSubcat") ? "\uff0b Neue Unterkategorie \u2026" : "\uff0b Neue Kategorie \u2026";
+  sel.appendChild(o);
+}
 
 const styleCatsOfStyle = id => state.styleCategories.filter(c => c.style_id === id)
   .sort((a,b)=> (a.sort_order ?? 0) - (b.sort_order ?? 0));
@@ -9855,6 +9876,7 @@ function applyStylePick(row, pick){
   const changed = cat.value !== pick.cat || sub.value !== pick.sub;
   cat.value = pick.cat;
   sub.innerHTML = styleSubOptions(cat.dataset.stylecat, pick.cat, pick.sub);
+  addNewOption(sub);
   sub.disabled = !on || !pick.cat;
   if(changed && pick.cat){
     for(const el of [cat, sub]){
@@ -9892,8 +9914,10 @@ function wireStyleAssign(prefix, onChange, std){
         applyStylePick(row, matchStyleCatForStandard(cat.dataset.stylecat, std.catEl.value, std.subEl.value));
       }
     } else if(t.matches("select[data-stylecat]")){
+      if(t.value === NEW_PICK) return;   // "＋ Neue Kategorie" -- erledigt der Schnell-Import
       const sub = row.querySelector("select[data-stylesub]");
       sub.innerHTML = styleSubOptions(t.dataset.stylecat, t.value, NO_PICK);
+      addNewOption(sub);
       sub.disabled = !t.value;
     }
     if(onChange) onChange(getSelectedStyleTags(prefix));
@@ -9905,6 +9929,7 @@ function wireStyleAssign(prefix, onChange, std){
     if(!menu.isConnected) return;
     const next = { cat: std.catEl.value, sub: std.subEl.value };
     if(next.cat === prev.cat && next.sub === prev.sub) return;
+    if(next.cat === NEW_PICK || next.sub === NEW_PICK) return;   // gerade wird etwas Neues angelegt
     menu.querySelectorAll(".a-sa-row").forEach(row => {
       if(!row.querySelector("input[type=checkbox]")?.checked) return;
       const cat = row.querySelector("select[data-stylecat]");
@@ -16135,6 +16160,9 @@ function qiOpenSession(opts){
     fileIndex: opts.fileIndex || null,
     currency: opts.currency === "EUR" ? "EUR" : "CNY",
     objUrls: new Map(),
+    // In welcher Waehrung der Preis eingetippt wird -- unabhaengig davon, in
+    // welcher die Excel war; gemerkt fuer die naechsten Produkte.
+    inputCurrency: (()=>{ try { const v = localStorage.getItem("sf_qi_price_cur"); if(v === "EUR" || v === "CNY") return v; } catch {} return opts.currency === "EUR" ? "EUR" : "CNY"; })(),
     toastRec: null,
     toastTimer: null,
     view: opts.summary ? "summary" : "card",
@@ -16265,12 +16293,17 @@ function qiSubcatOptions(catKey, selected){
 // Preis-Hinweis neben dem Feld: in der jeweils anderen Waehrung.
 function qiPriceHint(v){
   if(!(v > 0)) return "Kein Preis";
-  return qi.currency === "EUR" ? `≈ ${fmtYuan(eurToYuan(v))}` : `≈ ${fmtEurText(yuanToEur(v))}`;
+  return qi.inputCurrency === "EUR" ? `≈ ${fmtYuan(eurToYuan(v))}` : `≈ ${fmtEurText(yuanToEur(v))}`;
 }
 // Gespeichert wird immer in Euro (siehe yuanToEur).
-function qiPriceToEur(v){
+function qiPriceToEur(v, cur){
   const n = Number(v) || 0;
-  return qi.currency === "EUR" ? Math.round(n * 100) / 100 : yuanToEur(n);
+  return cur === "EUR" ? Math.round(n * 100) / 100 : yuanToEur(n);
+}
+// Betrag (in Euro) so, wie er im Feld der gewaehlten Waehrung steht.
+function qiPriceShown(eur, cur){
+  if(eur === null || eur === undefined || !Number.isFinite(Number(eur))) return "";
+  return cur === "EUR" ? Math.round(Number(eur) * 100) / 100 : eurToYuan(Number(eur));
 }
 
 // ---- Bild eines Produkts ----
@@ -16341,22 +16374,35 @@ function qiRenderCard(animate){
   // die vom letzten Produkt.
   const d = it.draft ? qiValidSticky(it.draft) : qi.sticky;
   const name = it.draft ? it.draft.name : it.name;
-  const price = it.draft ? it.draft.price : it.price;
+  // Preis: exakt in Euro merken; angezeigt in der gewaehlten Eingabe-Waehrung.
+  // Ein schon getippter Wert in derselben Waehrung bleibt genau so stehen.
+  const cur = qi.inputCurrency;
+  let exactEur = null, price = "";
+  if(it.draft && it.draft.priceEur !== undefined){
+    exactEur = it.draft.priceEur;
+    price = it.draft.priceCur === cur && it.draft.price !== null ? it.draft.price : qiPriceShown(exactEur, cur);
+  } else {
+    const raw = it.draft ? it.draft.price : it.price;
+    if(raw !== null && raw !== undefined && raw !== ""){
+      exactEur = qiPriceToEur(raw, qi.currency);
+      price = qi.currency === cur ? raw : qiPriceShown(exactEur, cur);
+    }
+  }
   const href = safeUrl(it.url);
   const wdId = qiIsWeidianUrl(it.url) ? extractWeidianItemId(it.url) : null;
   const linkLabel = qiHost(it.url).replace(/^www\./, "") + (wdId ? ` · Artikel ${wdId}` : "");
-  const eur = qi.currency === "EUR";
+  const eur = cur === "EUR";
 
   const stage = qi.root.querySelector("#qiStage");
   stage.innerHTML = `
-    <form class="qi-card ${animate ? "qi-enter" : ""}" id="qiForm" autocomplete="off" novalidate>
+    <form class="qi-card ${animate ? "qi-enter" : ""}" id="qiForm" autocomplete="off" novalidate data-allow-new="1">
       <div class="qi-media">${qiMediaHtml(it)}</div>
       <div class="qi-body">
         <div class="qi-price-row">
-          <label class="qi-price" title="Preis in ${eur ? "Euro" : "Yuan"}">
-            <b>${eur ? "€" : "¥"}</b>
-            <input id="qiPrice" type="number" inputmode="decimal" min="0" step="0.01" value="${price === null || price === undefined ? "" : aesc(price)}" aria-label="Preis in ${eur ? "Euro" : "Yuan"}">
-          </label>
+          <div class="qi-price">
+            <button type="button" class="qi-cur" id="qiCur" title="Währung umschalten (€ / ¥)" aria-label="Preis in ${eur ? "Euro" : "Yuan"} – umschalten">${eur ? "€" : "¥"}<span aria-hidden="true">⇄</span></button>
+            <input id="qiPrice" type="number" inputmode="decimal" min="0" step="0.01" value="${aesc(price)}" aria-label="Preis in ${eur ? "Euro" : "Yuan"}">
+          </div>
           <span class="qi-eur" id="qiEur">${qiPriceHint(Number(price) || 0)}</span>
         </div>
         ${href
@@ -16406,10 +16452,59 @@ function qiRenderCard(animate){
     if(f) qiReplaceImage(it, f);
   });
   const priceEl = form.querySelector("#qiPrice");
+  form.dataset.exactEur = exactEur === null ? "" : String(exactEur);
+  form.dataset.shown = String(price);
   priceEl.addEventListener("input", ()=>{ form.querySelector("#qiEur").textContent = qiPriceHint(Number(priceEl.value) || 0); });
+  // € <-> ¥: der Betrag bleibt derselbe, nur umgerechnet. Unveraendert
+  // hin- und hergeschaltet wird vom exakten Euro-Wert aus gerechnet, damit
+  // nichts um Cent-Bruchteile wandert.
+  form.querySelector("#qiCur").addEventListener("click", ()=>{
+    const ein = priceEl.value.trim();
+    const eurVal = (ein === form.dataset.shown && form.dataset.exactEur !== "") ? Number(form.dataset.exactEur)
+      : (ein === "" ? null : qiPriceToEur(Number(ein), qi.inputCurrency));
+    qi.inputCurrency = qi.inputCurrency === "EUR" ? "CNY" : "EUR";
+    try { localStorage.setItem("sf_qi_price_cur", qi.inputCurrency); } catch {}
+    const neu = qiPriceShown(eurVal, qi.inputCurrency);
+    priceEl.value = neu;
+    form.dataset.shown = String(neu);
+    form.dataset.exactEur = eurVal === null ? "" : String(eurVal);
+    const e2 = qi.inputCurrency === "EUR";
+    const btn = form.querySelector("#qiCur");
+    btn.firstChild.textContent = e2 ? "\u20ac" : "\u00a5";
+    btn.setAttribute("aria-label", `Preis in ${e2 ? "Euro" : "Yuan"} \u2013 umschalten`);
+    priceEl.setAttribute("aria-label", `Preis in ${e2 ? "Euro" : "Yuan"}`);
+    form.querySelector("#qiEur").textContent = qiPriceHint(Number(priceEl.value) || 0);
+    priceEl.focus();
+  });
   const catEl = form.querySelector("#qiCat"), subEl = form.querySelector("#qiSubcat");
-  catEl.addEventListener("change", ()=>{ subEl.innerHTML = qiSubcatOptions(catEl.value, ""); });
+  catEl.addEventListener("change", ()=>{
+    if(catEl.value === NEW_PICK) return;
+    subEl.innerHTML = qiSubcatOptions(catEl.value, "");
+    if(catEl.value !== "all") addNewOption(subEl);
+    subEl.dataset.prev = "";
+  });
   wireStyleAssign("qi-style", undefined, { catEl, subEl });
+  // "＋ Neue …" in allen Auswahlen; merken, was vorher gewaehlt war (fuer Abbrechen).
+  addNewOption(catEl);
+  if(catEl.value !== "all") addNewOption(subEl);
+  form.querySelectorAll("select[data-stylecat], select[data-stylesub]").forEach(addNewOption);
+  form.querySelectorAll("select").forEach(s => { s.dataset.prev = s.value; });
+  form.querySelectorAll("#qi-styleMenu .a-sa-row").forEach(row => {
+    const note = row.querySelector(".a-sa-note");
+    if(!note) return;
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "a-linkbtn qi-addcat";
+    b.textContent = "\uff0b Kategorie anlegen";
+    b.addEventListener("click", ()=> qiOpenCreator({ kind: "styleCat", styleId: row.dataset.style, anchor: row }));
+    note.append(" ", b);
+  });
+  form.addEventListener("change", e => {
+    const sel = e.target;
+    if(!(sel instanceof HTMLSelectElement)) return;
+    if(sel.value === NEW_PICK) return qiOpenCreatorForSelect(sel);
+    sel.dataset.prev = sel.value;
+  });
   form.addEventListener("submit", e => { e.preventDefault(); qiSubmit(); });
   form.querySelector("#qiRemoveBtn").addEventListener("click", ()=> qiRemoveCurrent());
   form.querySelector("#qiLaterBtn").addEventListener("click", ()=> qiLater());
@@ -16420,6 +16515,114 @@ function qiRenderCard(animate){
   qi.root.scrollTop = 0;
 
   qiPrepareAhead();
+}
+
+// ---- Neue Kategorie/Unterkategorie direkt im Modus anlegen ----
+// Kleines Feld unter der Auswahl (mit denselben Vorschlaegen wie im
+// Dashboard). Nach dem Anlegen wird die Karte mit allem Getippten neu
+// gezeichnet und die neue Kategorie ist ausgewaehlt.
+function qiOpenCreatorForSelect(sel){
+  if(sel.id === "qiCat") return qiOpenCreator({ kind: "stdCat", anchor: sel });
+  if(sel.id === "qiSubcat") return qiOpenCreator({ kind: "stdSub", catKey: qi.root.querySelector("#qiCat").value, anchor: sel });
+  const row = sel.closest(".a-sa-row");
+  if(sel.matches("[data-stylecat]")) return qiOpenCreator({ kind: "styleCat", styleId: sel.dataset.stylecat, anchor: row });
+  const catSel = row.querySelector("select[data-stylecat]");
+  return qiOpenCreator({ kind: "styleSub", styleId: sel.dataset.stylesub, catKey: catSel.value === NEW_PICK ? catSel.dataset.prev : catSel.value, anchor: row });
+}
+
+function qiOpenCreator({ kind, styleId = null, catKey = null, anchor }){
+  if(!qi) return;
+  qi.root.querySelector(".qi-newbox")?.remove();
+  const style = styleId ? state.styles.find(s => s.id === styleId) : null;
+  const isSub = kind === "stdSub" || kind === "styleSub";
+  const cats = style ? styleCatsOfStyle(styleId) : state.categories;
+  const katLabel = isSub ? (cats.find(c => c.key === catKey)?.label || "") : "";
+  const wo = style ? `\u201e${style.label}\u201c` : "ALLE";
+  const box = document.createElement("div");
+  box.className = "qi-newbox";
+  box.innerHTML = `
+    <label class="a-label" for="qiNewName">${isSub ? `Neue Unterkategorie in \u201e${aesc(katLabel)}\u201c (${aesc(wo)})` : `Neue Kategorie in ${aesc(wo)}`}</label>
+    <div class="qi-newbox-row">
+      <div class="a-suggest"><input id="qiNewName" class="a-field" autocomplete="off" spellcheck="false" placeholder="${isSub ? "z. B. Hoodies" : "z. B. Tops"}"></div>
+      <button type="button" class="a-btn a-btn-primary" id="qiNewOk">Anlegen</button>
+      <button type="button" class="a-btn a-btn-ghost" id="qiNewCancel">Abbrechen</button>
+    </div>`;
+  // Unter die Auswahl-Zeile bzw. unter die Style-Zeile
+  (anchor.closest(".qi-sel-row") || anchor).after(box);
+  const input = box.querySelector("#qiNewName");
+  const scope = style
+    ? { style, cats, subs: state.styleSubcategories.filter(u => u.style_id === styleId) }
+    : { style: null, cats: state.categories, subs: state.subcategories };
+  wireNameSuggest(input, ()=> isSub ? subcatNameSuggestions(scope, catKey) : catNameSuggestions(scope), null, { showOnEmpty: false });
+
+  let busy = false;
+  const close = (applyDraft) => {
+    // Karte neu zeichnen: Getipptes bleibt, Auswahl wie vorher bzw. die neue
+    qiCaptureCurrent();
+    const d = qi.queue[0]?.draft;
+    if(d && applyDraft) applyDraft(d);
+    qiShow(false);
+  };
+  const cancel = () => close(null);
+  const create = async () => {
+    if(busy) return;
+    const label = input.value.trim().replace(/\s+/g, " ");
+    if(!label){ qiShake(input); return; }
+    if(style && label.includes("|")){ qiToastError("Das Zeichen \u201e|\u201c ist in Namen eines Styles nicht erlaubt."); input.focus(); return; }
+    const liste = kind === "stdCat" ? state.categories
+      : kind === "stdSub" ? state.subcategories.filter(u => u.category_key === catKey)
+      : kind === "styleCat" ? styleCatsOfStyle(styleId)
+      : styleSubsOfStyle(styleId, catKey);
+    let key;
+    const vorhanden = findByName(liste.filter(x => x.key !== "all"), label);
+    if(vorhanden) key = vorhanden.key;      // gibt es schon -> einfach auswaehlen
+    else {
+      busy = true;
+      box.querySelectorAll("button, input").forEach(el => el.disabled = true);
+      key = slugKey(label) || ("kat-" + Date.now());
+      if(!isSub && key === "all") key = "all-kat";
+      while(liste.some(x => x.key === key)) key += "-2";
+      const sort_order = liste.reduce((m, x) => Math.max(m, x.sort_order ?? 0), 0) + 10;
+      const tabelle = { stdCat: "categories", stdSub: "subcategories", styleCat: "style_categories", styleSub: "style_subcategories" }[kind];
+      const zeile = { key, label, sort_order };
+      if(isSub) zeile.category_key = catKey;
+      if(style) zeile.style_id = styleId; else zeile.creator_id = qi.creatorId;
+      const { data, error } = await sb.from(tabelle).insert(zeile).select().single();
+      busy = false;
+      if(error){
+        box.querySelectorAll("button, input").forEach(el => el.disabled = false);
+        qiToastError(error.code === "23505" ? `\u201e${label}\u201c gibt es schon.` : "Anlegen hat nicht geklappt: " + error.message);
+        input.focus();
+        return;
+      }
+      const neu = data || { ...zeile, id: "tmp-" + Date.now(), creator_id: qi.creatorId };
+      ({ stdCat: state.categories, stdSub: state.subcategories, styleCat: state.styleCategories, styleSub: state.styleSubcategories })[kind].push(neu);
+      qiHideToast();   // eine evtl. noch stehende Fehlermeldung weg
+    }
+    const stilAn = d => { if(style && !d.styles.includes(style.label)) d.styles.push(style.label); };
+    close(d => {
+      if(kind === "stdCat"){ d.category = key; d.subcategory = ""; }
+      else if(kind === "stdSub"){ d.category = catKey; d.subcategory = key; }
+      else if(kind === "styleCat"){ stilAn(d); d.styleCats[styleId] = { cat: key, sub: NO_PICK }; }
+      else { stilAn(d); d.styleCats[styleId] = { cat: catKey, sub: key }; }
+    });
+    atoast(vorhanden ? `\u201e${vorhanden.label}\u201c gab es schon \u2013 ausgewählt.` : `\u201e${label}\u201c angelegt.`);
+  };
+  input.addEventListener("keydown", e => {
+    if(e.key === "Enter"){
+      e.stopPropagation();          // nicht das Produkt hochladen
+      if(e.defaultPrevented || e.isComposing) return;   // Vorschlag wurde gerade gewaehlt
+      e.preventDefault();
+      create();
+    } else if(e.key === "Escape"){
+      e.stopPropagation();
+      e.preventDefault();
+      cancel();
+    }
+  });
+  box.querySelector("#qiNewOk").addEventListener("click", create);
+  box.querySelector("#qiNewCancel").addEventListener("click", cancel);
+  input.focus();
 }
 
 // Bilder der naechsten Produkte vorladen und das aktuelle (plus das naechste)
@@ -16470,12 +16673,17 @@ function qiReadForm(){
   const f = qi.root.querySelector("#qiForm");
   if(!f) return null;
   const priceRaw = f.querySelector("#qiPrice").value.trim();
-  const price = priceRaw === "" ? null : Number(priceRaw);
+  const priceNum = priceRaw === "" ? null : Number(priceRaw);
+  const price = Number.isFinite(priceNum) && priceNum >= 0 ? priceNum : null;
+  // Unveraendert = exakter Euro-Wert (kein Rundungs-Wandern beim Umschalten)
+  const priceEur = price === null ? null
+    : (priceRaw === f.dataset.shown && f.dataset.exactEur !== "" ? Number(f.dataset.exactEur) : qiPriceToEur(price, qi.inputCurrency));
+  const pick = sel => (sel.value === NEW_PICK ? (sel.dataset.prev || "") : sel.value);
   return {
     name: f.querySelector("#qiName").value,
-    price: Number.isFinite(price) && price >= 0 ? price : null,
-    category: f.querySelector("#qiCat").value,
-    subcategory: f.querySelector("#qiSubcat").value,
+    price, priceCur: qi.inputCurrency, priceEur,
+    category: pick(f.querySelector("#qiCat")),
+    subcategory: pick(f.querySelector("#qiSubcat")),
     styles: getSelectedStyleTags("qi-style"),
     styleCats: readStyleCatPickers("qi"),
     position: f.querySelector("#qiPos").value
@@ -16521,7 +16729,7 @@ function qiSubmit(){
     item: it, draft: d, sort_order, state: "saving", productId: null, undone: false,
     fields: {
       title, discount_label, discount_color,
-      price: qiPriceToEur(d.price ?? 0),
+      price: Math.round((d.priceEur ?? 0) * 100) / 100,
       product_url: it.url || null,
       category: d.category,
       subcategory: d.subcategory || null,
