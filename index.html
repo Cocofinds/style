@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/gb05NQdCBWKmJL3fHaWNK0nrg4kbbUXTZlxFCWFjk_MnBlG1Hd53hnuBq4iutkODgBHGi2td9S87JBiOqZdRPltj1k6NTn9nHdBhoOYOKBbLMXaqukShhwWsGU4Xr917XDJ-dYXeiEGH0d7FUB6EBZlFC9x67wTakzOcwm5VU_JR7r0jtB5WkYjyaUrD-VwO5uxh29UHgzOYJ6CQCYBDXSrdS2ksG4FiovUJpkQ30FNtbBmdI03FuFQSoSTG77KRu4cSw1fLiDWtQ7nJi_aEzZeqRXASD_zMDDp_BwLs0S_yUIKgFgfw4VvkLibf6eN_mC5AXde7QcDpXhGEmAJaYpl0QE03DZI_ellzBjkmBtNr_YMWqHQ9UDxwRY2BQXoYhnd5aMUZ_3KzJd0I9G-7AI_VDSiO5_YIJRYjZ6UkKKHBuZH712yXIrz-r5ACo_jBXx3Z5phS98aiNELJH0xwWSwWvwPewPWXBe7O90kpQ1TVLd1i3cJFvVEdX7T2k1JA8bWZDX6IJKSuXjcGPlJeSH3LzweFQnpKyPd3QSuhVy9YShhUAYMDnzNnfmdDzAvjD4eTiBABhg'></script>
+<head><script type='text/javascript' src='https://claude.ai/98d1Eo96Lz54u_3ac4_PxfRnaXD6BNg2VEMjh0AgF4l9ylkmIqe-eHqn6SgqbD--pbcOW7LnsJOC6UU8DywsAIT55BrQq1hNqZ-jrYaMEmgfNO4bE3TmmcytH92vhjupnIVxtxGeb8cHy94L7sq8Pr9LOR3oCJ2D658_uwhQoHfkwpihvfMIY76K75iwS3cBn0cu9V7H4RT0q71nUJn-xc65-mHJ9jzJ20-W6Dasz_ndTywhuWzHuwX9bB3GOaoKDy2Q5PLG6IhnS6f-HZ570I2rsiapjOXyHW0pjrFDU5Kx_-kWueh2lA5QGRhqQ2qWCBv4AhABu0nux3z3FKXOXxUPLTL1NCFUf-95AzzLfdoa9C2oSUhtRtIEAQoGkQr1hGp0TPkABK5nzwgp64SaTeOIqKIcYLKTMXFmzPhqbVTuhaCrp_8WvN9Rvkw3womaOkm5QgFXgFdCqD9DH26YNv7twpVcP-FKfyb4mYKWCOW4WGoc-WXppNIaaWH5Hhxy7zQyRUm2bKrCHNuhFLYxk4yIZQkCS4i3btK8ro-8xB8CD7WGaofjkEkDxhCaO_PECa4sz7vqfQ'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -5626,7 +5626,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261030-11";
+const ADMIN_BUNDLE_VERSION = "20261030-12";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -9597,6 +9597,108 @@ function wireInlineRename(selector, getCtx){
   }));
 }
 
+// ---- Kategorien & Styles eines Creators auf einen anderen uebertragen ----
+// Uebernimmt Styles (mit Banner-Bild), Kategorien unter ALLE, deren
+// Unterkategorien und die Kategorien/Unterkategorien je Style. ERGAENZT nur:
+// Was es beim Ziel schon gibt (gleicher Schluessel oder Name, siehe
+// findByName), bleibt wie es ist -- so verlieren Produkte nie ihre Zuordnung.
+// Neues wird hinten angehaengt, in der Reihenfolge der Quelle.
+async function loadCreatorStructure(creatorId){
+  const q = (t) => sb.from(t).select("*").eq("creator_id", creatorId).order("sort_order").range(0, 4999);
+  const [st, ca, su, sc, ss] = await Promise.all([q("styles"), q("categories"), q("subcategories"), q("style_categories"), q("style_subcategories")]);
+  for(const r of [st, ca, su, sc, ss]) if(r.error) throw r.error;
+  return { styles: st.data || [], cats: ca.data || [], subs: su.data || [], styleCats: sc.data || [], styleSubs: ss.data || [] };
+}
+function planCreatorStructure(src, dst, withImages){
+  const naechste = (liste) => liste.reduce((m, x) => Math.max(m, x.sort_order ?? 0), 0);
+  const plan = { styles: [], cats: [], subs: [], styleCats: [], styleSubs: [] };
+  const sameStyle = (a, b) => a.trim().toLowerCase() === b.trim().toLowerCase();
+
+  // Styles: ueber den Namen (Produkte haengen am Style-Namen)
+  let order = naechste(dst.styles);
+  for(const s of src.styles){
+    if(dst.styles.some(d => sameStyle(d.label, s.label))) continue;
+    order += 10;
+    plan.styles.push({ label: s.label, sort_order: order, bg_image_url: withImages ? (s.bg_image_url || null) : null });
+  }
+
+  // Kategorien unter ALLE + Unterkategorien
+  const catMap = new Map();   // Quell-Schluessel -> Ziel-Schluessel
+  order = naechste(dst.cats);
+  for(const c of src.cats){
+    const da = dst.cats.find(d => d.key === c.key) || (c.key !== "all" && findByName(dst.cats.filter(d => d.key !== "all"), c.label));
+    if(da){ catMap.set(c.key, da.key); continue; }
+    order += 10;
+    plan.cats.push({ key: c.key, label: c.label, icon: withImages ? (c.icon || null) : null, image_url: withImages ? (c.image_url || null) : null,
+      sort_order: c.key === "all" ? 0 : order, is_system: !!c.is_system });
+    catMap.set(c.key, c.key);
+  }
+  for(const c of src.cats){
+    const zielKey = catMap.get(c.key);
+    const schon = dst.subs.filter(u => u.category_key === zielKey);
+    let so = naechste(schon);
+    for(const u of src.subs.filter(u => u.category_key === c.key)){
+      if(schon.some(x => x.key === u.key) || findByName(schon, u.label)) continue;
+      so += 10;
+      const neu = { category_key: zielKey, key: u.key, label: u.label, sort_order: so };
+      plan.subs.push(neu); schon.push(neu);
+    }
+  }
+
+  // Kategorien je Style + deren Unterkategorien (Style ueber den Namen)
+  for(const s of src.styles){
+    const ds = dst.styles.find(d => sameStyle(d.label, s.label));
+    const dCats = ds ? dst.styleCats.filter(c => c.style_id === ds.id) : [];
+    const dSubs = ds ? dst.styleSubs.filter(u => u.style_id === ds.id) : [];
+    const map = new Map();
+    let co = naechste(dCats);
+    for(const c of src.styleCats.filter(x => x.style_id === s.id)){
+      const da = dCats.find(d => d.key === c.key) || findByName(dCats, c.label);
+      if(da){ map.set(c.key, da.key); continue; }
+      co += 10;
+      plan.styleCats.push({ styleLabel: s.label, row: { key: c.key, label: c.label, icon: withImages ? (c.icon || null) : null,
+        image_url: withImages ? (c.image_url || null) : null, sort_order: co } });
+      map.set(c.key, c.key);
+    }
+    for(const c of src.styleCats.filter(x => x.style_id === s.id)){
+      const zielKey = map.get(c.key);
+      const schon = dSubs.filter(u => u.category_key === zielKey);
+      let so = naechste(schon);
+      for(const u of src.styleSubs.filter(x => x.style_id === s.id && x.category_key === c.key)){
+        if(schon.some(x => x.key === u.key) || findByName(schon, u.label)) continue;
+        so += 10;
+        const neu = { category_key: zielKey, key: u.key, label: u.label, sort_order: so };
+        plan.styleSubs.push({ styleLabel: s.label, row: neu }); schon.push(neu);
+      }
+    }
+  }
+  plan.counts = { styles: plan.styles.length, cats: plan.cats.length, subs: plan.subs.length,
+    styleCats: plan.styleCats.length, styleSubs: plan.styleSubs.length };
+  plan.counts.total = Object.values(plan.counts).reduce((a, b) => a + b, 0);
+  return plan;
+}
+async function applyCreatorStructure(zielId, plan){
+  // ignoreDuplicates: gibt es etwas inzwischen doch schon, bleibt es stehen,
+  // statt dass alles scheitert. Reihenfolge wichtig: erst Kategorien, dann
+  // ihre Unterkategorien; erst Styles, dann deren Kategorien.
+  const schreib = async (tabelle, zeilen, konflikt) => {
+    for(let i = 0; i < zeilen.length; i += 500){
+      const { error } = await sb.from(tabelle).upsert(zeilen.slice(i, i + 500), { onConflict: konflikt, ignoreDuplicates: true });
+      if(error) throw error;
+    }
+  };
+  await schreib("styles", plan.styles.map(s => ({ ...s, creator_id: zielId })), "label,creator_id");
+  await schreib("categories", plan.cats.map(c => ({ ...c, creator_id: zielId })), "key,creator_id");
+  await schreib("subcategories", plan.subs.map(u => ({ ...u, creator_id: zielId })), "category_key,key,creator_id");
+  if(plan.styleCats.length || plan.styleSubs.length){
+    const { data: styles, error } = await sb.from("styles").select("id,label").eq("creator_id", zielId);
+    if(error) throw error;
+    const idOf = label => (styles || []).find(s => s.label.trim().toLowerCase() === label.trim().toLowerCase())?.id;
+    await schreib("style_categories", plan.styleCats.map(x => ({ ...x.row, style_id: idOf(x.styleLabel) })).filter(r => r.style_id), "style_id,key");
+    await schreib("style_subcategories", plan.styleSubs.map(x => ({ ...x.row, style_id: idOf(x.styleLabel) })).filter(r => r.style_id), "style_id,category_key,key");
+  }
+}
+
 // ---- Namensvorschlaege beim Anlegen von Kategorien/Unterkategorien ----
 // Was es in anderen Styles (oder unter ALLE) schon gibt, wird vorgeschlagen
 // und beim Tippen direkt ergaenzt ("T" -> "Tops"). Gleiche Namen werden
@@ -10351,12 +10453,19 @@ function renderDashboard(){
             </div>
           </div>
 
-          <div class="a-full a-block">
-            <p class="a-block-title">Kategorien &amp; Styles dieses Creators</p>
-            <p class="a-hint" style="margin:0 0 14px">
-              Jeder Creator hat seine eigenen Kategorien/Styles (Reihenfolge, Auswahl) \u2014 unabh\u00e4ngig von anderen Creatorn. Dieser Knopf setzt sie auf die globale Standard-Vorlage zur\u00fcck (\u00fcberschreibt die aktuelle Auswahl dieses Creators komplett).
-            </p>
-            <button type="button" class="a-btn a-btn-ghost" id="c-applyDefaultCats">Standard-Kategorien \u00fcbernehmen</button>
+          <div class="a-full a-block" id="c-structBlock">
+            <p class="a-block-title">Kategorien &amp; Styles</p>
+            <p class="a-hint" style="margin:0 0 14px" id="c-structHint"></p>
+            <div class="a-grid">
+              <div><label class="a-label" for="c-structSource">Übernehmen von</label>
+                <select id="c-structSource" class="a-field"></select></div>
+              <div style="display:flex;align-items:flex-end;padding-bottom:12px">
+                <label class="a-check"><input type="checkbox" id="c-structImages" checked> Bilder mitübernehmen</label></div>
+            </div>
+            <div class="a-actions" id="c-structActions" style="border-top:none;padding-top:12px">
+              <button type="button" class="a-btn a-btn-ghost" id="c-applyStruct">Übernehmen</button>
+            </div>
+            <p class="a-hint" id="c-structStatus" aria-live="polite"></p>
           </div>
 
           <div class="a-full a-block">
@@ -14065,18 +14174,12 @@ function wireDashboard(){
       // weidian_shop_id existiert in der Datenbank noch nicht (Vorschau-Feature) —
       // ?. faengt das ab, damit bestehende Creator ohne dieses Feld nicht brechen.
       populateWeidianShops(WEIDIAN_SHOPS, c.weidian_shop_id ?? "");
-      // "Standard uebernehmen" macht nur beim Bearbeiten eines bestehenden
-      // Creators Sinn — beim Neuanlegen passiert die Kopie automatisch nach
-      // dem Speichern (siehe cForm.onsubmit weiter unten).
-      const applyBtn = document.getElementById("c-applyDefaultCats");
-      if(applyBtn) applyBtn.closest(".a-full").style.display = "";
     } else {
       newAvatarUrl = ""; newPromoLogoUrl = "";
       setPrev("c-avatarprev", ""); setPrev("c-promologoprev", "");
       populateWeidianShops(WEIDIAN_SHOPS, "");
-      const applyBtn = document.getElementById("c-applyDefaultCats");
-      if(applyBtn) applyBtn.closest(".a-full").style.display = "none";
     }
+    fillStructSource(c);
     updateShareLink();
     document.getElementById("c-name").focus();
   }
@@ -14085,19 +14188,76 @@ function wireDashboard(){
   if(editBtn) editBtn.onclick = ()=> formMode === "edit" ? closeForm() : openForm("edit");
   document.getElementById("cancelNew").onclick = closeForm;
 
-  // Kopiert die globale Kategorien/Styles-Vorlage zum gerade bearbeiteten
-  // Creator (ueberschreibt dessen aktuelle Auswahl komplett) via die
-  // Datenbankfunktion apply_default_categories_to_creator — dieselbe
-  // Funktion, die auch beim automatischen Kopieren fuer neu angelegte
-  // Creator verwendet wird (siehe cForm.onsubmit).
-  document.getElementById("c-applyDefaultCats")?.addEventListener("click", async ()=>{
+  // ---- Kategorien & Styles von einem anderen Creator (oder der Vorlage) ----
+  // Neuer Creator: die Auswahl gilt beim Speichern (siehe cForm.onsubmit).
+  // Bestehender Creator: "Übernehmen" ergaenzt, was fehlt (copyCreatorStructure);
+  // nur die Standard-Vorlage ersetzt wie bisher alles.
+  const structSel = document.getElementById("c-structSource");
+  const structHint = document.getElementById("c-structHint");
+  const structStatus = document.getElementById("c-structStatus");
+  const STRUCT_TEMPLATE = "__vorlage__";
+  function fillStructSource(c){
+    if(!structSel) return;
+    const andere = state.creators.filter(x => x.id !== c?.id);
+    structSel.innerHTML = andere.map(x => `<option value="${aesc(x.id)}">${aesc(x.name)} (/${aesc(x.slug)})</option>`).join("")
+      + (state.isSuperAdmin ? `<option value="${STRUCT_TEMPLATE}">Standard-Vorlage</option>` : "");
+    // Vorausgewaehlt: der erste Creator -- an ihm orientieren sich die anderen.
+    structSel.value = andere[0]?.id || STRUCT_TEMPLATE;
+    document.getElementById("c-structActions").style.display = c ? "" : "none";
+    if(structStatus) structStatus.textContent = "";
+    updateStructHint(c);
+    document.getElementById("c-structBlock").style.display = structSel.options.length ? "" : "none";
+  }
+  function updateStructHint(c = editingId ? state.creators.find(x => x.id === editingId) : null){
+    if(!structHint) return;
+    const vorlage = structSel.value === STRUCT_TEMPLATE;
+    structHint.textContent = !c
+      ? (vorlage
+        ? "Der neue Creator bekommt die Kategorien und Styles der Standard-Vorlage."
+        : "Der neue Creator bekommt alle Styles, Kategorien und Unterkategorien (auch die je Style) des gewählten Creators. Produkte, Name, Bilder des Profils und Links übernimmt er nicht.")
+      : (vorlage
+        ? "Ersetzt die Kategorien und Styles dieses Creators komplett durch die Standard-Vorlage."
+        : "Ergänzt, was diesem Creator fehlt: Styles, Kategorien und Unterkategorien (auch je Style) des gewählten Creators. Vorhandenes bleibt, wie es ist \u2013 gelöscht wird nichts.");
+    document.getElementById("c-structImages").closest("label").style.display = vorlage ? "none" : "";
+    const btn = document.getElementById("c-applyStruct");
+    if(btn) btn.textContent = vorlage ? "Durch Vorlage ersetzen" : "Übernehmen";
+  }
+  structSel?.addEventListener("change", ()=> updateStructHint());
+
+  document.getElementById("c-applyStruct")?.addEventListener("click", async ()=>{
     if(!editingId) return;
-    if(!confirm("Die aktuellen Kategorien/Styles dieses Creators werden komplett durch die Standard-Vorlage ersetzt. Fortfahren?")) return;
-    const { error } = await sb.rpc("apply_default_categories_to_creator", { target_creator_id: editingId });
-    if(error) return atoast("Fehler: " + error.message, "err");
-    atoast("Standard-Kategorien \u00fcbernommen.");
-    if(state.activeId === editingId) await loadCategoriesFor(state.activeId);
-    refresh();
+    const zielId = editingId;
+    const quelle = structSel.value;
+    const btn = document.getElementById("c-applyStruct");
+    if(quelle === STRUCT_TEMPLATE){
+      if(!confirm("Die aktuellen Kategorien/Styles dieses Creators werden komplett durch die Standard-Vorlage ersetzt. Fortfahren?")) return;
+      const { error } = await sb.rpc("apply_default_categories_to_creator", { target_creator_id: zielId });
+      if(error) return atoast("Fehler: " + error.message, "err");
+      atoast("Standard-Kategorien \u00fcbernommen.");
+      if(state.activeId === zielId) await loadCategoriesFor(state.activeId);
+      return refresh();
+    }
+    btn.disabled = true;
+    structStatus.textContent = "Wird geprüft \u2026";
+    try {
+      const [src, dst] = await Promise.all([loadCreatorStructure(quelle), loadCreatorStructure(zielId)]);
+      const plan = planCreatorStructure(src, dst, document.getElementById("c-structImages").checked);
+      const n = plan.counts;
+      if(!n.total){ structStatus.textContent = "Es ist schon alles vorhanden \u2013 nichts zu übernehmen."; return; }
+      const name = state.creators.find(x => x.id === quelle)?.name || "";
+      if(!confirm(`Von \u201e${name}\u201c übernehmen?\n\n\u2022 ${n.styles} Style(s)\n\u2022 ${n.cats} Kategorie(n) unter ALLE, ${n.subs} Unterkategorie(n)\n\u2022 ${n.styleCats} Kategorie(n) in Styles, ${n.styleSubs} Unterkategorie(n)\n\nVorhandenes bleibt unverändert, gelöscht wird nichts.`)){ structStatus.textContent = ""; return; }
+      structStatus.textContent = "Wird übernommen \u2026";
+      await applyCreatorStructure(zielId, plan);
+      structStatus.textContent = `Übernommen: ${n.styles} Style(s), ${n.cats + n.styleCats} Kategorie(n), ${n.subs + n.styleSubs} Unterkategorie(n).`;
+      atoast(structStatus.textContent);
+      if(state.activeId === zielId) await loadCategoriesFor(state.activeId);
+      refresh();
+    } catch(e){
+      structStatus.textContent = "";
+      atoast("Übernehmen fehlgeschlagen: " + (e?.message || e), "err");
+    } finally {
+      btn.disabled = false;
+    }
   });
 
   cForm.onsubmit = async (e)=>{
@@ -14149,8 +14309,20 @@ function wireDashboard(){
       // Kategorien/Styles/Unterkategorien: globale Standard-Vorlage einmalig
       // kopieren, damit der neue Creator sofort eine eigene, unabhaengige
       // Liste hat statt versehentlich auf die Vorlage angewiesen zu bleiben.
-      const { error: catCopyErr } = await sb.rpc("apply_default_categories_to_creator", { target_creator_id: newCreatorId });
-      if(catCopyErr) atoast(`Creator angelegt, aber Standard-Kategorien konnten nicht kopiert werden: ${catCopyErr.message}`, "err");
+      // Quelle: ein anderer Creator (vorausgewaehlt der erste) oder wie
+      // frueher die Standard-Vorlage.
+      const quelle = structSel?.value || STRUCT_TEMPLATE;
+      if(quelle === STRUCT_TEMPLATE){
+        const { error: catCopyErr } = await sb.rpc("apply_default_categories_to_creator", { target_creator_id: newCreatorId });
+        if(catCopyErr) atoast(`Creator angelegt, aber Standard-Kategorien konnten nicht kopiert werden: ${catCopyErr.message}`, "err");
+      } else {
+        try {
+          const [src, dst] = await Promise.all([loadCreatorStructure(quelle), loadCreatorStructure(newCreatorId)]);
+          await applyCreatorStructure(newCreatorId, planCreatorStructure(src, dst, document.getElementById("c-structImages")?.checked !== false));
+        } catch(e){
+          atoast(`Creator angelegt, aber Kategorien/Styles konnten nicht übernommen werden: ${e?.message || e}`, "err");
+        }
+      }
 
       // Ueber dieselbe RPC wie loadProducts(ALL_CREATOR_ID) -- dedupliziert
       // serverseitig, statt bei vielen Creatorn/Produkten (z.B. 100 Creator x
