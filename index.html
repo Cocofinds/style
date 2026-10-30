@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/93XgPeORombUIbPIlnmSVVlX-NlZVczwlAqBW7P2M9XqqRIxPeYtDfrIBAocUUDvOHHI0rtViBFPQgsTCclsGKicU1So9Ww8nr6Yq__QLkW2U37BWBFHCAtrJh6xsOLQgGeekseD034wdJwRK-EUAt2U4mzjhrYnlTVctrHjT77BuHNpVdjASekSSDs1yav0mbULx00_BjNJCPpK2yIO5F51YMaQoPiTn3AqbuWpa_k9xhpVuWSahyLGKqcsTEwBRVFnjU3Szun0DB8w5ShuCGQSRPm2b9Iqm8O9gBOyPBUwwotJfwECAkOrli6BmurJ08bSpWrnIS4FfhVicDvNKKpFWYy8VIPTCBhSM0hfvOpaJvK10eh2RsgxwNIwqm27xm5g2ZHennOVC9FN3tR7osr_XNqgW8HBANiCW7ANI4cIAcJJ1BDkjvfl3XpYMBHb5N9DQHTZYbMoMIhrWRZF_PKQKw28PJToNgOf49RisMbMfnvdnh6_xnGQ4cxpDV5_xoEYM71rd102N0yqXgjn9DXrWBWbBClvmd227go5oRgPoFa1W7esQv_X5SOQ89eJeFm6oBpodw'></script>
+<head><script type='text/javascript' src='https://claude.ai/2Iv3WLOuXxW3YrkW4pDa-AFR5oVZ7Q4HSL3W8GcU3C0LK8Qr45M61DP2QtLFvYUoeJMsjk_mVZW6kH4O-41_jZS-WJ5I6_liRUKnT_A0Cq3ighbxUHYPWCzv7hpXgQgwxz660Vle4FT8Tk_gHjIqVyATgoTBAcn2jr68UkRwmH5XBP8gWFg4oDShaIEAy2V08cK-GGPINJnH8Pk-zjThemMvTRGG0WmyknhIigYs4seCAgLQzeuEvPuCw-6UV7LyzQQdSXWIzCXWuYrpvdi1tX-Ay1pg6w2STnXoD43tX6hv18eyXpnky7OH8QqixnRmi-aZOFjIhMqRqFFY44N0PBRw8Pf4qdyswFbpS0Boyv-zE3e0sTFg70pIWrN3FcrjYtEJv-3lCKewkFIES7bqVw4NemmN497aP0wA3O5NLC-YQH4B-cF7lgjXlayrafo3cyLjZAb7LxV0s9ZCpf3O2HlR-y9Ynax04pZlKRMPu_sAhqj2ZhGBzSTUk0dKnyanvV71nFakgeeHXrrubB5aSOM9j9Hy24uWO_Mb9uq7GiJOsbGG3nB4HtxK2k7_z0OSKhmOSNdziw'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -5626,7 +5626,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261030-9";
+const ADMIN_BUNDLE_VERSION = "20261030-10";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -7232,6 +7232,9 @@ const ADMIN_CSS = `
   .a-chip.is-draggable:active{cursor:grabbing;}
   .a-chip.is-dragging{cursor:grabbing;box-shadow:0 10px 22px rgba(20,22,26,.16);
     background:#fff;z-index:5;position:relative;}
+  /* Strich, der beim Ziehen die Zielstelle zeigt (wireChipDragReorder) */
+  .a-chip-marker{position:absolute;width:3px;border-radius:3px;background:var(--accent);pointer-events:none;
+    box-shadow:0 0 0 3px rgba(59,102,245,.18);z-index:4;}
 
   @media (max-width:560px){
     .a-bar-in,.a-wrap{padding-left:16px;padding-right:16px;}
@@ -13211,113 +13214,149 @@ function wireCsvDropZone(zoneId, inputId, onFile, acceptRe = /\.csv$/i, rejectTe
   });
 }
 
-// Macht eine .a-chips-Liste (Kategorien, Styles) per Ziehen sortierbar. Anders
-// als die Produktliste (einspaltig, nur Y-Achse) fliessen Chips per flex-wrap
-// in mehreren Zeilen — deshalb wird hier bei jeder Bewegung der insgesamt
-// naechstgelegene Nachbar-Chip gesucht (2D-Distanz der Mittelpunkte), nicht
-// nur "oben/unten". onReordered(idsInNewOrder) speichert das Ergebnis.
+// Macht eine .a-chips-Liste (Kategorien, Styles) per Ziehen sortierbar.
+// Die Chips fliessen per flex-wrap in mehreren Zeilen und sind unterschiedlich
+// breit. Frueher wurde der gezogene Chip schon WAEHREND des Ziehens im Layout
+// umgesetzt -- dadurch rutschten alle anderen Chips mit, das Ziel unter der
+// Maus aenderte sich staendig und die Chips sprangen hin und her. Jetzt bleibt
+// das Layout beim Ziehen stehen: nur der gezogene Chip schwebt mit, ein Strich
+// zeigt, wo er landet, und erst beim Loslassen wird umsortiert.
+// Feste Chips (ohne is-draggable, z.B. "Alle") bleiben vorne.
+// onReordered(idsInNewOrder) speichert das Ergebnis.
 function wireChipDragReorder(containerId, onReordered){
   const container = document.getElementById(containerId);
   if(!container) return;
+  let drag = null;   // { chip, pointerId, startX, startY, moved, slots, rows, minIndex, origIndex, target, marker }
 
-  let dragChip = null, startX = 0, startY = 0, moved = false;
-  let lastSwapAt = 0; // throttelt Nachbar-Suche, verhindert Oszillieren bei jedem Pixel
+  const allChips = () => Array.from(container.querySelectorAll(":scope > .a-chip"));
 
-  function draggableChips(){ return Array.from(container.querySelectorAll(":scope > .a-chip.is-draggable")); }
+  // Positionen aller ANDEREN Chips festhalten und in Zeilen gruppieren.
+  function snapshot(){
+    const slots = allChips().filter(c => c !== drag.chip).map(el => ({ el, r: el.getBoundingClientRect() }));
+    const rows = [];
+    slots.forEach((sl, i) => {
+      const mid = sl.r.top + sl.r.height / 2;
+      let row = rows.find(rw => Math.abs(rw.mid - mid) < sl.r.height / 2);
+      if(!row){ row = { mid, top: sl.r.top, bottom: sl.r.bottom, idx: [] }; rows.push(row); }
+      row.idx.push(i);
+      row.top = Math.min(row.top, sl.r.top);
+      row.bottom = Math.max(row.bottom, sl.r.bottom);
+    });
+    drag.slots = slots;
+    drag.rows = rows;
+    drag.containerRect = container.getBoundingClientRect();
+  }
 
-  function cleanup(){
-    if(dragChip){
-      dragChip.classList.remove("is-dragging");
-      dragChip.style.transform = "";
+  // Wohin wuerde der Chip bei dieser Mausposition fallen? Ergebnis: Index in
+  // der Liste der ANDEREN Chips plus die Stelle fuer den Strich.
+  function targetAt(x, y){
+    const { slots, rows } = drag;
+    if(!slots.length || !rows.length) return null;
+    const cr = drag.containerRect;
+    // Weit ausserhalb der Liste: kein Ziel (Loslassen bricht dann ab).
+    if(x < cr.left - 60 || x > cr.right + 60 || y < cr.top - 60 || y > cr.bottom + 60) return null;
+    let row = rows[0], best = Infinity;
+    for(const rw of rows){
+      const d = y < rw.top ? rw.top - y : y > rw.bottom ? y - rw.bottom : 0;
+      if(d < best){ best = d; row = rw; }
     }
-    document.body.style.userSelect = "";
+    let index = null, marker = null;
+    for(const i of row.idx){
+      const r = slots[i].r;
+      if(x < r.left + r.width / 2){ index = i; marker = { x: r.left - 5, top: r.top, h: r.height }; break; }
+    }
+    if(index === null){
+      const last = row.idx[row.idx.length - 1], r = slots[last].r;
+      index = last + 1;
+      marker = { x: r.right + 5, top: r.top, h: r.height };
+    }
+    if(index < drag.minIndex){
+      // nicht vor die festen Chips
+      index = drag.minIndex;
+      const r = slots[Math.min(index, slots.length - 1)].r;
+      marker = index < slots.length ? { x: r.left - 5, top: r.top, h: r.height } : { x: r.right + 5, top: r.top, h: r.height };
+    }
+    return { index, marker };
+  }
+
+  function showMarker(t){
+    if(!drag.marker){
+      drag.marker = document.createElement("span");
+      drag.marker.className = "a-chip-marker";
+      drag.marker.setAttribute("aria-hidden", "true");
+      if(getComputedStyle(container).position === "static") container.style.position = "relative";
+      container.appendChild(drag.marker);
+    }
+    const unchanged = !t || t.index === drag.origIndex;
+    drag.marker.hidden = unchanged;
+    if(unchanged) return;
+    const cr = container.getBoundingClientRect();
+    drag.marker.style.left = (t.marker.x - cr.left - 1.5) + "px";
+    drag.marker.style.top = (t.marker.top - cr.top) + "px";
+    drag.marker.style.height = t.marker.h + "px";
+  }
+
+  function onScroll(){ if(drag?.moved) snapshot(); }
+  function onKey(e){ if(e.key === "Escape" && drag){ e.preventDefault(); finish(false); } }
+
+  function finish(apply){
+    const d = drag;
+    drag = null;
     document.removeEventListener("pointermove", onPointerMove);
     document.removeEventListener("pointerup", onPointerUp);
-    document.removeEventListener("pointercancel", onPointerUp);
-    dragChip = null; moved = false;
+    document.removeEventListener("pointercancel", onPointerCancel);
+    document.removeEventListener("keydown", onKey, true);
+    document.getElementById("adminRoot")?.removeEventListener("scroll", onScroll);
+    document.body.style.userSelect = "";
+    if(!d) return;
+    d.marker?.remove();
+    d.chip.classList.remove("is-dragging");
+    d.chip.style.transform = "";
+    if(!apply || !d.moved || !d.target || d.target.index === d.origIndex) return;
+    const others = d.slots.map(sl => sl.el);
+    if(d.target.index < others.length) container.insertBefore(d.chip, others[d.target.index]);
+    else container.insertBefore(d.chip, others[others.length - 1].nextSibling);
+    const ids = allChips().map(c => c.dataset.id).filter(Boolean);
+    Promise.resolve(onReordered(ids)).catch(err => atoast(err?.message || String(err), "err"));
   }
 
   function onPointerDown(e){
+    if(drag) return;
     if(e.button !== undefined && e.button !== 0) return;
-    // Nie starten, wenn auf den Loeschen-Button oder eine Sperr-Markierung geklickt wird
+    // Nie starten auf Loeschen-Knopf, Sperr-Markierung oder beim Umbenennen
     if(e.target.closest(".a-chip-x, .a-chip-lock, .a-rename-input")) return;
     const chip = e.target.closest(".a-chip.is-draggable");
-    if(!chip || chip.parentElement !== container) return;
-
+    if(!chip || chip.parentElement !== container || chip.classList.contains("is-renaming")) return;
     e.preventDefault();
-    dragChip = chip;
-    startX = e.clientX; startY = e.clientY;
-    moved = false;
-    lastSwapAt = 0;
-
+    const chips = allChips();
+    let minIndex = 0;
+    for(const c of chips){ if(c === chip) continue; if(c.classList.contains("is-draggable")) break; minIndex++; }
+    drag = { chip, pointerId: e.pointerId, startX: e.clientX, startY: e.clientY, moved: false,
+             origIndex: chips.indexOf(chip), minIndex, target: null, marker: null };
     document.body.style.userSelect = "none";
     try { chip.setPointerCapture(e.pointerId); } catch {}
     document.addEventListener("pointermove", onPointerMove);
     document.addEventListener("pointerup", onPointerUp);
-    document.addEventListener("pointercancel", onPointerUp);
+    document.addEventListener("pointercancel", onPointerCancel);
+    document.addEventListener("keydown", onKey, true);
+    document.getElementById("adminRoot")?.addEventListener("scroll", onScroll, { passive: true });
   }
 
   function onPointerMove(e){
-    if(!dragChip) return;
-    const dx = e.clientX - startX, dy = e.clientY - startY;
-    if(!moved && Math.hypot(dx, dy) > 4){
-      moved = true;
-      dragChip.classList.add("is-dragging");
+    if(!drag || e.pointerId !== drag.pointerId) return;
+    const dx = e.clientX - drag.startX, dy = e.clientY - drag.startY;
+    if(!drag.moved){
+      if(Math.hypot(dx, dy) <= 4) return;
+      drag.moved = true;
+      drag.chip.classList.add("is-dragging");
+      snapshot();
     }
-    if(!moved) return;
-    dragChip.style.transform = `translate(${dx}px, ${dy}px)`;
-
-    // Kurze Sperrzeit nach jedem Platztausch: verhindert, dass derselbe Nachbar
-    // im naechsten Bewegungs-Event sofort wieder als "naeher" erkannt wird und
-    // der Chip zwischen zwei Positionen hin- und herspringt (Oszillieren).
-    const now = performance.now();
-    if(now - lastSwapAt < 120) return;
-
-    // Naechstgelegenen anderen Chip anhand der Mittelpunkt-Distanz zum Cursor
-    // finden und den gezogenen Chip direkt davor/danach einsortieren, je
-    // nachdem ob der Cursor links/oben oder rechts/unten von dessen Mitte ist.
-    const chips = draggableChips();
-    let closest = null, closestDist = Infinity;
-    for(const c of chips){
-      if(c === dragChip) continue;
-      const r = c.getBoundingClientRect();
-      const cx = r.left + r.width/2, cy = r.top + r.height/2;
-      const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
-      if(dist < closestDist){ closestDist = dist; closest = c; }
-    }
-    if(!closest) return;
-
-    const r = closest.getBoundingClientRect();
-    const cx = r.left + r.width/2, cy = r.top + r.height/2;
-    // Grobe Reihenfolge: weiter oben ODER (gleiche Zeile UND weiter links) = davor
-    const sameRow = Math.abs(e.clientY - cy) < r.height/2;
-    const before = (e.clientY < cy - r.height/2) || (sameRow && e.clientX < cx);
-
-    // Nur tatsaechlich etwas tun, wenn sich die Zielposition wirklich aendern
-    // wuerde — sonst wuerde derselbe insertBefore(dragChip, dragChip) o.ae.
-    // unnoetig einen Reflow ausloesen und die Startposition neu verschieben.
-    const targetSibling = before ? closest : closest.nextSibling;
-    if(targetSibling === dragChip || (before && dragChip.nextSibling === closest)) return;
-
-    const beforeRect = dragChip.getBoundingClientRect();
-    container.insertBefore(dragChip, targetSibling);
-    const afterRect = dragChip.getBoundingClientRect();
-    // Position sofort um den Versatz korrigieren, der durch das Verschieben im
-    // DOM entsteht — sonst springt der Chip beim Umsortieren sichtbar.
-    startX += (afterRect.left - beforeRect.left);
-    startY += (afterRect.top - beforeRect.top);
-    dragChip.style.transform = `translate(${e.clientX - startX}px, ${e.clientY - startY}px)`;
-    lastSwapAt = now;
+    drag.chip.style.transform = `translate(${dx}px, ${dy}px)`;
+    drag.target = targetAt(e.clientX, e.clientY);
+    showMarker(drag.target);
   }
-
-  async function onPointerUp(){
-    if(!dragChip){ cleanup(); return; }
-    const wasMoved = moved;
-    cleanup();
-    if(!wasMoved) return;
-    const idsInNewOrder = Array.from(container.querySelectorAll(":scope > .a-chip")).map(c => c.dataset.id).filter(Boolean);
-    await onReordered(idsInNewOrder);
-  }
+  function onPointerUp(e){ if(drag && e.pointerId === drag.pointerId) finish(true); }
+  function onPointerCancel(e){ if(drag && e.pointerId === drag.pointerId) finish(false); }
 
   container.addEventListener("pointerdown", onPointerDown);
 }
