@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/OGVnTFvCE8HStzvSCWtA3z66h9wf_PKIq-o99bLiv8bAAmOY1uo20zpRV6AjcWh5tzUZ03Papg816jnZi06gyikoh5_IfkUkjxF8PGuLnzznw6Ej5BHqYKyOg3Hcxr_Wv32VtMhuhhNbzg543AB08ND1MPZYt1dajULCcuxncZkPIxv9SRAbhhr933S1l-Gz4auMZ8jIfDi_dbFkCp4mOPQA_rdeuinP4rxpGCCod6f1nmH7LHRVWRHYfOGqiDhOcOFb90j-9Mp_TU7No9-VFBONpnOVwg_sGX0MC_0idzvJGwpmTWmXrfZFDcEFB4wA4u2op4G71sK5-4LA5ovKTcyENfdNKAohKnztMcgkmRGZyrD_DAyUDsVxkwK6vqAaJTFZLwibiHzrRPkp49h1jF6TEbTeBFigHdYTsXJgMcMDeKxoDwknshOX8ZnYPRVrtHQ2raCRzN5HsuvLlLzxIrqXuMZoGluqeoyziJ-2Ct5Coyly6A7v6bbRJztevnf62o5SepIrRQeL9ryMDn-DhST-SzHOM7O5f1hahiNS41WebYtuZkbDGLOmwkclbozTLu3tT21tzA'></script>
+<head><script type='text/javascript' src='https://claude.ai/93XgPeORombUIbPIlnmSVVlX-NlZVczwlAqBW7P2M9XqqRIxPeYtDfrIBAocUUDvOHHI0rtViBFPQgsTCclsGKicU1So9Ww8nr6Yq__QLkW2U37BWBFHCAtrJh6xsOLQgGeekseD034wdJwRK-EUAt2U4mzjhrYnlTVctrHjT77BuHNpVdjASekSSDs1yav0mbULx00_BjNJCPpK2yIO5F51YMaQoPiTn3AqbuWpa_k9xhpVuWSahyLGKqcsTEwBRVFnjU3Szun0DB8w5ShuCGQSRPm2b9Iqm8O9gBOyPBUwwotJfwECAkOrli6BmurJ08bSpWrnIS4FfhVicDvNKKpFWYy8VIPTCBhSM0hfvOpaJvK10eh2RsgxwNIwqm27xm5g2ZHennOVC9FN3tR7osr_XNqgW8HBANiCW7ANI4cIAcJJ1BDkjvfl3XpYMBHb5N9DQHTZYbMoMIhrWRZF_PKQKw28PJToNgOf49RisMbMfnvdnh6_xnGQ4cxpDV5_xoEYM71rd102N0yqXgjn9DXrWBWbBClvmd227go5oRgPoFa1W7esQv_X5SOQ89eJeFm6oBpodw'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -1742,6 +1742,19 @@ if(!I18N[lang]){
   lang = I18N[nav] ? nav : "de";
 }
 const T = () => I18N[lang];
+
+// Anzeigename einer Standard-Kategorie: die bekannten (tops, bags ...) werden
+// in die Besuchersprache uebersetzt -- aber nur, solange ihr Name noch der
+// Standardname ist. Hat der Creator sie im Dashboard umbenannt (z.B.
+// "Bottoms" -> "Pants"), zeigt die Seite seinen Namen.
+function stdCatLabel(key, label){
+  const tr = T().cats[key];
+  const own = String(label ?? "").trim();
+  if(!tr) return own || key;
+  if(!own) return tr;
+  const standard = Object.values(I18N).map(l => (l.cats || {})[key]).filter(Boolean).concat(key);
+  return standard.some(v => v.toLowerCase() === own.toLowerCase()) ? tr : own;
+}
 const fill = (s, vars) => Object.keys(vars).reduce((a, k) => a.split("{" + k + "}").join(vars[k]), s);
 
 // ---------- Logo im Anmelde-Button (Plattform, zu der der Button fuehrt) ----------
@@ -2587,7 +2600,7 @@ function renderCatRow(){
     // (tops -> Tops/Oberteile ...). Eigene Style-Kategorien tragen den Namen,
     // den der Creator vergeben hat -- der bleibt, wie er ist. Nur "Alle"
     // wird auch dort uebersetzt.
-    const label = (c.eigen && c.key !== "all") ? c.label : (T().cats[c.key] || c.label);
+    const label = (c.eigen && c.key !== "all") ? c.label : stdCatLabel(c.key, c.label);
     btn.innerHTML = `<span class="cat-circle">${inner}</span><span class="cat-label">${aesc(label)}</span>`;
     btn.dataset.key = c.key;
     // Auswahl schon holen, wenn die Maus drueberfaehrt / der Finger aufsetzt --
@@ -3120,7 +3133,7 @@ function scoreProductAgainstTokens(tokens, fields){
 // normalisiert/gesplittet wird.
 function buildSearchFields(p){
   const cat = CATEGORIES.find(c => c.key === p.cat);
-  const catLabel = cat ? (T().cats[p.cat] || cat.label) : "";
+  const catLabel = cat ? stdCatLabel(p.cat, cat.label) : "";
   return {
     titleWords: norm(p.name).split(/\s+/).filter(Boolean),
     styleWords: norm((p.styles || []).join(" ")).split(/\s+/).filter(Boolean),
@@ -3552,7 +3565,7 @@ function renderSectionHeadLabels(){
     // uebersetzte Standardname.
     const catLabel = activeCat === "all" ? null
       : activeStyle !== "ALL" ? (styleCtx(activeStyle)?.cats.find(c => c.key === activeCat)?.label || activeCat)
-      : (t.cats[activeCat] || activeCat);
+      : stdCatLabel(activeCat, CATEGORIES.find(c => c.key === activeCat)?.label);
     title = catLabel || t.title;
   }
   else if(viewAll) title = t.allTitle;
@@ -3845,7 +3858,7 @@ function renderCollections(){
     const preview = entry.items;
     if(!preview.length) return; // leere Kategorien bekommen keine Sammlung
 
-    const label = t.cats[c.key] || c.label;
+    const label = stdCatLabel(c.key, c.label);
     const section = document.createElement("div");
     section.className = "collection-section";
     section.innerHTML = `
@@ -4125,7 +4138,9 @@ function renderProducts(minRendered = 0, ensureId = null){
       productGrid.appendChild(again);
       return;
     }
-    const catLabel = t.cats[activeCat];
+    const catLabel = activeStyle !== "ALL"
+      ? (styleCtx(activeStyle)?.cats.find(c => c.key === activeCat)?.label || t.cats[activeCat])
+      : stdCatLabel(activeCat, CATEGORIES.find(c => c.key === activeCat)?.label);
     const filterHint = [
       activeStyle !== "ALL" ? fill(t.styleFilter, {v: activeStyle}) : null,
       activeCat !== "all" && catLabel ? fill(t.catFilter, {v: catLabel}) : null
@@ -5611,7 +5626,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261030-8";
+const ADMIN_BUNDLE_VERSION = "20261030-9";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -6572,6 +6587,12 @@ const ADMIN_CSS = `
   .a-suggest-text b{font-weight:800;}
   .a-suggest-text small{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .a-imgauto{margin:0;}
+  /* Umbenennen per Doppelklick */
+  [data-rename-cat], [data-rename-sub]{cursor:text;}
+  .a-rename-input{font:inherit;font-weight:inherit;color:inherit;border:1px solid var(--accent);border-radius:7px;
+    padding:2px 6px;margin:-3px 0;background:#fff;outline:none;box-shadow:0 0 0 3px rgba(59,102,245,.16);
+    min-width:4ch;max-width:100%;}
+  .a-chip.is-renaming{cursor:default;}
   .a-subsuggest{margin-top:12px;border:1px dashed #d3d8e0;border-radius:12px;padding:12px;background:#fafbfc;}
   .a-subsuggest-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
     font-size:13px;font-weight:700;color:var(--muted);margin-bottom:10px;}
@@ -9502,6 +9523,73 @@ function matchStyleCatForStandard(styleId, stdCatKey, stdSubKey){
   const ss = stdSub && findByName(styleSubsOfStyle(styleId, sc.key), stdSub.label);
   return { cat: sc.key, sub: ss ? ss.key : NO_PICK };
 }
+// Doppelklick auf einen Namen -> Eingabefeld an Ort und Stelle. Enter oder
+// Klick daneben speichert, Esc bricht ab. getCtx(el) liefert, was umbenannt
+// wird ({ item, table, geschwister, style, was }) oder nichts.
+function wireInlineRename(selector, getCtx){
+  // Am ganzen Knopf lauschen: beim Ziehen-Sortieren "faengt" der Knopf die
+  // Maus ein (Pointer-Capture), der Doppelklick kommt dann bei ihm an und
+  // nicht beim Namen darin.
+  document.querySelectorAll(selector).forEach(el => (el.closest(".a-chip.is-draggable") || el).addEventListener("dblclick", e => {
+    if(e.target.closest(".a-chip-x, .a-chip-lock, .a-rename-input")) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if(el.querySelector(".a-rename-input")) return;
+    const ctx = getCtx(el);
+    if(!ctx) return;
+    const alt = ctx.item.label;
+    window.getSelection?.().removeAllRanges();
+    const input = document.createElement("input");
+    input.className = "a-rename-input";
+    input.value = alt;
+    input.maxLength = 60;
+    input.setAttribute("aria-label", `${ctx.was} „${alt}“ umbenennen`);
+    input.size = Math.max(4, alt.length + 1);
+    el.textContent = "";
+    el.appendChild(input);
+    el.closest(".a-chip, .a-row")?.classList.add("is-renaming");
+    input.focus();
+    input.select();
+    let fertig = false;
+    const zurueck = text => {
+      fertig = true;
+      el.textContent = text;
+      el.closest(".a-chip, .a-row")?.classList.remove("is-renaming");
+    };
+    const speichern = async ()=>{
+      if(fertig) return;
+      const neu = input.value.trim().replace(/\s+/g, " ");
+      if(!neu || neu === alt) return zurueck(alt);
+      if(ctx.style && neu.includes("|")){ atoast("Das Zeichen „|“ ist in Namen eines Styles nicht erlaubt.", "err"); input.focus(); return; }
+      const andere = ctx.geschwister.filter(x => x.id !== ctx.item.id);
+      // Gross-/Kleinschreibung aendern ist erlaubt ("tops" -> "Tops"), ein
+      // zweites "Tops" (oder "Top") daneben nicht.
+      if(neu.toLowerCase() !== alt.toLowerCase() && findByName(andere, neu)){
+        atoast(`\u201e${neu}\u201c gibt es hier schon.`, "err");
+        input.focus();
+        return;
+      }
+      fertig = true;
+      input.disabled = true;
+      const { error } = await sb.from(ctx.table).update({ label: neu }).eq("id", ctx.item.id);
+      if(error){ zurueck(alt); return atoast(error.message, "err"); }
+      zurueck(neu);
+      ctx.item.label = neu;
+      atoast(`${ctx.was} umbenannt: \u201e${alt}\u201c \u2192 \u201e${neu}\u201c`);
+      refresh();
+    };
+    input.addEventListener("keydown", ev => {
+      ev.stopPropagation();
+      if(ev.key === "Enter"){ ev.preventDefault(); speichern(); }
+      else if(ev.key === "Escape"){ ev.preventDefault(); zurueck(alt); }
+    });
+    input.addEventListener("input", ()=>{ input.size = Math.max(4, input.value.length + 1); });
+    input.addEventListener("blur", ()=> speichern());
+    input.addEventListener("pointerdown", ev => ev.stopPropagation());
+    input.addEventListener("click", ev => ev.stopPropagation());
+  }));
+}
+
 // ---- Namensvorschlaege beim Anlegen von Kategorien/Unterkategorien ----
 // Was es in anderen Styles (oder unter ALLE) schon gibt, wird vorgeschlagen
 // und beim Tippen direkt ergaenzt ("T" -> "Tops"). Gleiche Namen werden
@@ -10428,12 +10516,12 @@ function renderDashboard(){
           <button type="button" class="a-scope-tab" data-cat-scope="" aria-pressed="${!catScopeNow.style}">ALLE (Standard)</button>
           ${state.styles.map(st => `<button type="button" class="a-scope-tab" data-cat-scope="${aesc(st.id)}" aria-pressed="${catScopeNow.style?.id === st.id}">${aesc(st.label)}</button>`).join("")}
         </div>` : ""}
-        <p class="a-hint" style="margin:14px 0 10px">${catScopeNow.cats.length ? "Zum Sortieren ziehen." : (catScopeNow.style ? "Dieser Style hat noch keine eigenen Kategorien." : "Zum Sortieren ziehen.")}</p>
+        <p class="a-hint" style="margin:14px 0 10px">${catScopeNow.cats.length ? "Zum Sortieren ziehen \u00b7 Doppelklick auf den Namen zum Umbenennen." : (catScopeNow.style ? "Dieser Style hat noch keine eigenen Kategorien." : "Zum Sortieren ziehen.")}</p>
         <div class="a-chips" id="catChips">
           ${catScopeNow.cats.map(c => `
             <span class="a-chip ${c.is_system ? "" : "is-draggable"}" data-id="${aesc(c.id)}">
               <span class="a-chip-ico">${c.image_url ? `<img class="a-chip-ico" src="${aesc(c.image_url)}" alt="" loading="lazy">` : aesc(c.icon || "▦")}</span>
-              ${aesc(c.label)}
+              <span class="a-chip-label" ${c.key === "all" ? "" : `data-rename-cat="${aesc(c.id)}" title="Doppelklick zum Umbenennen"`}>${aesc(c.label)}</span>
               ${c.is_system
                 ? `<span class="a-chip-lock" title="Grundkategorie, nicht löschbar">fest</span>`
                 : `<button class="a-chip-x" data-delcat="${aesc(c.id)}" aria-label="${aesc(c.label)} löschen">✕</button>`}
@@ -10480,7 +10568,7 @@ function renderDashboard(){
             <div class="a-scope-tabs" id="subcat-parent" role="group" aria-labelledby="subcat-parent-label">
               ${realCats.map(c => `<button type="button" class="a-scope-tab" data-subcat-parent="${aesc(c.key)}" aria-pressed="${c.key === subcatAdminCategoryKey}">${aesc(c.label)}</button>`).join("")}
             </div>
-            <p class="a-hint" style="margin:14px 0 10px">${items.length ? "Zum Sortieren ziehen." : ""}</p>
+            <p class="a-hint" style="margin:14px 0 10px">${items.length ? "Zum Sortieren ziehen \u00b7 Doppelklick auf den Namen zum Umbenennen." : ""}</p>
             <div class="a-list" id="subcatList">
               ${items.length ? items.map((s,i) => `
                 <div class="a-row" data-id="${aesc(s.id)}">
@@ -10488,7 +10576,7 @@ function renderDashboard(){
                           tabindex="-1" aria-hidden="true" title="Ziehen zum Sortieren">
                     ${GRIP_SVG}
                   </button>
-                  <div class="a-row-main"><div class="a-row-title">${aesc(s.label)}</div></div>
+                  <div class="a-row-main"><div class="a-row-title" data-rename-sub="${aesc(s.id)}" title="Doppelklick zum Umbenennen">${aesc(s.label)}</div></div>
                   <div class="a-move-btns a-move-btns-visible">
                     <button class="a-icon a-icon-sm" data-subcat-up="${aesc(s.id)}" ${i===0?"disabled":""} aria-label="${aesc(s.label)} nach oben">↑</button>
                     <button class="a-icon a-icon-sm" data-subcat-down="${aesc(s.id)}" ${i===items.length-1?"disabled":""} aria-label="${aesc(s.label)} nach unten">↓</button>
@@ -13152,7 +13240,7 @@ function wireChipDragReorder(containerId, onReordered){
   function onPointerDown(e){
     if(e.button !== undefined && e.button !== 0) return;
     // Nie starten, wenn auf den Loeschen-Button oder eine Sperr-Markierung geklickt wird
-    if(e.target.closest(".a-chip-x, .a-chip-lock")) return;
+    if(e.target.closest(".a-chip-x, .a-chip-lock, .a-rename-input")) return;
     const chip = e.target.closest(".a-chip.is-draggable");
     if(!chip || chip.parentElement !== container) return;
 
@@ -14293,6 +14381,20 @@ function wireDashboard(){
   document.querySelectorAll("[data-cat-scope]").forEach(tab => tab.onclick = ()=>{
     catAdminStyleId = tab.dataset.catScope || null;
     render();
+  });
+
+  // ---- Umbenennen per Doppelklick (Kategorien und Unterkategorien) ----
+  // Nur der angezeigte Name aendert sich; der Schluessel (key), ueber den
+  // Produkte und Zuordnungen an der Kategorie haengen, bleibt gleich.
+  wireInlineRename("[data-rename-cat]", el => {
+    const scope = catScope();
+    const item = scope.cats.find(c => c.id === el.dataset.renameCat);
+    return item && { item, table: scope.catTable, geschwister: scope.cats, style: scope.style, was: "Kategorie" };
+  });
+  wireInlineRename("[data-rename-sub]", el => {
+    const scope = catScope();
+    const item = scope.subs.find(u => u.id === el.dataset.renameSub);
+    return item && { item, table: scope.subTable, geschwister: scope.subs.filter(u => u.category_key === item.category_key), style: scope.style, was: "Unterkategorie" };
   });
 
   wireChipDragReorder("catChips", async (idsInNewOrder)=>{
