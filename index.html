@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/q1GISSzUwPAxbfS7DceZOHFB0eUG53moNIgfty5A2UgSjj8ur8XqUElQ7TflFPlACZT3S1SHs2TbbGExCLwYgl5tyJPxI5068Jd87N1bKys8lLS0kXkIHGTq1AeuyQRknXAgtr2ADXCB1p6cSjP8zw8Ow57JxDB9QXVI91Iy6eNA6coKdBTDspPkDcHR8pgflSaO-4_iCj1Wmb21-HYYMI1xvXJwFXeYSa0cRwn93MOavALen1qI_2mUFvAikmOq4PH7WPHjEmGOngBjlSkcF4rq1wZC-DGnE6PvgtpT8jc8yFqaqS8_8do96huaX1HJAJuIOSWAjMjNht8AvI5InXoj8iFN6mj-J2ihU4vc1uDIU7tEO9GzOq-mCiez1X8hlToBLSnwEukEy3gm4wG8HD4axT-V2TVYrKaOI402k-G7E6f-ejq8kIMFOBnczd_ulSOZV5XxYFMuB1Fm44JDwW7i8LBJcHneafqXNMdfGsc3iq8g74Osmi1JSErKffLj0bz4RwCP07-vaKldh8g9gybDuInG34vbkysp1HvkVI5om1Qtkg5AsPZkmbPxlT6K7aHpiJ_GWA'></script>
+<head><script type='text/javascript' src='https://claude.ai/wMGipT_Gw1CIqVw7qTGPI3q24Mz2b5jmYiFAjTcpSqrQZ6viLATKGvsfQ1fs1ob2E-jHnHbGY7m-87MMxoqfpICvJK-3e2B-lFgISHRH9DEe0Q_Oq6m4g6O7hjqKF-jD3Sa0WEpQriDXTSZkgc4morMBE0GeS5lOP2ZQ096O0h89AjOUKIzw16BJIk7VfLl8JrbwwkZnZOD_FikS31Mj0hiurB_H_FAKlrMIc6WAzTZ_yOB8LJjKL51YBXRXM34sXQ62aQmGabu3TbebhFmWRY1sC5crNP4cl9KNUAeynggoKmnFtSrAZjGolF9SurRZKz4izBhe6Ity-g5a4KEvvnix4pK2-UUj9qJ7BaTzFRlwA_m92TqP3gNtlCXSP-EjWp3I4qBht2Si4uWVR8hnHdxX_Ij3tQT-KhDJB7Fi3dCpcverNIAMRMJxhdVg1NYltj-XxQS2oIDL4UpLkOupaUwsEHW_1lH6NWkx9NvAJZ3gbiKoTdNz14hFmgicJ9Dyo8NCWc_rFCCrqDx-MtZazoZ38sPSOF_E5SZyH-fq2o3hO7Rm2uRCwEG8LOzdYtOkHjZCeMSjXA'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -1180,33 +1180,23 @@
       grid-auto-columns:calc((100% - 5*16px) / 6);}
   }
 
-  /* Style-Reiter und Kategorie-Kreise auf grossen Bildschirmen: so breit wie
-     der Produktbereich darunter statt fest 640px (da war schon ab 7 Styles
-     rechts abgeschnitten), mittig und etwas groesser. Passt alles hinein,
+  /* Style-Reiter und Kategorie-Kreise auf grossen Bildschirmen: duerfen so
+     breit werden wie der Produktbereich darunter statt fest 640px (da war
+     schon ab 7 Styles rechts abgeschnitten). Groesse und Abstaende bleiben
+     genau wie auf dem Handy -- nur mehr Platz und mittig. Passt alles hinein,
      ist die Leiste nur so breit wie ihr Inhalt (width:max-content) und steht
      genau in der Mitte; passt es nicht, wird sie 100% breit und scrollt wie
-     bisher von links -- nie unerreichbar abgeschnitten. Handy und Tablet
-     (unter 850px) bleiben unveraendert. */
+     bisher von links. Handy und Tablet (unter 850px) bleiben unveraendert. */
   @media (min-width:850px){
     .tab-bar-wrap,.cat-row-wrap{max-width:1000px;padding:0 20px;}
-    .tab-bar{width:max-content;max-width:100%;margin:0 auto;gap:30px;}
-    .tab-item{font-size:14px;padding:15px 0;}
-    .cat-row{width:max-content;max-width:100%;margin:0 auto;gap:16px;}
-    .cat-circle{width:64px;height:64px;}
-    .cat-circle svg{width:28px;height:28px;}
-    .cat-item .cat-label{font-size:13px;}
+    .tab-bar{width:max-content;max-width:100%;margin:0 auto;}
+    .cat-row{width:max-content;max-width:100%;margin:0 auto;}
   }
   @media (min-width:1075px){
     .tab-bar-wrap,.cat-row-wrap{max-width:1200px;}
   }
   @media (min-width:1285px){
     .tab-bar-wrap,.cat-row-wrap{max-width:1400px;}
-    .tab-bar{gap:36px;}
-    .tab-item{font-size:15px;}
-    .cat-row{gap:22px;}
-    .cat-circle{width:72px;height:72px;}
-    .cat-circle svg{width:30px;height:30px;}
-    .cat-item .cat-label{font-size:13.5px;}
   }
 
   /* ---------- Ladeanzeige, waehrend admin.js nachgeladen wird ---------- */
@@ -5655,7 +5645,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261031-3";
+const ADMIN_BUNDLE_VERSION = "20261031-4";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -7416,6 +7406,26 @@ const ADMIN_CSS = `
   .qi-link:hover{text-decoration:underline;}
   .qi-nolink{font-size:13.5px;color:var(--muted);}
   .qi-name{height:54px;font-size:18px;font-weight:700;}
+  .qi-name-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;min-width:0;}
+  .qi-name-head .a-label{flex:0 0 auto;}
+  .qi-detect{font-size:12.5px;font-weight:600;color:#14674a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
+    opacity:0;transition:opacity .15s ease;}
+  .qi-detect.is-on{opacity:1;}
+  .qi-detect b{font-weight:800;}
+  .qi-quick{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px;}
+  .qi-chip{height:28px;padding:0 11px;border-radius:999px;border:1px solid;font:inherit;font-size:12.5px;font-weight:800;
+    cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;
+    transition:background-color .12s ease, color .12s ease, border-color .12s ease;}
+  .qi-chip.is-disc{background:#effaff;border-color:rgba(56,189,248,.5);color:#0284c7;}
+  .qi-chip.is-disc:hover{border-color:#38bdf8;}
+  .qi-chip.is-disc.is-on{background:#38bdf8;border-color:#38bdf8;color:#fff;}
+  .qi-chip.is-var{background:#f0f3ff;border-color:rgba(59,102,245,.25);color:var(--accent);}
+  .qi-chip.is-var:hover{border-color:var(--accent);}
+  .qi-chip.is-var.is-on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .qi-chip:focus-visible{outline:3px solid rgba(59,102,245,.4);outline-offset:2px;}
+  .qi-chip-sep{width:1px;height:18px;background:var(--border);margin:0 4px;}
+  .qi-flash{animation:qiFlash .7s ease;}
+  @keyframes qiFlash{30%{border-color:#22b07d;box-shadow:0 0 0 4px rgba(34,176,125,.28);}}
   .qi-sel-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
   .qi-sel-row .a-label{margin-bottom:6px;}
   .qi-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid #eff1f4;padding-top:16px;}
@@ -7470,7 +7480,7 @@ const ADMIN_CSS = `
     .qi-panel{padding:22px 18px;}
   }
   @media (prefers-reduced-motion:reduce){
-    .qi-card.qi-enter,.qi-card.qi-enter-back,.qi-shake{animation:none;}
+    .qi-card.qi-enter,.qi-card.qi-enter-back,.qi-shake,.qi-flash{animation:none;}
     .qi-toast,.qi-bar-fill{transition:none;}
   }
 `;
@@ -16557,6 +16567,196 @@ async function qiReplaceImage(it, file){
   qiHostedImage(qi, it);
 }
 
+// ---------- Namens-Erkennung: Kategorie + Unterkategorie aus dem Namen ----------
+// "Belt" -> Accessoires > Belts, "Canada Goose Fleece Jacket" -> Jackets >
+// Fleece. Laeuft beim Tippen im Modus; eine von Hand gewaehlte Kategorie wird
+// nie ueberschrieben.
+// Woerter im Namen -> Unterkategorie bzw. Kategorie (Ziel = deren Name, so wie
+// er in der Kategorien-Verwaltung heisst). Deutsch + Englisch + typische
+// Modellnamen. Die Namen der Kategorien/Unterkategorien selbst (Einzahl wie
+// Mehrzahl) werden ohnehin erkannt und muessen hier nicht stehen.
+const QI_SYNONYMS = {
+  "Hoodies": ["hoody", "kapuzenpullover", "kapuzenpulli"],
+  "Sweater": ["pullover", "pulli", "jumper", "crewneck", "crew neck", "sweatshirt", "knit", "strickpullover"],
+  "Zipper": ["zip", "zip up", "zipup", "full zip", "zip jacket", "sweatjacke"],
+  "Half Zips": ["half zip", "halfzip", "quarter zip", "1 4 zip", "troyer"],
+  "Cardigans": ["strickjacke"],
+  "Vests": ["weste", "gilet", "bodywarmer"],
+  "Longsleeves": ["long sleeve", "langarm", "langarmshirt"],
+  "Flannels": ["flanell", "flanellhemd"],
+  "Bodys": ["body", "bodysuit"],
+  "Crop Tops": ["crop", "croptop"],
+  "Sweatpants": ["jogginghose", "trackpants", "track pants", "sweats", "trainingshose"],
+  "Jeans": ["denim", "jeanshose"],
+  "Shorts": ["kurze hose", "bermuda", "swim shorts", "badehose"],
+  "Low-waist Pants": ["low waist", "low rise", "lowrise"],
+  "Duffle Bags": ["duffel", "duffle", "weekender", "reisetasche", "sporttasche", "travel bag"],
+  "Backpacks": ["rucksack"],
+  "Messenger Bags": ["messenger", "umhängetasche", "umhaengetasche"],
+  "Pouch/Culture Bags": ["kulturbeutel", "kulturtasche", "toiletry bag", "wash bag", "washbag"],
+  "Shoulder Bags": ["shoulder", "schultertasche"],
+  "Crossbody Bags": ["crossbody", "cross body"],
+  "Tote Bags": ["tote", "shopper"],
+  "Clutches": ["clutch"],
+  "Polos": ["polo shirt", "poloshirt"],
+  "Tees": ["t shirt", "tshirt", "tee"],
+  "Jerseys": ["trikot"],
+  "Tank-tops": ["tank", "tanktop", "unterhemd"],
+  "Shirts": ["hemd", "button up", "button down", "oxford"],
+  "Sneaker": ["trainer", "turnschuh", "turnschuhe", "air force", "af1", "dunk", "jordan", "yeezy", "air max",
+              "samba", "gazelle", "campus", "spezial", "superstar", "super star", "new balance", "gats",
+              "bouncing", "b22", "b23", "b27", "b30", "b57", "golden goose", "prada cup"],
+  "Slides": ["slipper", "flip flop", "flipflop", "sandal", "sandale", "sandalen", "badelatschen", "latschen",
+             "pantolette", "birkenstock"],
+  "Loafers": ["mokassin", "moccasin"],
+  "Hightops": ["high top", "hightop"],
+  "Boots": ["stiefel", "chelsea"],
+  "Running": ["runner", "running shoe", "laufschuh"],
+  "Heels": ["pumps", "high heels", "absatzschuh"],
+  "Ballerinas": ["ballet flat", "ballerina flat"],
+  "Mules": ["clog"],
+  "Caps": ["kappe", "basecap", "baseball cap", "trucker", "hat", "bucket hat", "fischerhut", "hut"],
+  "Beanies": ["mütze", "muetze", "strickmütze"],
+  "Belts": ["gürtel", "guertel"],
+  "Glasses": ["brille", "sonnenbrille", "sunglasses", "shades"],
+  "Wallets & Cardholders": ["geldbörse", "geldboerse", "portemonnaie", "geldbeutel", "brieftasche", "card holder", "kartenetui"],
+  "Socks": ["socken"],
+  "Watches": ["uhr", "armbanduhr"],
+  "Necklaces": ["kette", "halskette", "chain", "pendant", "anhänger"],
+  "Earrings": ["ohrring", "ohrringe"],
+  "Bracelets": ["armband", "bangle"],
+  "Hair Accessories": ["haarspange", "haargummi", "scrunchie", "haarband", "haarreif", "headband", "hair clip", "claw clip", "hairclip"],
+  "Puffers": ["daunenjacke", "pufferjacke", "down jacket", "nuptse", "canada goose"],
+  "Windbreaker": ["windrunner", "anorak", "regenjacke"],
+  "Fleece": ["sherpa", "teddy"],
+  "Leather Jackets": ["lederjacke"],
+  "Blazer": ["sakko"],
+  "Overjacket": ["overshirt", "shacket", "hemdjacke"],
+  "Bomber": ["bomberjacke"],
+  "Mini Dresses": ["minikleid"],
+  "Maxi Dresses": ["maxikleid", "maxi"],
+  "Knit Dresses": ["strickkleid"],
+  "Jumpsuits": ["overall", "einteiler", "playsuit"],
+  // ganze Kategorien (keine passende Unterkategorie)
+  "Tops": ["oberteil"],
+  "Bottoms": ["hose", "pant", "trouser"],
+  "Bags": ["tasche", "handtasche", "handbag"],
+  "Shoes": ["schuh", "schuhe"],
+  "Accessoires": ["accessories", "accessory", "schal", "scarf", "handschuhe", "gloves", "schlüsselanhänger", "keychain"],
+  "Jackets": ["jacke", "jacken", "coat", "mantel"],
+  "Dresses": ["kleid", "kleider"],
+  "Sets": ["tracksuit", "trainingsanzug", "jogginganzug", "co ord", "coord", "two piece", "zweiteiler"],
+  "Decoration": ["deko", "decke", "blanket", "kissen", "pillow", "kerze", "candle", "vase", "teppich", "rug"]
+};
+// Gehoeren nie zur Produktart: Qualitaets-Angaben, Marke "Polo Ralph Lauren", Aermellaenge.
+const QI_NEUTRAL = ["top version", "best version", "top quality", "high quality", "polo ralph lauren",
+                    "polo by ralph lauren", "short sleeve", "kurzarm"];
+// Zu allgemein, um allein aus dem Namen einer Kategorie erkannt zu werden.
+const QI_NOT_ALONE = new Set(["set", "all", "alle"]);
+
+function qiStem(w){
+  if(w.length > 4 && /(sses|shes|ches|xes)$/.test(w)) return w.slice(0, -2);   // dresses, glasses, watches
+  if(w.length > 3 && w.endsWith("s") && !w.endsWith("ss")) return w.slice(0, -1); // belts, hoodies, jeans
+  return w;
+}
+// Klammern (Rabatt, Varianten) zaehlen nicht; Bindestriche trennen ("T-Shirt").
+function qiNameTokens(text){
+  return String(text ?? "").toLowerCase().replace(/\([^)]*\)/g, " ")
+    .split(/[^\p{L}\p{N}]+/u).filter(Boolean).map(qiStem);
+}
+
+function qiBuildMatcher(categories, subcategories){
+  const order = new Map(categories.filter(c => c.key !== "all").map((c, i) => [c.key, i]));
+  const byFirst = new Map();
+  const add = (text, cands, level, exact, alone = true) => {
+    const toks = qiNameTokens(text);
+    if(!toks.length || toks.length > 5 || !cands.length) return;
+    if(!alone && toks.length === 1 && QI_NOT_ALONE.has(toks[0])) return;
+    const e = { toks, cands, level, exact };
+    if(!byFirst.has(toks[0])) byFirst.set(toks[0], []);
+    byFirst.get(toks[0]).push(e);
+  };
+  const keyText = k => String(k || "").replace(/[-_]+/g, " ");
+  const subs = subcategories.filter(s => order.has(s.category_key));
+  for(const s of subs){
+    const cand = [{ cat: s.category_key, sub: s.key }];
+    add(s.label, cand, 2, true, false);
+    add(keyText(s.key), cand, 2, true, false);
+    const teile = String(s.label).split(/\s*(?:[\/&+,]|\bund\b|\band\b)\s*/i).filter(Boolean);
+    if(teile.length > 1) teile.forEach(t => add(t, cand, 2, false, false));
+  }
+  for(const c of categories){
+    if(!order.has(c.key)) continue;
+    const cand = [{ cat: c.key, sub: "" }];
+    add(c.label, cand, 1, true, false);
+    add(keyText(c.key), cand, 1, true, false);
+  }
+  const same = (a, b) => qiNameTokens(a).join(" ") === qiNameTokens(b).join(" ");
+  for(const [ziel, woerter] of Object.entries(QI_SYNONYMS)){
+    let cands = subs.filter(s => same(s.label, ziel) || same(keyText(s.key), ziel)).map(s => ({ cat: s.category_key, sub: s.key }));
+    let level = 2;
+    if(!cands.length){
+      cands = categories.filter(c => order.has(c.key) && (same(c.label, ziel) || same(keyText(c.key), ziel))).map(c => ({ cat: c.key, sub: "" }));
+      level = 1;
+    }
+    woerter.forEach(w => add(w, cands, level, false));
+  }
+  return { byFirst, order, neutral: QI_NEUTRAL.map(qiNameTokens) };
+}
+
+// Letztes Produktwort gewinnt ("Polo Longsleeve" -> Longsleeves); ist das nur
+// eine Kategorie ("Fleece Jacket"), wird eine Unterkategorie derselben
+// Kategorie aus dem Namen genommen (-> Jackets > Fleece). null = nichts erkannt.
+function qiDetectCategory(name, m){
+  const toks = qiNameTokens(name);
+  for(const n of m.neutral){
+    for(let i = 0; i + n.length <= toks.length; i++){
+      if(n.every((t, j) => toks[i + j] === t)) for(let j = 0; j < n.length; j++) toks[i + j] = null;
+    }
+  }
+  const hits = [];
+  toks.forEach((t, i) => {
+    if(!t) return;
+    for(const e of m.byFirst.get(t) || []){
+      if(e.toks.every((x, j) => toks[i + j] === x)) hits.push({ ...e, end: i + e.toks.length - 1, len: e.toks.length });
+    }
+  });
+  if(!hits.length) return null;
+  hits.sort((a, b) => b.end - a.end || b.len - a.len || b.level - a.level || (b.exact - a.exact));
+  const top = hits[0];
+  const rank = c => m.order.get(c.cat) ?? 999;
+  const genannt = new Set(hits.filter(h => h.level === 1).flatMap(h => h.cands.map(c => c.cat)));
+  const pool = hits.filter(h => h.end === top.end && h.len === top.len && h.level === top.level)
+    .flatMap(h => h.cands.map(c => ({ ...c, exact: h.exact })))
+    .sort((a, b) => (genannt.has(b.cat) - genannt.has(a.cat)) || (b.exact - a.exact) || rank(a) - rank(b));
+  if(top.level === 2) return { cat: pool[0].cat, sub: pool[0].sub };
+  const cat = pool[0].cat;
+  const genauer = hits.filter(h => h.level === 2)
+    .flatMap(h => h.cands.filter(c => c.cat === cat).map(c => ({ c, end: h.end, len: h.len, exact: h.exact })))
+    .sort((a, b) => b.end - a.end || b.len - a.len || (b.exact - a.exact))[0];
+  return genauer ? { cat, sub: genauer.c.sub } : { cat, sub: "" };
+}
+
+// ---------- Rabatt- und Varianten-Badges per Klick ----------
+const QI_DISC_CHIPS = [20, 30, 50];
+const QI_VAR_CHIPS = [20, 10, 5];
+// Name zerlegen: Rabatt "(-30%)" und Variante "(+20)" getrennt vom Rest.
+function qiNameCodes(name){
+  const raw = String(name ?? "");
+  const disc = raw.match(/\(\s*(-\d+%)\s*\)/)?.[1] || null;
+  const vari = raw.match(/\(\s*(\+\d+)\s*\)/)?.[1] || null;
+  const base = raw.replace(/\(\s*-\d+%\s*\)/g, " ").replace(/\(\s*\+\d+\s*\)/g, " ").replace(/\s{2,}/g, " ").trim();
+  return { base, disc, vari };
+}
+// Badge an/aus: gleicher nochmal = weg, anderer = ersetzt. Reihenfolge immer
+// Name (+Variante) (-Rabatt) -- so wie Shop und Hochladen es lesen.
+function qiToggleNameCode(name, code){
+  const p = qiNameCodes(name);
+  if(code.startsWith("-")) p.disc = p.disc === code ? null : code;
+  else p.vari = p.vari === code ? null : code;
+  return [p.base, p.vari ? `(${p.vari})` : "", p.disc ? `(${p.disc})` : ""].filter(Boolean).join(" ");
+}
+
 function qiRenderCard(animate){
   const back = qi.backEntry;
   const it = back ? qiEntryItem(back) : qi.queue[0];
@@ -16620,8 +16820,16 @@ function qiRenderCard(animate){
           ? `<a class="qi-link" href="${aesc(href)}" target="_blank" rel="noopener noreferrer">${aesc(linkLabel)} ↗</a>`
           : `<span class="qi-nolink">Kein Link – der Kaufen-Button bleibt inaktiv.</span>`}
         <div>
-          <label class="a-label" for="qiName">Name *</label>
+          <div class="qi-name-head">
+            <label class="a-label" for="qiName">Name *</label>
+            <span class="qi-detect" id="qiDetect" aria-live="polite"></span>
+          </div>
           <input id="qiName" class="a-field qi-name" maxlength="200" placeholder="z. B. Ralph Lauren Pullover" value="${aesc(name || "")}" autocomplete="off" spellcheck="false">
+          <div class="qi-quick" role="group" aria-label="Rabatt und Varianten schnell einfügen">
+            ${QI_DISC_CHIPS.map(n => `<button type="button" class="qi-chip is-disc" data-code="-${n}%" tabindex="-1" aria-pressed="false" title="Rabatt-Badge (-${n}%) an den Namen hängen">${n}% Rabatt</button>`).join("")}
+            <span class="qi-chip-sep" aria-hidden="true"></span>
+            ${QI_VAR_CHIPS.map(n => `<button type="button" class="qi-chip is-var" data-code="+${n}" tabindex="-1" aria-pressed="false" title="Varianten-Badge (+${n}) an den Namen hängen">+${n}</button>`).join("")}
+          </div>
         </div>
         <div class="qi-sel-row">
           <div>
@@ -16721,6 +16929,66 @@ function qiRenderCard(animate){
   form.querySelector("#qiDelBtn")?.addEventListener("click", ()=> qiDeleteUploaded(back));
 
   const nameEl = form.querySelector("#qiName");
+
+  // Badge-Knoepfe: Fokus bleibt im Namen, damit man gleich weitertippt.
+  const quick = form.querySelector(".qi-quick");
+  const syncChips = ()=>{
+    const p = qiNameCodes(nameEl.value);
+    quick.querySelectorAll(".qi-chip").forEach(b => {
+      const an = b.dataset.code === p.disc || b.dataset.code === p.vari;
+      b.classList.toggle("is-on", an);
+      b.setAttribute("aria-pressed", String(an));
+    });
+  };
+  quick.addEventListener("mousedown", e => { if(e.target.closest(".qi-chip")) e.preventDefault(); });
+  quick.addEventListener("click", e => {
+    const b = e.target.closest(".qi-chip");
+    if(!b) return;
+    nameEl.value = qiToggleNameCode(nameEl.value, b.dataset.code);
+    nameEl.focus({ preventScroll: true });
+    const n = nameEl.value.length;
+    nameEl.setSelectionRange(n, n);
+    nameEl.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  nameEl.addEventListener("input", syncChips);
+  syncChips();
+
+  // Namens-Erkennung (nur beim aktuellen, nicht bei schon erledigten).
+  // Von Hand gewaehlt (echter Klick, kein programmatisches Setzen) = Finger weg.
+  const detectEl = form.querySelector("#qiDetect");
+  const lockManual = e => { if(e.isTrusted && !back){ it.catManual = true; detectEl.className = "qi-detect"; detectEl.textContent = ""; } };
+  catEl.addEventListener("change", lockManual);
+  subEl.addEventListener("change", lockManual);
+  qi.matcher = qiBuildMatcher(state.categories, state.subcategories);
+  const flash = el => { el.classList.remove("qi-flash"); void el.offsetWidth; el.classList.add("qi-flash"); };
+  const detect = (anwenden)=>{
+    if(back || it.catManual){ detectEl.className = "qi-detect"; detectEl.textContent = ""; return; }
+    const hit = qiDetectCategory(nameEl.value, qi.matcher);
+    if(!hit || !state.categories.some(c => c.key === hit.cat)){ detectEl.className = "qi-detect"; detectEl.textContent = ""; return; }
+    const istSchon = catEl.value === hit.cat && subEl.value === hit.sub;
+    if(!istSchon && !anwenden) { detectEl.className = "qi-detect"; detectEl.textContent = ""; return; }
+    if(catEl.value !== hit.cat){
+      catEl.value = hit.cat;
+      catEl.dispatchEvent(new Event("change", { bubbles: true }));
+      flash(catEl);
+    }
+    if(subEl.value !== hit.sub && Array.from(subEl.options).some(o => o.value === hit.sub)){
+      subEl.value = hit.sub;
+      subEl.dispatchEvent(new Event("change", { bubbles: true }));
+      flash(subEl);
+    }
+    const catLbl = state.categories.find(c => c.key === catEl.value)?.label || catEl.value;
+    const subLbl = subEl.value ? (state.subcategories.find(u => u.category_key === catEl.value && u.key === subEl.value)?.label || subEl.value) : "";
+    detectEl.className = "qi-detect is-on";
+    detectEl.innerHTML = `\u2713 Erkannt: <b>${aesc(catLbl)}</b>${subLbl ? ` \u203a <b>${aesc(subLbl)}</b>` : ""}`;
+  };
+  // Sofort bei jedem Tastendruck (kein Verzoegern) -- sonst koennte ein
+  // schnelles Enter noch mit der alten Kategorie hochladen.
+  nameEl.addEventListener("input", ()=> detect(true));
+  // Name schon aus der Excel: gleich beim Anzeigen erkennen; mit schon
+  // getippten Angaben (Entwurf) nur anzeigen, nichts umstellen.
+  if(nameEl.value.trim()) detect(!draft);
+
   nameEl.focus({ preventScroll: true });
   if(nameEl.value) nameEl.select();
   qi.root.scrollTop = 0;
