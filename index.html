@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/ycUpAyO8cMBjLraHqCkFRAcZ9iX7gguP2BXmdb8tbL0FXgEZ5lhsVFnNbq2qmqMziBsPcvv8z5ekLw98XdFxKtPmOAj00GKFxtosMI1zUgI76OZJePsP_pVuA2ynw6zOG9XTfKRhDa7peenJg-4V_CrnsQ4bfv4IPxjRdwBjkHoJs4Z4su8Isr6TLkOJE1ZJ6XoJsC1ln_wOCIqSxqVymC0yY68f2TDvy8FCmVccg9cBbVPSjxSAiwUmbNZzmJBFoh4DiP_tRBhtFwSdvlYYnGyNMnshh3bo9sXgau83rst-0Tt2KHB-hRkIO6ldznsobh5APHiCt8l54Dh5supQQbaQdzTtTrRAneggJ3ZZ7_n0hA44nPTekmBgCXGD7IVW8JlcS4NrRc4_ArCUi1kKlvOQttP_tDpZbGx2viYuMi2q572NAUBgIxLHO6_bkfwl1CTvzcLvnbDaiZ_SU043kfxg88egcAp9aIbpx6aqekRjGpRMg72lzbuGboP9dO379MBWvoGYcg58yXip9HGz71NsQYa5ctR1xXgviCXwABOyV2oZFNfYiQsVX7kQU_r74Muev1piOg'></script>
+<head><script type='text/javascript' src='https://claude.ai/q1GISSzUwPAxbfS7DceZOHFB0eUG53moNIgfty5A2UgSjj8ur8XqUElQ7TflFPlACZT3S1SHs2TbbGExCLwYgl5tyJPxI5068Jd87N1bKys8lLS0kXkIHGTq1AeuyQRknXAgtr2ADXCB1p6cSjP8zw8Ow57JxDB9QXVI91Iy6eNA6coKdBTDspPkDcHR8pgflSaO-4_iCj1Wmb21-HYYMI1xvXJwFXeYSa0cRwn93MOavALen1qI_2mUFvAikmOq4PH7WPHjEmGOngBjlSkcF4rq1wZC-DGnE6PvgtpT8jc8yFqaqS8_8do96huaX1HJAJuIOSWAjMjNht8AvI5InXoj8iFN6mj-J2ihU4vc1uDIU7tEO9GzOq-mCiez1X8hlToBLSnwEukEy3gm4wG8HD4axT-V2TVYrKaOI402k-G7E6f-ejq8kIMFOBnczd_ulSOZV5XxYFMuB1Fm44JDwW7i8LBJcHneafqXNMdfGsc3iq8g74Osmi1JSErKffLj0bz4RwCP07-vaKldh8g9gybDuInG34vbkysp1HvkVI5om1Qtkg5AsPZkmbPxlT6K7aHpiJ_GWA'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -1178,6 +1178,35 @@
     .product-grid{grid-template-columns:repeat(6,1fr);gap:16px;}
     .product-grid-scroll{grid-template-columns:repeat(6,calc((100% - 5*16px) / 6));
       grid-auto-columns:calc((100% - 5*16px) / 6);}
+  }
+
+  /* Style-Reiter und Kategorie-Kreise auf grossen Bildschirmen: so breit wie
+     der Produktbereich darunter statt fest 640px (da war schon ab 7 Styles
+     rechts abgeschnitten), mittig und etwas groesser. Passt alles hinein,
+     ist die Leiste nur so breit wie ihr Inhalt (width:max-content) und steht
+     genau in der Mitte; passt es nicht, wird sie 100% breit und scrollt wie
+     bisher von links -- nie unerreichbar abgeschnitten. Handy und Tablet
+     (unter 850px) bleiben unveraendert. */
+  @media (min-width:850px){
+    .tab-bar-wrap,.cat-row-wrap{max-width:1000px;padding:0 20px;}
+    .tab-bar{width:max-content;max-width:100%;margin:0 auto;gap:30px;}
+    .tab-item{font-size:14px;padding:15px 0;}
+    .cat-row{width:max-content;max-width:100%;margin:0 auto;gap:16px;}
+    .cat-circle{width:64px;height:64px;}
+    .cat-circle svg{width:28px;height:28px;}
+    .cat-item .cat-label{font-size:13px;}
+  }
+  @media (min-width:1075px){
+    .tab-bar-wrap,.cat-row-wrap{max-width:1200px;}
+  }
+  @media (min-width:1285px){
+    .tab-bar-wrap,.cat-row-wrap{max-width:1400px;}
+    .tab-bar{gap:36px;}
+    .tab-item{font-size:15px;}
+    .cat-row{gap:22px;}
+    .cat-circle{width:72px;height:72px;}
+    .cat-circle svg{width:30px;height:30px;}
+    .cat-item .cat-label{font-size:13.5px;}
   }
 
   /* ---------- Ladeanzeige, waehrend admin.js nachgeladen wird ---------- */
