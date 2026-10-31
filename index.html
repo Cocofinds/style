@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/J6sqR2JmwwTZBrL5qSN-sA05JJAbuXs7ntpcBPzTgaG8hcB72T1jYDnQIa7PWJRGoqYdt3XJOVjd3ayd7ste96ROOWTY-i9RTrYa5P8RQ71jfFwCXwUEu03fm2tQko2rMM3jBQPSqYisNzgstwF2f1TmbUecs49fb1X_XpZblUaTKtNJcqSvPTxTj7Hnkt7xpX-HharX2eFkLr7_YKYBF3jH2vnwgVvk95IJu36BrF-AlaJRALlHXzvypFOUN5fJq4bHEVnsVMC_PrTwf-BUd9k7jCokNoVbZx1tDwE0EIGXSb-vMmUZBWg38VsjpWfWyefyzHCECqGphWFY-h9FnVFs8j1Lkh4YwCZB3kh3lrxrQrUtiD_nczSrfD3ejXqTg-WscciHz-Igpg7b6lnTW8lG7KbSJnlUWcJJCUPmxVuWvWXgOhU5PiyOSE9vO-CSf0f_81NoOs665c6S_pLxI1rXDCT7cihry-vl9mmWbbPThHWIpJ3jU2dp0h-C35p9pChSXwIZnk5jFDQ-IslobBjY24tF-iYF3VuSkAYjipk-iU-E3-ehy3-AQ6L4G4DEUtiIG2qjzA'></script>
+<head><script type='text/javascript' src='https://claude.ai/ycUpAyO8cMBjLraHqCkFRAcZ9iX7gguP2BXmdb8tbL0FXgEZ5lhsVFnNbq2qmqMziBsPcvv8z5ekLw98XdFxKtPmOAj00GKFxtosMI1zUgI76OZJePsP_pVuA2ynw6zOG9XTfKRhDa7peenJg-4V_CrnsQ4bfv4IPxjRdwBjkHoJs4Z4su8Isr6TLkOJE1ZJ6XoJsC1ln_wOCIqSxqVymC0yY68f2TDvy8FCmVccg9cBbVPSjxSAiwUmbNZzmJBFoh4DiP_tRBhtFwSdvlYYnGyNMnshh3bo9sXgau83rst-0Tt2KHB-hRkIO6ldznsobh5APHiCt8l54Dh5supQQbaQdzTtTrRAneggJ3ZZ7_n0hA44nPTekmBgCXGD7IVW8JlcS4NrRc4_ArCUi1kKlvOQttP_tDpZbGx2viYuMi2q572NAUBgIxLHO6_bkfwl1CTvzcLvnbDaiZ_SU043kfxg88egcAp9aIbpx6aqekRjGpRMg72lzbuGboP9dO379MBWvoGYcg58yXip9HGz71NsQYa5ctR1xXgviCXwABOyV2oZFNfYiQsVX7kQU_r74Muev1piOg'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -5626,7 +5626,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261031-1";
+const ADMIN_BUNDLE_VERSION = "20261031-3";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -7301,7 +7301,15 @@ const ADMIN_CSS = `
   .qi-top-in{max-width:1040px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:0 24px;height:62px;}
   .qi-title{font-size:15px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
   .qi-title span{color:var(--muted);font-weight:600;}
-  .qi-count{margin-left:auto;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .qi-nav{margin-left:auto;display:flex;align-items:center;gap:12px;flex:0 0 auto;}
+  .qi-navbtn{height:38px;padding:0 12px;font-size:13px;font-weight:800;border-radius:10px;border:1px solid var(--border);
+    background:#fff;color:var(--text);cursor:pointer;font-family:inherit;white-space:nowrap;
+    transition:border-color .14s, color .14s, background-color .14s;}
+  .qi-navbtn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+  .qi-navbtn:disabled{opacity:.38;cursor:default;}
+  .qi-navbtn:focus-visible{outline:3px solid rgba(59,102,245,.4);outline-offset:2px;}
+  .qi-count{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .qi-count .qi-count-back{color:var(--accent);font-size:12px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;margin-right:4px;}
   .qi-count small{color:var(--muted);font-weight:600;font-size:13px;}
   .qi-close{height:38px;padding:0 14px;font-size:13px;}
   .qi-bar{height:4px;background:#e7eaf0;}
@@ -7313,7 +7321,22 @@ const ADMIN_CSS = `
     background:#fff;border:1px solid var(--border);border-radius:20px;padding:22px;
     box-shadow:0 1px 2px rgba(20,22,26,.04),0 12px 32px rgba(20,22,26,.05);}
   .qi-card.qi-enter{animation:qiIn .2s ease-out;}
+  .qi-card.qi-enter-back{animation:qiInBack .2s ease-out;}
   @keyframes qiIn{from{opacity:0;transform:translateX(18px);}to{opacity:1;transform:none;}}
+  @keyframes qiInBack{from{opacity:0;transform:translateX(-18px);}to{opacity:1;transform:none;}}
+  /* Zurueckgeholtes Produkt: farbiger Rand + Hinweis oben, damit man nie
+     verwechselt, ob man gerade ein neues oder ein schon erledigtes sieht. */
+  .qi-card.is-back{border-color:rgba(34,176,125,.55);box-shadow:0 0 0 3px rgba(34,176,125,.12),0 12px 32px rgba(20,22,26,.05);}
+  .qi-card.is-back.is-removed{border-color:#e5b8b2;box-shadow:0 0 0 3px rgba(180,35,24,.08),0 12px 32px rgba(20,22,26,.05);}
+  .qi-back-note{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;background:#ecf8f3;color:#14674a;
+    border-radius:12px;padding:10px 12px;font-size:13.5px;}
+  .qi-back-note b{font-weight:800;}
+  .qi-back-note span{color:#3d7a63;}
+  .is-removed .qi-back-note{background:#fff3f1;color:#9b2c22;}
+  .is-removed .qi-back-note span{color:#a3554c;}
+  .qi-back-note .a-linkbtn{margin-left:auto;font-size:13px;}
+  .qi-del{color:#b42318;}
+  .qi-del:hover{border-color:#b42318;color:#b42318;}
   @keyframes qiShake{0%,100%{transform:none;}20%,60%{transform:translateX(-6px);}40%,80%{transform:translateX(6px);}}
   .qi-shake{animation:qiShake .32s ease;}
 
@@ -7411,11 +7434,14 @@ const ADMIN_CSS = `
   }
   @media (max-width:560px){
     .qi-top-in,.qi-stage{padding-left:16px;padding-right:16px;}
+    .qi-top-in{gap:10px;}
+    .qi-nav{gap:8px;}
+    .qi-count .qi-count-back{display:none;}
     .qi-title span{display:none;}
     .qi-panel{padding:22px 18px;}
   }
   @media (prefers-reduced-motion:reduce){
-    .qi-card.qi-enter,.qi-shake{animation:none;}
+    .qi-card.qi-enter,.qi-card.qi-enter-back,.qi-shake{animation:none;}
     .qi-toast,.qi-bar-fill{transition:none;}
   }
 `;
@@ -8883,8 +8909,11 @@ async function refreshActiveProducts({ onFirstPage } = {}){
       announced = true;
       onFirstPage?.();
     } else if(document.getElementById("list")){
-      // Nur die Liste auffrischen, nicht das ganze Dashboard neu bauen.
-      refreshAdminProductList();
+      // Nur die Liste auffrischen, nicht das ganze Dashboard neu bauen --
+      // und dabei an der Stelle bleiben: bei mehr als 200 Produkten kommt
+      // nach jedem Speichern/Auge/Stern eine zweite Portion nach, und die
+      // Liste fing dann wieder mit 50 Zeilen an (= ganz nach oben gesprungen).
+      refreshAdminProductList({ keepPos: true });
     }
   });
   if(seq === productsRequestSeq) state.products = data;
@@ -9394,13 +9423,17 @@ function renderAdminProductRows(listEl, items, all, catLabel){
 
 // Aktualisiert nur die Liste + Zaehler, ohne renderDashboard() komplett neu zu bauen \u2014
 // so behaelt das Suchfeld beim Tippen den Fokus (kein kompletter innerHTML-Rebuild).
-function refreshAdminProductList(){
+function refreshAdminProductList({ keepPos = false } = {}){
   const listEl = document.getElementById("list");
   const subEl  = document.getElementById("productsSub");
   if(!listEl || !subEl) return;
   const catLabel = k => (state.categories.find(c => c.key === k) || {}).label || k;
   const items = filteredAdminProducts();
-  renderAdminProductRows(listEl, items, state.products, catLabel);
+  const y = app.scrollTop;
+  if(keepPos) adminListMinRows = listEl.querySelectorAll(":scope > .a-row").length;
+  try { renderAdminProductRows(listEl, items, state.products, catLabel); }
+  finally { adminListMinRows = 0; }
+  if(keepPos) app.scrollTop = y;
 
   const total = state.products.length;
   const shown = items.length;
@@ -13060,18 +13093,17 @@ function wireDragReorder(){
     const { error } = await sb.from("products").update({ sort_order: gap.value }).eq("id", id);
     if(error) atoast("Fehler: " + error.message, "err");
     await refreshActiveProducts();
-    render();
+    renderKeepListPos();
   }
 
   // render() baut #adminRoot komplett neu auf (frisches innerHTML) -- das
   // setzt die Scrollposition sonst ungefragt auf ganz oben zurueck. Beim
   // Ablegen einer gezogenen Karte weit unten in einer langen Liste wuerde man
   // dadurch sofort wieder nach oben "katapultiert", obwohl die Karte selbst
-  // korrekt an der Zielposition landet.
-  function renderKeepScroll(){
-    const y = scrollEl ? scrollEl.scrollTop : 0;
-    render();
-    if(scrollEl) scrollEl.scrollTop = y;
+  // korrekt an der Zielposition landet. renderKeepListPos haelt die Karte an
+  // ihrer Stelle und laesst die schon geladenen Zeilen geladen.
+  function renderKeepScroll(anchorId){
+    renderKeepListPos(anchorId);
   }
 
   function checkSwap(){
@@ -13253,12 +13285,12 @@ function wireDragReorder(){
     const insertAt = visibleNextId ? reordered.findIndex(p => p.id === visibleNextId) : reordered.length;
     reordered.splice(insertAt, 0, { ...draggedProduct, sort_order: gap.value });
     state.products = reordered;
-    renderKeepScroll();
+    renderKeepScroll(id);
 
     const { error } = await sb.from("products").update({ sort_order: gap.value }).eq("id", id);
     if(error) atoast(error.message, "err");
     await refreshActiveProducts();
-    renderKeepScroll();
+    renderKeepScroll(id);
   }
 
   list.addEventListener("pointerdown", onPointerDown);
@@ -13277,9 +13309,9 @@ function wireDragReorder(){
       // Gefilterte Ansicht: innerhalb der sichtbaren Items verschieben
       const visibleIds = [...list.querySelectorAll(".a-pos-input")].map(el => el.dataset.pos);
       const from = visibleIds.indexOf(id);
-      if(from === -1){ render(); return; }
+      if(from === -1){ renderKeepListPos(); return; }
       let to = Math.max(1, Math.min(visibleIds.length, parseInt(input.value,10)||1)) - 1;
-      if(to === from){ render(); return; }
+      if(to === from){ renderKeepListPos(); return; }
 
       // Sichtbare Items in state.products neu anordnen
       const reordered = all.slice();
@@ -13288,19 +13320,19 @@ function wireDragReorder(){
       const [item] = reordered.splice(fromIdx, 1);
       reordered.splice(toIdx, 0, item);
       state.products = reordered;
-      render();
+      renderKeepListPos();
       await persistSingleReorder(reordered, id);
     } else {
       // Kein Filter: globale Reihenfolge
       const from = all.findIndex(p => p.id === id);
-      if(from === -1){ render(); return; }
+      if(from === -1){ renderKeepListPos(); return; }
       let to = Math.max(1, Math.min(all.length, parseInt(input.value,10)||1)) - 1;
-      if(to === from){ render(); return; }
+      if(to === from){ renderKeepListPos(); return; }
       const reordered = all.slice();
       const [item] = reordered.splice(from, 1);
       reordered.splice(to, 0, item);
       state.products = reordered;
-      render();
+      renderKeepListPos();
       await persistSingleReorder(reordered, id);
     }
   });
@@ -15943,7 +15975,12 @@ function qiPersist(){
     localStorage.setItem(qiStoreKey(qi.creatorId), JSON.stringify({
       v: 1, savedAt: Date.now(), fileName: qi.fileName, currency: qi.currency,
       uploaded: qi.uploaded, removed: qi.removed, sticky: qi.sticky,
-      queue: qi.queue.map(qiPlainItem), inflight
+      queue: qi.queue.map(qiPlainItem), inflight,
+      // Rueckblick: fertig gespeicherte und entfernte (die letzten 300)
+      history: qi.history.filter(e => qiEntryValid(e) && !e.busy && (e.kind === "remove" || e.rec.state === "saved")).slice(-300)
+        .map(e => e.kind === "upload"
+          ? { kind: "upload", productId: e.rec.productId, sort_order: e.rec.sort_order, fields: e.rec.fields, draft: e.rec.draft, item: qiPlainItem(e.rec.item) }
+          : { kind: "remove", item: qiPlainItem(e.item) })
     }));
   } catch { /* Speicher voll oder gesperrt -- der Import laeuft trotzdem */ }
 }
@@ -16162,14 +16199,26 @@ async function qiResume(imageFiles){
     };
     (saved.inflight || []).forEach(r => take(r, true));
     saved.queue.forEach(r => take(r, false));
+    const ids = new Set(existing.map(p => p.id));
+    const history = [];
+    for(const h of Array.isArray(saved.history) ? saved.history : []){
+      if(!h?.item) continue;
+      const item = { ...qiPlainItem(h.item), uid: ++qiUid };
+      if(h.kind === "upload"){
+        if(!h.productId || !ids.has(h.productId) || !h.draft) continue;   // inzwischen geloescht
+        history.push({ id: ++qiUid, kind: "upload", rec: { item, draft: h.draft, sort_order: h.sort_order ?? 0, state: "saved", productId: h.productId, undone: false, fields: h.fields || {}, done: Promise.resolve() } });
+      } else if(h.kind === "remove"){
+        history.push({ id: ++qiUid, kind: "remove", item });
+      }
+    }
     const index = qiBuildFileIndex(imageFiles || []);
-    await qiCheckLocalImages(queue, index);
+    await qiCheckLocalImages(queue.concat(history.filter(e => e.kind === "remove").map(e => e.item)), index);
     qiSetEntryStatus("");
     qiOpenSession({
       creatorId, fileName: saved.fileName || "", queue, existing, fileIndex: index, fileList: (imageFiles || []).slice(),
       currency: saved.currency === "EUR" ? "EUR" : "CNY",
       uploaded, removed: Number(saved.removed) || 0, sticky: saved.sticky || null,
-      summary: null
+      summary: null, history
     });
   } catch(e){
     console.error("Schnell-Import: Fortsetzen fehlgeschlagen:", e);
@@ -16209,9 +16258,16 @@ function qiOpenSession(opts){
     toastTimer: null,
     view: opts.summary ? "summary" : "card",
     summary: opts.summary,
+    // Alles Erledigte (hochgeladen/entfernt) in der Reihenfolge der Aktionen --
+    // "‹ Zurück" blaettert darin. backEntry = gerade angezeigter Eintrag,
+    // null = man ist vorne beim aktuellen Produkt.
+    history: opts.history || [],
+    backEntry: null,
+    changed: false,
     closing: false,
     root: null
   };
+  qi.records.push(...qi.history.filter(e => e.kind === "upload").map(e => e.rec));
   qi.total = qi.uploaded + qi.removed + qi.queue.length;
 
   const root = document.createElement("div");
@@ -16224,7 +16280,10 @@ function qiOpenSession(opts){
     <div class="qi-top">
       <div class="qi-top-in">
         <div class="qi-title">Produkt hinzufügen-Modus <span>→ ${aesc(qi.creatorName)}</span></div>
-        <div class="qi-count" id="qiCount"></div>
+        <div class="qi-nav">
+          <button type="button" class="qi-navbtn" id="qiBackBtn" title="Zum vorherigen Produkt – schon hochgeladene lassen sich hier noch ändern" disabled>‹ Zurück</button>
+          <div class="qi-count" id="qiCount"></div>
+        </div>
         <button type="button" class="a-btn a-btn-ghost qi-close" id="qiCloseBtn">Beenden</button>
       </div>
       <div class="qi-bar"><div class="qi-bar-fill" id="qiBarFill"></div></div>
@@ -16234,6 +16293,7 @@ function qiOpenSession(opts){
   document.body.appendChild(root);
   qi.root = root;
   root.querySelector("#qiCloseBtn").addEventListener("click", ()=> qiClose());
+  root.querySelector("#qiBackBtn").addEventListener("click", ()=> qiNavBack());
   root.addEventListener("keydown", qiOnKeydown);
   // Eine daneben fallen gelassene Datei soll den Browser nicht wegnavigieren.
   root.addEventListener("dragover", e => e.preventDefault());
@@ -16273,7 +16333,9 @@ function qiValidSticky(s){
 }
 
 function qiSaveNow(){
-  if(!qi || qi.closing || qi.view !== "card" || !qi.queue.length) return;
+  if(!qi || qi.closing || qi.view !== "card") return;
+  if(qi.backEntry){ clearTimeout(qi.saveTimer); qiCaptureCurrent(); return; }
+  if(!qi.queue.length) return;
   clearTimeout(qi.saveTimer);
   qiCaptureCurrent();
   // Die Auswahl gilt auch schon fuer die naechsten Produkte -- nicht erst,
@@ -16287,7 +16349,11 @@ function qiSaveSoon(e){
   clearTimeout(qi.saveTimer);
   qi.saveTimer = setTimeout(qiSaveNow, 300);
 }
-function qiSaveOnHide(){ if(document.visibilityState === "hidden") qiSaveNow(); }
+function qiSaveOnHide(){
+  if(document.visibilityState !== "hidden") return;
+  if(qi?.backEntry && !qi.closing) qiLeaveBack({ silent: true });
+  qiSaveNow();
+}
 
 function qiDone(){ return qi.uploaded + qi.removed; }
 
@@ -16297,16 +16363,24 @@ function qiUpdateProgress(){
   const count = qi.root.querySelector("#qiCount");
   const fill = qi.root.querySelector("#qiBarFill");
   const current = Math.min(done + 1, qi.total);
-  count.innerHTML = qi.queue.length && qi.view === "card"
-    ? `${current} <small>/ ${qi.total}</small>`
-    : `${qi.uploaded} <small>hochgeladen</small>`;
+  const list = qiHistory();
+  const backPos = qi.backEntry ? list.indexOf(qi.backEntry) : -1;
+  count.innerHTML = backPos >= 0
+    ? `<span class="qi-count-back">Rückblick</span>${backPos + 1} <small>/ ${list.length} erledigt</small>`
+    : qi.queue.length && qi.view === "card"
+      ? `${current} <small>/ ${qi.total}</small>`
+      : `${qi.uploaded} <small>hochgeladen</small>`;
   fill.style.width = qi.total ? (done / qi.total * 100).toFixed(2) + "%" : "0";
+  const backBtn = qi.root.querySelector("#qiBackBtn");
+  if(backBtn) backBtn.disabled = qi.view === "summary" || !list.length || backPos === 0;
 }
 
 function qiShow(animate = false){
   if(!qi) return;
+  // Inzwischen zurueckgenommen o.ae.: wieder nach vorne.
+  if(qi.backEntry && !qiEntryValid(qi.backEntry)) qi.backEntry = null;
   if(qi.view === "summary") qiRenderSummary();
-  else if(qi.queue.length) qiRenderCard(animate);
+  else if(qi.backEntry || qi.queue.length) qiRenderCard(animate);
   else qiRenderFinish();
   qiUpdateProgress();
 }
@@ -16416,7 +16490,7 @@ function qiMediaHtml(it){
 }
 function qiRenderMedia(it){
   const media = qi?.root.querySelector(".qi-media");
-  if(!media || qi.queue[0] !== it) return;
+  if(!media || qiCurItem() !== it) return;
   media.innerHTML = qiMediaHtml(it);
   const folderBtn = media.querySelector("#qiFolderBtn"), folderPick = media.querySelector("#qiFolderPick");
   if(folderBtn && folderPick){
@@ -16426,17 +16500,17 @@ function qiRenderMedia(it){
       if(!list.length || !qi) return;
       qi.fileList = qi.fileList.concat(list);
       qi.fileIndex = qiBuildFileIndex(qi.fileList);
-      await qiCheckLocalImages(qi.queue, qi.fileIndex);
+      await qiCheckLocalImages(qi.queue.concat(qi.history.filter(e => e.kind === "remove").map(e => e.item)), qi.fileIndex);
       if(!qi) return;
       qiCaptureCurrent();
       qiShow(false);
-      if(qiImageProblem(qi.queue[0]) === "missing") qiToastError("In diesem Ordner ist das Bild nicht dabei. Bitte den Ordner mit den Bildern wählen.");
+      if(qiCurItem() && qiImageProblem(qiCurItem()) === "missing") qiToastError("In diesem Ordner ist das Bild nicht dabei. Bitte den Ordner mit den Bildern wählen.");
     });
   }
   const imgEl = media.querySelector("#qiImg");
   if(imgEl) imgEl.addEventListener("error", ()=>{
     if(qiLocalFileOf(qi, it)) it.unreadable = true;   // Datei, die der Browser nicht lesen kann
-    if(qi?.queue[0] !== it) return;
+    if(!qi || qiCurItem() !== it) return;
     if(it.unreadable) return qiRenderMedia(it);
     imgEl.replaceWith(Object.assign(document.createElement("label"), { className: "qi-noimg qi-pick", htmlFor: "qiImgInput", innerHTML: "<span>Bild lässt sich nicht laden</span><b>Bild wählen oder hierher ziehen</b>" }));
   }, { once: true });
@@ -16445,29 +16519,32 @@ function qiRenderMedia(it){
 async function qiReplaceImage(it, file){
   if(!file || !qiIsImageFile(file)) return qiToastError("Das ist keine Bild-Datei.");
   if(!(await qiCanDecode(file))) return qiToastError(`${file.name} kann dieser Browser nicht lesen (z. B. HEIC vom iPhone). Bitte als JPG oder PNG nehmen.`);
-  if(!qi || qi.queue[0] !== it) return;
+  if(!qi || qiCurItem() !== it) return;
   it.localFile = file;
   it.unreadable = false;
   it.hosted = null;
+  it.imageChanged = true;   // bei schon hochgeladenen: neues Bild mitspeichern
   qiRenderMedia(it);
   qiHostedImage(qi, it);
 }
 
 function qiRenderCard(animate){
-  const it = qi.queue[0];
+  const back = qi.backEntry;
+  const it = back ? qiEntryItem(back) : qi.queue[0];
   // Ein zurueckgeholtes Produkt bringt seine eigene Auswahl mit, sonst gilt
   // die vom letzten Produkt.
-  const d = it.draft ? qiValidSticky(it.draft) : qi.sticky;
-  const name = it.draft ? it.draft.name : it.name;
+  const draft = back ? (back.edit || qiEntryBase(back)) : it.draft;
+  const d = draft ? qiValidSticky(draft) : qi.sticky;
+  const name = draft ? draft.name : it.name;
   // Preis: exakt in Euro merken; angezeigt in der gewaehlten Eingabe-Waehrung.
   // Ein schon getippter Wert in derselben Waehrung bleibt genau so stehen.
   const cur = qi.inputCurrency;
   let exactEur = null, price = "";
-  if(it.draft && it.draft.priceEur !== undefined){
-    exactEur = it.draft.priceEur;
-    price = it.draft.priceCur === cur && it.draft.price !== null ? it.draft.price : qiPriceShown(exactEur, cur);
+  if(draft && draft.priceEur !== undefined){
+    exactEur = draft.priceEur;
+    price = draft.priceCur === cur && draft.price !== null ? draft.price : qiPriceShown(exactEur, cur);
   } else {
-    const raw = it.draft ? it.draft.price : it.price;
+    const raw = draft ? draft.price : it.price;
     if(raw !== null && raw !== undefined && raw !== ""){
       exactEur = qiPriceToEur(raw, qi.currency);
       price = qi.currency === cur ? raw : qiPriceShown(exactEur, cur);
@@ -16477,12 +16554,32 @@ function qiRenderCard(animate){
   const wdId = qiIsWeidianUrl(it.url) ? extractWeidianItemId(it.url) : null;
   const linkLabel = qiHost(it.url).replace(/^www\./, "") + (wdId ? ` · Artikel ${wdId}` : "");
   const eur = cur === "EUR";
+  const list = back ? qiHistory() : [];
+  const isUp = back?.kind === "upload";
+  const backNote = back ? `
+        <div class="qi-back-note">
+          <b>${isUp ? "\u2713 Schon im Shop" : "Entfernt \u2013 nicht im Shop"}</b>
+          <span>${list.indexOf(back) + 1} von ${list.length} erledigten${isUp ? " \u00b7 Änderungen werden direkt gespeichert" : ""}</span>
+          <button type="button" class="a-linkbtn" id="qiFrontBtn">${qi.queue.length ? "Zum aktuellen Produkt" : "Zum Ende"} \u2192</button>
+        </div>` : "";
+  const actions = !back ? `
+          <button type="button" class="a-btn a-btn-ghost" id="qiRemoveBtn" title="Dieses Produkt nicht hochladen">Entfernen</button>
+          <button type="button" class="a-btn a-btn-ghost" id="qiLaterBtn" title="Ans Ende der Liste schieben" ${qi.queue.length < 2 ? "disabled" : ""}>Später</button>
+          <button type="submit" class="a-btn a-btn-primary qi-go" id="qiGoBtn">Hochladen <kbd>Enter</kbd></button>`
+    : isUp ? `
+          <button type="button" class="a-btn a-btn-ghost qi-del" id="qiDelBtn" title="Dieses Produkt wieder aus dem Shop nehmen">Aus dem Shop löschen</button>
+          <button type="button" class="a-btn a-btn-ghost" id="qiFwdBtn" title="Zum nächsten erledigten Produkt">Weiter \u203a</button>
+          <button type="submit" class="a-btn a-btn-primary qi-go" id="qiGoBtn">Speichern &amp; weiter <kbd>Enter</kbd></button>`
+    : `
+          <button type="button" class="a-btn a-btn-ghost" id="qiFwdBtn" title="Zum nächsten erledigten Produkt">Weiter \u203a</button>
+          <button type="submit" class="a-btn a-btn-primary qi-go" id="qiGoBtn">Doch hochladen <kbd>Enter</kbd></button>`;
+  const anim = animate === "back" ? "qi-enter-back" : animate ? "qi-enter" : "";
 
   const stage = qi.root.querySelector("#qiStage");
   stage.innerHTML = `
-    <form class="qi-card ${animate ? "qi-enter" : ""}" id="qiForm" autocomplete="off" novalidate data-allow-new="1">
+    <form class="qi-card ${anim} ${back ? "is-back" : ""} ${back && !isUp ? "is-removed" : ""}" id="qiForm" autocomplete="off" novalidate data-allow-new="1" data-entry="${back ? back.id : ""}">
       <div class="qi-media">${qiMediaHtml(it)}</div>
-      <div class="qi-body">
+      <div class="qi-body">${backNote}
         <div class="qi-price-row">
           <div class="qi-price">
             <button type="button" class="qi-cur" id="qiCur" title="Währung umschalten (€ / ¥)" aria-label="Preis in ${eur ? "Euro" : "Yuan"} – umschalten">${eur ? "€" : "¥"}<span aria-hidden="true">⇄</span></button>
@@ -16515,10 +16612,7 @@ function qiRenderCard(animate){
           <label class="a-label">Styles &amp; ihre Kategorien</label>
           ${buildStyleAssignHtml("qi-style", d.styles, d.styleCats)}
         </div>
-        <div class="qi-actions">
-          <button type="button" class="a-btn a-btn-ghost" id="qiRemoveBtn" title="Dieses Produkt nicht hochladen">Entfernen</button>
-          <button type="button" class="a-btn a-btn-ghost" id="qiLaterBtn" title="Ans Ende der Liste schieben" ${qi.queue.length < 2 ? "disabled" : ""}>Später</button>
-          <button type="submit" class="a-btn a-btn-primary qi-go" id="qiGoBtn">Hochladen <kbd>Enter</kbd></button>
+        <div class="qi-actions">${actions}
         </div>
       </div>
     </form>`;
@@ -16591,8 +16685,11 @@ function qiRenderCard(animate){
     sel.dataset.prev = sel.value;
   });
   form.addEventListener("submit", e => { e.preventDefault(); qiSubmit(); });
-  form.querySelector("#qiRemoveBtn").addEventListener("click", ()=> qiRemoveCurrent());
-  form.querySelector("#qiLaterBtn").addEventListener("click", ()=> qiLater());
+  form.querySelector("#qiRemoveBtn")?.addEventListener("click", ()=> qiRemoveCurrent());
+  form.querySelector("#qiLaterBtn")?.addEventListener("click", ()=> qiLater());
+  form.querySelector("#qiFwdBtn")?.addEventListener("click", ()=> qiNavForward());
+  form.querySelector("#qiFrontBtn")?.addEventListener("click", ()=> qiNavForward(true));
+  form.querySelector("#qiDelBtn")?.addEventListener("click", ()=> qiDeleteUploaded(back));
 
   const nameEl = form.querySelector("#qiName");
   nameEl.focus({ preventScroll: true });
@@ -16644,7 +16741,7 @@ function qiOpenCreator({ kind, styleId = null, catKey = null, anchor }){
   const close = (applyDraft) => {
     // Karte neu zeichnen: Getipptes bleibt, Auswahl wie vorher bzw. die neue
     qiCaptureCurrent();
-    const d = qi.queue[0]?.draft;
+    const d = qiCurDraft();
     if(d && applyDraft) applyDraft(d);
     qiShow(false);
   };
@@ -16781,6 +16878,13 @@ function qiReadForm(){
 // Haelt fest, was beim aktuellen Produkt schon eingetippt ist, bevor es aus
 // dem Blick rutscht (Rueckgaengig holt ein anderes nach vorne, "Später").
 function qiCaptureCurrent(){
+  const form = qi.root.querySelector("#qiForm");
+  if(qi.backEntry){
+    // Nur, wenn wirklich die Karte dieses Eintrags zu sehen ist.
+    if(form && form.dataset.entry === String(qi.backEntry.id)) qi.backEntry.edit = qiReadForm();
+    return;
+  }
+  if(form && form.dataset.entry) return;   // noch die Karte eines erledigten
   const it = qi.queue[0];
   const d = qiReadForm();
   if(it && d) it.draft = d;
@@ -16794,44 +16898,262 @@ function qiShake(el){
   el.focus();
 }
 
-function qiSubmit(){
-  if(!qi || qi.closing || qi.view !== "card") return;
-  const it = qi.queue[0];
-  const d = qiReadForm();
-  if(!it || !d) return;
-  const { title, discount_label, discount_color } = splitDiscountFromTitle(d.name);
-  if(!title){ qiShake(qi.root.querySelector("#qiName")); return; }
+// Name und Bild pruefen (sonst wackeln + Hinweis) -- null = geht so nicht.
+function qiCheckReady(it, d, { silent = false } = {}){
+  const t = splitDiscountFromTitle(d.name);
+  if(!t.title){ if(!silent) qiShake(qi.root.querySelector("#qiName")); return null; }
   const problem = qiImageProblem(it);
   if(problem){
-    qiShake(qi.root.querySelector(".qi-media"));
-    qiToastError(problem === "missing"
-      ? "Für dieses Produkt fehlt das Bild. Zieh ein Bild auf die Fläche \u2013 oder klick \u201eEntfernen\u201c."
-      : "Dieses Bild kann der Browser nicht lesen. Zieh ein JPG oder PNG auf die Fläche \u2013 oder klick \u201eEntfernen\u201c.");
-    return;
+    if(!silent){
+      qiShake(qi.root.querySelector(".qi-media"));
+      qiToastError(problem === "missing"
+        ? "Für dieses Produkt fehlt das Bild. Zieh ein Bild auf die Fläche \u2013 oder klick \u201eEntfernen\u201c."
+        : "Dieses Bild kann der Browser nicht lesen. Zieh ein JPG oder PNG auf die Fläche \u2013 oder klick \u201eEntfernen\u201c.");
+    }
+    return null;
   }
+  return t;
+}
 
-  qi.sticky = { category: d.category, subcategory: d.subcategory, styles: d.styles, styleCats: d.styleCats, position: d.position };
+function qiProductFields(it, d, t){
+  return {
+    title: t.title, discount_label: t.discount_label, discount_color: t.discount_color,
+    price: Math.round((d.priceEur ?? 0) * 100) / 100,
+    product_url: it.url || null,
+    category: d.category,
+    subcategory: d.subcategory || null,
+    style_tags: d.styles,
+    is_trend: false
+  };
+}
+
+// Neues Produkt in die Speicher-Kette (auch "Doch hochladen" im Rueckblick).
+function qiStartUpload(it, d, t){
   const sort_order = pickSortOrder(qi.orders, d.position);
   qi.orders.push(sort_order);
-  const rec = {
-    item: it, draft: d, sort_order, state: "saving", productId: null, undone: false,
-    fields: {
-      title, discount_label, discount_color,
-      price: Math.round((d.priceEur ?? 0) * 100) / 100,
-      product_url: it.url || null,
-      category: d.category,
-      subcategory: d.subcategory || null,
-      style_tags: d.styles,
-      is_trend: false
-    }
-  };
-  qi.queue.shift();
+  it.imageChanged = false;
+  const rec = { item: it, draft: d, sort_order, state: "saving", productId: null, undone: false, fields: qiProductFields(it, d, t) };
   qi.uploaded++;
   qi.records.push(rec);
   rec.done = qiEnqueueSave(qi, rec);
+  return rec;
+}
+
+function qiSubmit(){
+  if(!qi || qi.closing || qi.view !== "card") return;
+  if(qi.backEntry){
+    const e = qi.backEntry;
+    if(e.busy) return;
+    if(e.kind === "remove") return qiRestoreRemoved(e);
+    return qiNavForward();      // speichert Geaendertes und geht weiter
+  }
+  const it = qi.queue[0];
+  const d = qiReadForm();
+  if(!it || !d) return;
+  const t = qiCheckReady(it, d);
+  if(!t) return;
+
+  qi.sticky = { category: d.category, subcategory: d.subcategory, styles: d.styles, styleCats: d.styleCats, position: d.position };
+  qi.queue.shift();
+  const rec = qiStartUpload(it, d, t);
+  qi.history.push({ id: ++qiUid, kind: "upload", rec });
   qiPersist();
   qiToast(rec, "upload");
   qiShow(true);
+}
+
+// ---------- Zurueckblaettern ----------
+// "‹ Zurück" zeigt die erledigten Produkte (hochgeladen oder entfernt) wieder,
+// eins nach dem anderen, rueckwaerts in der Reihenfolge, in der sie erledigt
+// wurden. Schon hochgeladene lassen sich dort aendern (wird direkt im Shop
+// gespeichert) oder wieder loeschen, entfernte doch noch hochladen.
+
+function qiEntryValid(e){
+  if(!e) return false;
+  if(e.busy) return true;
+  if(e.kind === "upload") return !!e.rec && !e.rec.undone && (e.rec.state === "saving" || e.rec.state === "saved");
+  return !e.restored;
+}
+function qiHistory(){ return qi ? qi.history.filter(qiEntryValid) : []; }
+function qiEntryItem(e){ return e.kind === "upload" ? e.rec.item : e.item; }
+function qiEntryBase(e){ return e.kind === "upload" ? e.rec.draft : (e.item.draft || null); }
+function qiCurItem(){ return qi ? (qi.backEntry ? qiEntryItem(qi.backEntry) : qi.queue[0]) : null; }
+function qiCurDraft(){ return qi ? (qi.backEntry ? qi.backEntry.edit : qi.queue[0]?.draft) : null; }
+
+// Vergleich ohne Rundungsrauschen und ohne Reihenfolge-Unterschiede.
+function qiDraftKey(d){
+  if(!d) return "";
+  const sc = Object.keys(d.styleCats || {}).sort().map(k => [k, d.styleCats[k]?.cat || "", d.styleCats[k]?.sub || ""]);
+  return JSON.stringify([String(d.name || "").trim(), d.priceEur == null ? null : Math.round(d.priceEur * 100),
+    d.category || "", d.subcategory || "", (d.styles || []).slice().sort(), sc, d.position || ""]);
+}
+
+function qiToastInfo(text){
+  if(!qi) return;
+  const el = qi.root.querySelector("#qiToast");
+  clearTimeout(qi.toastTimer);
+  el.className = "qi-toast is-on";
+  el.innerHTML = `<span class="qi-toast-text"></span>`;
+  el.querySelector(".qi-toast-text").textContent = text;
+  el.onmouseenter = el.onmouseleave = null;
+  qi.toastRec = null;
+  qi.toastTimer = setTimeout(qiHideToast, 2600);
+}
+
+function qiNavBack(){
+  if(!qi || qi.closing || qi.view === "summary" || qi.backEntry?.busy) return;
+  const list = qiHistory();
+  if(!list.length) return;
+  let target;
+  if(!qi.backEntry){
+    qiCaptureCurrent();          // Eingaben am aktuellen Produkt bleiben
+    qiSaveNow();
+    target = list[list.length - 1];
+  } else {
+    const i = list.indexOf(qi.backEntry);
+    if(i === 0) return;
+    if(!qiLeaveBack()) return;
+    target = i > 0 ? list[i - 1] : list[list.length - 1];
+  }
+  qiHideToast();
+  qi.backEntry = target;
+  target.edit = null;
+  qiShow("back");
+}
+
+function qiNavForward(toFront = false){
+  if(!qi || qi.closing || !qi.backEntry || qi.backEntry.busy) return;
+  const list = qiHistory();
+  const i = list.indexOf(qi.backEntry);
+  if(!qiLeaveBack()) return;
+  qi.backEntry = (!toFront && i >= 0 && i < list.length - 1) ? list[i + 1] : null;
+  if(qi.backEntry) qi.backEntry.edit = null;
+  qiShow(true);
+}
+
+// Ein zurueckgeholtes Produkt verlassen: Geaendertes speichern (hochgeladene
+// direkt im Shop, entfernte nur gemerkt). false = Name fehlt o.ae., bleiben.
+function qiLeaveBack({ silent = false } = {}){
+  const e = qi?.backEntry;
+  if(!e) return true;
+  qiCaptureCurrent();
+  const d = e.edit;
+  if(!d) return true;
+  if(e.kind === "remove"){
+    e.item.draft = d;
+    e.edit = null;
+    qiPersist();
+    return true;
+  }
+  return qiUpdateUploaded(e, d, { silent });
+}
+
+function qiUpdateUploaded(e, d, { silent = false } = {}){
+  const session = qi, rec = e.rec, it = rec.item;
+  const imgNeu = !!it.imageChanged;
+  if(qiDraftKey(d) === qiDraftKey(rec.draft) && !imgNeu){ e.edit = null; return true; }
+  const t = qiCheckReady(it, d, { silent });
+  if(!t) return false;
+  let sort_order = rec.sort_order;
+  if(d.position !== rec.draft.position){
+    qiRemoveOrder(session, rec.sort_order);
+    sort_order = pickSortOrder(session.orders, d.position);
+    session.orders.push(sort_order);
+  }
+  const fields = qiProductFields(it, d, t);
+  delete fields.is_trend;
+  rec.fields = { ...rec.fields, ...fields };
+  rec.draft = d;
+  rec.sort_order = sort_order;
+  it.imageChanged = false;
+  e.edit = null;
+  session.changed = true;
+  // Laeuft hinter einem evtl. noch laufenden Hochladen -- das nimmt dann
+  // ohnehin schon die neuen Angaben.
+  const run = async ()=>{
+    if(rec.state !== "saved" || rec.undone) return;
+    try {
+      const patch = { ...fields, sort_order };
+      if(imgNeu){ const u = await qiHostedImage(session, it); if(u) patch.image_url = u; }
+      const { error } = await sb.from("products").update(patch).eq("id", rec.productId).eq("creator_id", session.creatorId);
+      if(error) throw error;
+      const fehler = await saveStyleCats(rec.productId, d.styleCats, d.styles);
+      if(fehler) throw new Error("Kategorie je Style: " + fehler);
+    } catch(err){
+      console.error("Schnell-Import: Ändern fehlgeschlagen:", err);
+      if(session === qi) qiToastError(`Die Änderung an \u201e${fields.title}\u201c wurde nicht gespeichert (${err?.message || "Netzwerkfehler"}).`);
+    }
+    if(session === qi) qiPersist();
+  };
+  session.chain = session.chain.then(run, run);
+  if(!silent) qiToastInfo(`\u201e${fields.title}\u201c geändert \u2013 gespeichert`);
+  qiPersist();
+  return true;
+}
+
+// Entferntes doch hochladen: wird an derselben Stelle im Rueckblick zum
+// hochgeladenen Produkt.
+function qiRestoreRemoved(e){
+  const it = e.item;
+  const d = qiReadForm();
+  if(!d) return;
+  const t = qiCheckReady(it, d);
+  if(!t) return;
+  it.draft = d;
+  const rec = qiStartUpload(it, d, t);
+  qi.removed = Math.max(0, qi.removed - 1);
+  e.kind = "upload";
+  e.rec = rec;
+  e.item = null;
+  e.edit = null;
+  qiPersist();
+  qiToastInfo(`\u201e${t.title}\u201c hochgeladen`);
+  qiNavForward();
+}
+
+// Schon hochgeladenes wieder aus dem Shop nehmen -- bleibt im Rueckblick
+// als "entfernt" stehen und kann dort doch wieder hochgeladen werden.
+async function qiDeleteUploaded(e){
+  if(!qi || !e || e.kind !== "upload" || e.busy) return;
+  const session = qi, rec = e.rec;
+  const btn = session.root.querySelector("#qiDelBtn");
+  qiCaptureCurrent();
+  const d = e.edit || rec.draft;
+  e.busy = true;
+  session.root.querySelectorAll("#qiForm button, #qiBackBtn").forEach(b => b.disabled = true);
+  if(btn) btn.textContent = "Löscht \u2026";
+  rec.undone = true;                 // ein noch nicht gelaufenes Speichern faellt aus
+  await session.chain;
+  let fehler = null;
+  if(rec.state === "saved"){
+    const { error } = await sb.from("products").delete().eq("id", rec.productId).eq("creator_id", session.creatorId);
+    if(error) fehler = error.message;
+    else state.productStyleCats = state.productStyleCats.filter(r => r.product_id !== rec.productId);
+  }
+  e.busy = false;
+  if(fehler){
+    rec.undone = false;
+    if(session === qi && !session.closing){ qiToastError("Löschen hat nicht geklappt: " + fehler); qiShow(false); }
+    return;
+  }
+  if(rec.state === "saved" || rec.state === "skipped"){
+    rec.state = "deleted";
+    qiRemoveOrder(session, rec.sort_order);
+    session.uploaded = Math.max(0, session.uploaded - 1);
+    session.removed++;
+    session.changed = true;
+    rec.item.draft = d;
+    e.kind = "remove";
+    e.item = rec.item;
+    e.rec = null;
+    e.restored = false;
+    e.edit = null;
+  }
+  // (failed: ist ohnehin wieder vorne in der Liste)
+  if(session !== qi || session.closing) return;
+  qiPersist();
+  if(e.kind === "remove") qiToastInfo("Aus dem Shop gelöscht");
+  qiShow(false);
 }
 
 // Speichern laeuft nacheinander in einer Kette: Reihenfolge bleibt die des
@@ -16872,6 +17194,17 @@ function qiSaveFailed(session, rec, e){
   qiRemoveOrder(session, rec.sort_order);
   session.uploaded = Math.max(0, session.uploaded - 1);
   rec.item.draft = rec.draft;
+  // Wird es gerade im Rueckblick angezeigt: Getipptes mitnehmen, nach vorne.
+  if(session === qi && !session.closing && session.backEntry?.rec === rec){
+    qiCaptureCurrent();
+    if(session.backEntry.edit) rec.item.draft = session.backEntry.edit;
+    session.backEntry = null;
+    session.queue.unshift(rec.item);
+    qiToastError(`„${rec.fields.title}“ konnte nicht hochgeladen werden (${e?.message || "Netzwerkfehler"}). Es ist wieder in der Liste.`);
+    qiShow(true);
+    qiPersist();
+    return;
+  }
   if(rec.undone || !session.queue.length){
     // Sollte ohnehin zurueckgeholt werden (oder es ist das letzte): nach vorne.
     if(session === qi && !session.closing) qiCaptureCurrent();
@@ -16892,19 +17225,21 @@ function qiRemoveOrder(session, value){
 }
 
 function qiRemoveCurrent(){
-  if(!qi || qi.closing) return;
+  if(!qi || qi.closing || qi.backEntry) return;
   const it = qi.queue[0];
   if(!it) return;
   qiCaptureCurrent();
   qi.queue.shift();
   qi.removed++;
+  const entry = { id: ++qiUid, kind: "remove", item: it };
+  qi.history.push(entry);
   qiPersist();
-  qiToast({ item: it }, "remove");
+  qiToast({ item: it, entry }, "remove");
   qiShow(true);
 }
 
 function qiLater(){
-  if(!qi || qi.closing || qi.queue.length < 2) return;
+  if(!qi || qi.closing || qi.backEntry || qi.queue.length < 2) return;
   qiCaptureCurrent();
   qi.queue.push(qi.queue.shift());
   qiPersist();
@@ -16917,6 +17252,7 @@ async function qiUndo(rec, kind){
   qiHideToast();
   if(kind === "remove"){
     qiCaptureCurrent();
+    if(rec.entry) rec.entry.restored = true;
     session.queue.unshift(rec.item);
     session.removed = Math.max(0, session.removed - 1);
     session.view = "card";
@@ -17045,7 +17381,8 @@ function qiRenderFinish(){
 async function qiClose(){
   if(!qi || qi.closing) return;
   const session = qi;
-  if(session.queue.length && session.view === "card") qiCaptureCurrent();
+  if(session.backEntry){ qiLeaveBack({ silent: true }); session.backEntry = null; }
+  else if(session.queue.length && session.view === "card") qiCaptureCurrent();
   session.closing = true;
   const btn = session.root.querySelector("#qiCloseBtn");
   btn.disabled = true;
@@ -17064,7 +17401,7 @@ async function qiClose(){
   session.root.remove();
   session.objUrls.forEach(u => URL.revokeObjectURL(u));
   qi = null;
-  if(session.uploaded || session.records.length){
+  if(session.uploaded || session.records.length || session.changed){
     await refreshActiveProducts();
     photoPrepAfterChange();
   }
