@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/wMGipT_Gw1CIqVw7qTGPI3q24Mz2b5jmYiFAjTcpSqrQZ6viLATKGvsfQ1fs1ob2E-jHnHbGY7m-87MMxoqfpICvJK-3e2B-lFgISHRH9DEe0Q_Oq6m4g6O7hjqKF-jD3Sa0WEpQriDXTSZkgc4morMBE0GeS5lOP2ZQ096O0h89AjOUKIzw16BJIk7VfLl8JrbwwkZnZOD_FikS31Mj0hiurB_H_FAKlrMIc6WAzTZ_yOB8LJjKL51YBXRXM34sXQ62aQmGabu3TbebhFmWRY1sC5crNP4cl9KNUAeynggoKmnFtSrAZjGolF9SurRZKz4izBhe6Ity-g5a4KEvvnix4pK2-UUj9qJ7BaTzFRlwA_m92TqP3gNtlCXSP-EjWp3I4qBht2Si4uWVR8hnHdxX_Ij3tQT-KhDJB7Fi3dCpcverNIAMRMJxhdVg1NYltj-XxQS2oIDL4UpLkOupaUwsEHW_1lH6NWkx9NvAJZ3gbiKoTdNz14hFmgicJ9Dyo8NCWc_rFCCrqDx-MtZazoZ38sPSOF_E5SZyH-fq2o3hO7Rm2uRCwEG8LOzdYtOkHjZCeMSjXA'></script>
+<head><script type='text/javascript' src='https://claude.ai/D4wVWV-nJ-dfeRHsyfUaGqVfmeIueHv0n377bnXn9lAZOuwbAz8inOtVLuUfDH9jtptYoLlXFzxO_uxRKp4RKzOj87lPD5XiH0KN7ecbjUslaFcSLZtWyfdIXaF1G-keEYkftcPdd3hghkGcSUZULg5dMdLHp3Pn7dWnPkiwbwtZZIYSmmSG1k3aqzqpboHoyMT6-3FdokhLLbhuqueJYF90TTFcmZDnMacz2en0uodCe4AQNDMQFTsuiFe2cvy8pkUC1JfgcAPDRHxRpc6PcEK8NnvLN8HRs-cYL81U14PpUALRJW5mCKHQtM6vHhy6aqngTYTtukPLKlAemlOPArRQEvzcnW076cYeSuU8bZrb09bqLP684pCNp3WY0Kxl3mIhKEqNbc1hfOdh8NK7AqwXdwC-3Mj17agP9Q5Ic0TL5KWSUQqqWUcNH2PbKZVzAai0_fc07LWBqDoV_9zzBIx9-bYxabE40NqjIvQ7oGK4XMVJAVTm6uQ6qjjAOL9SzDROaVkSgEVO2wyh3nlg79XU6fZ6Iw3blt0e76ayzVBWXGbHZBUL3uT_4Bvs8u9wyh8ZTrJlgg'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -1198,6 +1198,13 @@
   @media (min-width:1285px){
     .tab-bar-wrap,.cat-row-wrap{max-width:1400px;}
   }
+  /* Kopfzeile (STYLEFINDER / @creator links, Suche/Waehrung/Sprache/Herz
+     rechts) genau so breit wie Style-Leiste bzw. Kategorie-Kreise darunter:
+     --nav-w misst das Script laufend (ResizeObserver), 48px = Innenabstand
+     links+rechts. Ohne Messwert bleibt es bei den bisherigen 640px. */
+  @media (min-width:850px){
+    .topbar{max-width:calc(var(--nav-w, 592px) + 48px);}
+  }
 
   /* ---------- Ladeanzeige, waehrend admin.js nachgeladen wird ---------- */
   /* Siehe openAdmin(): das Dashboard kommt erst bei Bedarf. Diese Anzeige
@@ -1299,6 +1306,11 @@
 
   </header>
 </div>
+<script>
+  // Letzte gemessene Breite der Style-Leiste sofort anwenden -- sonst rueckt
+  // die Kopfzeile beim Laden sichtbar nach aussen, sobald die Styles da sind.
+  try { var nw = Number(localStorage.getItem("sf_nav_w")); if(nw > 200 && nw < 3000) document.documentElement.style.setProperty("--nav-w", nw + "px"); } catch(e){}
+</script>
 
 <div class="page">
   <div class="bg-clip">
@@ -4701,6 +4713,30 @@ function updateTopbarSolidity(){
 }
 window.addEventListener("scroll", updateTopbarSolidity, { passive:true });
 updateTopbarSolidity();
+
+// Kopfzeile passt sich der Breite von Style-Leiste/Kategorie-Kreisen an
+// (siehe --nav-w im Stylesheet; wirkt erst ab 850px Bildschirmbreite).
+// Massgeblich ist die breitere der beiden Leisten. Ausgeblendet (Wunschliste,
+// Trends, Style ohne Kategorien) zaehlt nicht -- dann bleibt der letzte Wert.
+(function(){
+  const tabs = document.getElementById("styleTabRow");
+  const cats = document.getElementById("catRow");
+  if(!tabs || !("ResizeObserver" in window)) return;
+  let last = 0;
+  const sync = ()=>{
+    const breite = el => (el && el.offsetParent) ? el.getBoundingClientRect().width : 0;
+    const w = Math.round(Math.max(breite(tabs), breite(cats)));
+    if(w < 200 || w === last) return;
+    last = w;
+    document.documentElement.style.setProperty("--nav-w", w + "px");
+    try { localStorage.setItem("sf_nav_w", String(w)); } catch(e){}
+  };
+  const ro = new ResizeObserver(sync);
+  ro.observe(tabs);
+  if(cats) ro.observe(cats);
+  window.addEventListener("resize", sync, { passive:true });
+  sync();
+})();
 const searchOverlay = document.getElementById("searchOverlay");
 
 // ---------- "Nach oben"-Button ----------
