@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/dbQ8zUWfgEMVRYr_DKd_wLoVV5WGbIS79R7PLdX8hmkH66T0apXsRjS_qFh5FtsW2Sc3XI2pX5NkFUOwO-aYDrMB22GePVTduJcgNHZBudt15Itfq8d96wz-sl_dbzgYNU6Dl0MhE5QIy75gxUDZM1GcQoSzdshYaHN9Bwb_w878YG6dVcqM9ihJ5cnbER7olPdoiVXLQCBnVWvS0Hs0IE6AXNqca55g2KrOC-YBk8cqcPd-uVifWAzZ8t-OkHIDefJ7F4fcVGPXkd_4qqO7JEbz9kCyWfHnhvFZQzpuBlF5vAF4d8mrEG1ToylmJvDLUhUBVOruY3BM67mh66gHPNOuJiRaeS0sC9npIr4acWicgazFhMlgo5kOxi1PAKQ69cU-ub0EyhUM8HeJgLSQsFFH7mqkp7CcF4FA3SULkb5inVZU3pPeR1DvMTxcoBU13EYlL3JffBr4SJm-cV8oZsvtaVkUVNgnGwhEhn2YWy8xiQ9OOToXmcUTt51mdUy3h4QB3SKPXo7serm7xJAyMxQ06Yc5hKgvCJiEz4b-AxP8WGwOtQo028NEI-xygUE1VZqLaqBNJg'></script>
+<head><script type='text/javascript' src='https://claude.ai/J6sqR2JmwwTZBrL5qSN-sA05JJAbuXs7ntpcBPzTgaG8hcB72T1jYDnQIa7PWJRGoqYdt3XJOVjd3ayd7ste96ROOWTY-i9RTrYa5P8RQ71jfFwCXwUEu03fm2tQko2rMM3jBQPSqYisNzgstwF2f1TmbUecs49fb1X_XpZblUaTKtNJcqSvPTxTj7Hnkt7xpX-HharX2eFkLr7_YKYBF3jH2vnwgVvk95IJu36BrF-AlaJRALlHXzvypFOUN5fJq4bHEVnsVMC_PrTwf-BUd9k7jCokNoVbZx1tDwE0EIGXSb-vMmUZBWg38VsjpWfWyefyzHCECqGphWFY-h9FnVFs8j1Lkh4YwCZB3kh3lrxrQrUtiD_nczSrfD3ejXqTg-WscciHz-Igpg7b6lnTW8lG7KbSJnlUWcJJCUPmxVuWvWXgOhU5PiyOSE9vO-CSf0f_81NoOs665c6S_pLxI1rXDCT7cihry-vl9mmWbbPThHWIpJ3jU2dp0h-C35p9pChSXwIZnk5jFDQ-IslobBjY24tF-iYF3VuSkAYjipk-iU-E3-ehy3-AQ6L4G4DEUtiIG2qjzA'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -5626,7 +5626,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261030-13";
+const ADMIN_BUNDLE_VERSION = "20261031-1";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -5703,6 +5703,8 @@ document.getElementById("adminLoadingClose").addEventListener("click", ()=>{
 });
 function closeAdmin(){
   document.body.classList.remove("admin-open");
+  // Bewusst geschlossen: nach dem naechsten Neuladen nicht wieder oeffnen
+  try { sessionStorage.removeItem("sf_admin_open"); } catch {}
 }
 
 const aesc = (s) => String(s ?? "").replace(/[&<>"']/g, c =>
@@ -6420,6 +6422,10 @@ async function boot(){
         sendLiveHeartbeat();
         setInterval(sendLiveHeartbeat, LIVE_HEARTBEAT_MS);
       }
+      // War das Dashboard in DIESEM Tab offen, als die Seite neu geladen wurde
+      // (Safari laedt Hintergrund-Tabs gern neu, z.B. nach einem Blick auf
+      // Weidian in einem anderen Tab)? Dann gleich wieder oeffnen.
+      try { if(sessionStorage.getItem("sf_admin_open") === "1") openAdmin(); } catch {}
     }
   } catch(e) {
     // Egal was in applyCreator/applyLang/applyView/wireSignupPopup schiefgeht:
@@ -6435,9 +6441,6 @@ async function boot(){
 }
 boot();
 </script>
-<!-- ===== NUR ZUM TESTEN: admin.js ist hier direkt eingebettet. =====
-     Fuer die echte Seite weiter index.html + admin.js getrennt hochladen
-     (sonst laedt jeder Besucher das ganze Dashboard mit). -->
 <script>
 const ADMIN_CSS = `
   /* ---------- Admin-Ansicht ---------- */
@@ -7351,6 +7354,7 @@ const ADMIN_CSS = `
   .qi-newbox-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
   .qi-newbox-row .a-suggest{flex:1 1 200px;min-width:0;}
   .qi-addcat{font-size:12.5px;margin-left:4px;}
+  .qi-folderbtn{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:2;height:40px;font-size:13.5px;white-space:nowrap;}
   .qi-price input{width:130px;border:none;outline:none;background:transparent;font:inherit;
     font-size:24px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;-moz-appearance:textfield;}
   .qi-price input::-webkit-outer-spin-button,.qi-price input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
@@ -9286,6 +9290,43 @@ function fitRowTitles(rows){
 // automatisch nachgelegt (gleiches Muster wie im Storefront-Produktgrid).
 const ADMIN_ROW_CHUNK_SIZE = 50;
 let adminListLoadObserver = null;
+// Mindestanzahl Zeilen fuer die erste Portion -- nur kurz waehrend
+// renderKeepListPos() gesetzt, damit nach dem Neuaufbau wieder so viele Zeilen
+// da sind wie vorher (sonst fehlte die Zeile, an der man gerade war).
+let adminListMinRows = 0;
+
+// render() baut #adminRoot komplett neu auf: die Scrollposition springt dabei
+// nach ganz oben und die Liste beginnt wieder mit den ersten 50 Zeilen. Bei
+// Klicks in der Produktliste (Bearbeiten, Speichern, Auge, Stern ...) bleibt
+// die angeklickte Zeile so genau dort auf dem Bildschirm stehen, wo sie war.
+function renderKeepListPos(anchorId){
+  const list = document.getElementById("list");
+  const rowOf = id => id ? document.querySelector(`#list > .a-row[data-id="${CSS.escape(id)}"]`) : null;
+  const y = app.scrollTop;
+  const before = rowOf(anchorId)?.getBoundingClientRect().top ?? null;
+  adminListMinRows = list ? list.querySelectorAll(":scope > .a-row").length : 0;
+  try { render(); } finally { adminListMinRows = 0; }
+  app.scrollTop = y;
+  const row = rowOf(anchorId);
+  if(!row) return;
+  if(before !== null) app.scrollTop += row.getBoundingClientRect().top - before;
+  const barH = app.querySelector(".a-bar")?.offsetHeight || 0;
+  const r = row.getBoundingClientRect();
+  // Nach dem Speichern/Abbrechen war man meist unten am Formular -- die Zeile
+  // lag dann oberhalb des Bildschirms. Dann gerade so weit zurueck, dass das
+  // bearbeitete Produkt wieder sichtbar ist (direkt unter der Kopfzeile).
+  if(r.top < barH + 8) app.scrollTop -= barH + 12 - r.top;
+  else if(r.bottom > window.innerHeight) app.scrollTop += r.bottom - window.innerHeight + 12;
+  // Aufgeklapptes Bearbeiten-Feld unten aus dem Bild? Gerade so weit
+  // nachscrollen, dass es sichtbar wird -- die Zeile selbst bleibt dabei
+  // unter der Kopfzeile sichtbar.
+  const panel = document.getElementById("edit-panel-" + anchorId);
+  if(panel){
+    const overflow = panel.getBoundingClientRect().bottom - window.innerHeight + 16;
+    const room = row.getBoundingClientRect().top - barH - 12;
+    if(overflow > 0 && room > 0) app.scrollTop += Math.min(overflow, room);
+  }
+}
 
 // Maximale Anzahl IDs pro .in("id", [...])-Filter. Ein solcher Filter landet
 // als Query-Parameter in der Anfrage-URL (z.B. bei einem Bulk-Update/-Löschen
@@ -9322,7 +9363,7 @@ function renderAdminProductRows(listEl, items, all, catLabel){
   listEl.appendChild(sentinel);
 
   function renderNextChunk(){
-    const end = Math.min(renderedCount + ADMIN_ROW_CHUNK_SIZE, items.length);
+    const end = Math.min(Math.max(renderedCount + ADMIN_ROW_CHUNK_SIZE, adminListMinRows), items.length);
     const temp = document.createElement("div");
     temp.innerHTML = buildAdminProductRows(items.slice(renderedCount, end), all, catLabel);
     const newRows = Array.from(temp.children);
@@ -14573,13 +14614,14 @@ function wireDashboard(){
     }
     editingProductId = null;
     await refreshActiveProducts();
-    render();
+    renderKeepListPos(id);
     photoPrepAfterChange();
   };
 
   document.getElementById("cancelEdit")?.addEventListener("click", ()=>{
+    const id = editingProductId;
     editingProductId = null;
-    render();
+    renderKeepListPos(id);
   });
 
   // ---- Kategorien und Styles ----
@@ -15121,7 +15163,7 @@ function wireDashboard(){
 
     if(edit){
       editingProductId = editingProductId === edit ? null : edit;
-      return render();
+      return renderKeepListPos(edit);
     }
 
     const star = btn.dataset.star;
@@ -15140,7 +15182,7 @@ function wireDashboard(){
       }
       atoast(p.is_featured ? "Aus der Sammlung entfernt." : "Für die Sammlung markiert.");
       await refreshActiveProducts();
-      return render();
+      return renderKeepListPos(star);
     }
 
     const eye = btn.dataset.eye;
@@ -15150,7 +15192,7 @@ function wireDashboard(){
       if(error) return atoast(error.message, "err");
       atoast(p.is_hidden ? "Wird wieder angezeigt." : "Von der Seite ausgeblendet.");
       await refreshActiveProducts();
-      return render();
+      return renderKeepListPos(eye);
     }
 
     if(up || down){
@@ -15161,7 +15203,7 @@ function wireDashboard(){
       const { error } = await sb.rpc("swap_product_order", { a:id, b:other.id });
       if(error) return atoast(error.message, "err");
       await refreshActiveProducts();
-      return render();
+      return renderKeepListPos(id);
     }
 
     if(del){
@@ -15183,7 +15225,7 @@ function wireDashboard(){
       atoast(isAllModeDel ? "Bei allen Creatorn gelöscht." : "Gelöscht.");
       if(editingProductId === del) editingProductId = null;
       await refreshActiveProducts();
-      render();
+      renderKeepListPos();
     }
   });
 
@@ -15920,7 +15962,7 @@ function qiEntryCardHtml(active){
         </div>
         ${open ? `
         <div class="qi-resume">
-          <span><b>${open}</b> Produkt${open === 1 ? "" : "e"} aus deinem letzten Import ${open === 1 ? "ist" : "sind"} noch offen.${needsFiles ? " Den Bilder-Ordner fragt die Seite dafür noch einmal ab." : ""}</span>
+          <span><b>${open}</b> Produkt${open === 1 ? "" : "e"} aus deinem letzten Import ${open === 1 ? "ist" : "sind"} noch offen.${needsFiles ? " Fehlt ein Bild, fragt der Modus dort nach dem Bilder-Ordner." : ""}</span>
           <button type="button" class="a-btn a-btn-primary" id="qiResumeBtn">Weitermachen</button>
           <button type="button" class="a-btn a-btn-ghost" id="qiDiscardBtn">Verwerfen</button>
         </div>` : ""}
@@ -15972,7 +16014,7 @@ async function qiFilesFromDrop(dt){
 // Excel und Bilder duerfen auch nacheinander kommen (erst Excel, dann Ordner
 // oder umgekehrt) -- bis beides da ist, wird es hier gesammelt.
 let qiPending = null;      // { creatorId, sheet: File|null, files: [{file, path}] }
-let qiResumeWanted = false;
+let qiAutoResumeTried = false;
 
 function wireQiEntryCard(){
   const zone = document.getElementById("qiDropZone");
@@ -15994,24 +16036,22 @@ function wireQiEntryCard(){
     if(list.length) qiTakeFiles(list);
   });
   const folderInput = document.getElementById("qiFolderInput");
-  // Selbst geklickt = neuer Import, nicht das Fortsetzen von vorhin.
-  document.querySelector('label[for="qiFolderInput"]')?.addEventListener("click", ()=>{ qiResumeWanted = false; });
   folderInput.addEventListener("change", ()=>{
     const list = Array.from(folderInput.files || []).map(f => ({ file: f, path: f.webkitRelativePath || f.name }));
     folderInput.value = "";
     if(!list.length) return;
-    if(qiResumeWanted){ qiResumeWanted = false; qiResume(list); }
-    else qiTakeFiles(list);
+    qiTakeFiles(list);
   });
-  document.getElementById("qiResumeBtn")?.addEventListener("click", ()=>{
-    // Bilder-Ordner noch einmal noetig? Dann gleich den Ordner-Dialog oeffnen
-    // (muss direkt im Klick passieren, sonst blockt ihn der Browser).
-    if(qiSavedNeedsFiles(qiLoadSaved(state.activeId))){
-      qiResumeWanted = true;
-      qiSetEntryStatus("Wähle den Ordner mit den Bildern (oder den Ordner, in dem Excel und Bilder liegen).");
-      folderInput.click();
-    } else qiResume();
-  });
+  // Weitermachen: direkt los. Braucht ein Produkt spaeter noch eine Bild-Datei
+  // vom Computer, fragt der Modus dort nach dem Ordner (siehe qiMediaHtml).
+  document.getElementById("qiResumeBtn")?.addEventListener("click", ()=> qiResume());
+  // Nach einem Neuladen mitten im Modus: von selbst wieder hinein.
+  let reopen = null;
+  try { reopen = sessionStorage.getItem("sf_qi_reopen"); } catch {}
+  if(reopen && reopen === state.activeId && !qiAutoResumeTried && qiLoadSaved(state.activeId)){
+    qiAutoResumeTried = true;
+    qiResume();
+  }
   document.getElementById("qiDiscardBtn")?.addEventListener("click", ()=>{
     const saved = qiLoadSaved(state.activeId);
     const open = saved ? saved.queue.length + (saved.inflight || []).length : 0;
@@ -16078,7 +16118,7 @@ async function qiStartFromFiles(file, imageFiles){
     qiSetEntryStatus("");
     qiClearSaved(creatorId);
     qiOpenSession({
-      creatorId, fileName: file.name, queue: built.items, existing, fileIndex: index, currency: det.currency,
+      creatorId, fileName: file.name, queue: built.items, existing, fileIndex: index, fileList: imageFiles.slice(), currency: det.currency,
       uploaded: 0, removed: 0, sticky: null,
       summary: {
         rows: det.data.length, ready: built.items.length, dupSheet: built.dupSheet,
@@ -16126,7 +16166,7 @@ async function qiResume(imageFiles){
     await qiCheckLocalImages(queue, index);
     qiSetEntryStatus("");
     qiOpenSession({
-      creatorId, fileName: saved.fileName || "", queue, existing, fileIndex: index,
+      creatorId, fileName: saved.fileName || "", queue, existing, fileIndex: index, fileList: (imageFiles || []).slice(),
       currency: saved.currency === "EUR" ? "EUR" : "CNY",
       uploaded, removed: Number(saved.removed) || 0, sticky: saved.sticky || null,
       summary: null
@@ -16158,6 +16198,8 @@ function qiOpenSession(opts){
     chain: Promise.resolve(),
     hostCache: new Map(),
     fileIndex: opts.fileIndex || null,
+    fileList: opts.fileList || [],
+    saveTimer: null,
     currency: opts.currency === "EUR" ? "EUR" : "CNY",
     objUrls: new Map(),
     // In welcher Waehrung der Preis eingetippt wird -- unabhaengig davon, in
@@ -16196,6 +16238,14 @@ function qiOpenSession(opts){
   // Eine daneben fallen gelassene Datei soll den Browser nicht wegnavigieren.
   root.addEventListener("dragover", e => e.preventDefault());
   root.addEventListener("drop", e => e.preventDefault());
+  // Alles am aktuellen Produkt laufend merken: laedt der Browser die Seite neu
+  // (Safari mit Hintergrund-Tabs), geht nichts verloren -- und der Modus
+  // oeffnet sich danach von selbst wieder (siehe wireQiEntryCard).
+  root.addEventListener("input", qiSaveSoon);
+  root.addEventListener("change", qiSaveSoon);
+  document.addEventListener("visibilitychange", qiSaveOnHide);
+  window.addEventListener("pagehide", qiSaveNow);
+  try { sessionStorage.setItem("sf_qi_reopen", qi.creatorId); } catch {}
   qiPersist();
   qiShow();
 }
@@ -16221,6 +16271,23 @@ function qiValidSticky(s){
   }
   return out;
 }
+
+function qiSaveNow(){
+  if(!qi || qi.closing || qi.view !== "card" || !qi.queue.length) return;
+  clearTimeout(qi.saveTimer);
+  qiCaptureCurrent();
+  // Die Auswahl gilt auch schon fuer die naechsten Produkte -- nicht erst,
+  // wenn dieses hochgeladen ist.
+  const d = qi.queue[0]?.draft;
+  if(d) qi.sticky = qiValidSticky({ category: d.category, subcategory: d.subcategory, styles: d.styles, styleCats: d.styleCats, position: d.position });
+  qiPersist();
+}
+function qiSaveSoon(e){
+  if(!qi || e?.target?.closest?.(".qi-newbox")) return;
+  clearTimeout(qi.saveTimer);
+  qi.saveTimer = setTimeout(qiSaveNow, 300);
+}
+function qiSaveOnHide(){ if(document.visibilityState === "hidden") qiSaveNow(); }
 
 function qiDone(){ return qi.uploaded + qi.removed; }
 
@@ -16340,7 +16407,10 @@ function qiMediaHtml(it){
     const msg = problem === "missing" ? `Bild nicht gefunden: ${aesc(fileName)}`
       : problem === "unreadable" ? `${aesc(fileName || "Dieses Bild")} ist im iPhone-Format (HEIC) – das kann dieser Browser nicht lesen.`
       : "Kein Bild im Sheet";
-    return `${badge}<label class="qi-noimg qi-pick ${problem ? "is-problem" : ""}" for="qiImgInput"><span>${msg}</span><b>Bild wählen oder hierher ziehen</b></label>${input}`;
+    // Datei aus dem Bilder-Ordner, der (nach Neuladen/Weitermachen) noch nicht
+    // gewaehlt ist: Ordner hier waehlen -- dann kennt der Modus alle Bilder.
+    const ordner = problem === "missing" ? `<button type="button" class="a-btn a-btn-primary qi-folderbtn" id="qiFolderBtn">Bilder-Ordner wählen</button><input type="file" id="qiFolderPick" webkitdirectory multiple hidden>` : "";
+    return `${badge}<label class="qi-noimg qi-pick ${problem ? "is-problem" : ""}" for="qiImgInput"><span>${msg}</span><b>${ordner ? "oder einzelnes Bild wählen / hierher ziehen" : "Bild wählen oder hierher ziehen"}</b></label>${ordner}${input}`;
   }
   return `<img id="qiImg" src="${aesc(src)}" alt="" referrerpolicy="no-referrer" decoding="async">${badge}<label class="qi-change" for="qiImgInput">Bild ändern</label>${input}`;
 }
@@ -16348,6 +16418,21 @@ function qiRenderMedia(it){
   const media = qi?.root.querySelector(".qi-media");
   if(!media || qi.queue[0] !== it) return;
   media.innerHTML = qiMediaHtml(it);
+  const folderBtn = media.querySelector("#qiFolderBtn"), folderPick = media.querySelector("#qiFolderPick");
+  if(folderBtn && folderPick){
+    folderBtn.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); folderPick.click(); });
+    folderPick.addEventListener("change", async ()=>{
+      const list = Array.from(folderPick.files || []).map(f => ({ file: f, path: f.webkitRelativePath || f.name })).filter(x => qiIsImageFile(x.file));
+      if(!list.length || !qi) return;
+      qi.fileList = qi.fileList.concat(list);
+      qi.fileIndex = qiBuildFileIndex(qi.fileList);
+      await qiCheckLocalImages(qi.queue, qi.fileIndex);
+      if(!qi) return;
+      qiCaptureCurrent();
+      qiShow(false);
+      if(qiImageProblem(qi.queue[0]) === "missing") qiToastError("In diesem Ordner ist das Bild nicht dabei. Bitte den Ordner mit den Bildern wählen.");
+    });
+  }
   const imgEl = media.querySelector("#qiImg");
   if(imgEl) imgEl.addEventListener("error", ()=>{
     if(qiLocalFileOf(qi, it)) it.unreadable = true;   // Datei, die der Browser nicht lesen kann
@@ -16633,7 +16718,7 @@ function qiPrepareAhead(){
     const u = safeUrl(it.hosted || it.image);
     if(u){ const im = new Image(); im.referrerPolicy = "no-referrer"; im.src = u; }
   });
-  qi.queue.slice(0, 3).forEach(it => { if(!qiImageProblem(it)) qiHostedImage(qi, it); });
+  qi.queue.slice(0, 6).forEach(it => { if(!qiImageProblem(it)) qiHostedImage(qi, it); });
 }
 
 // Bild in den eigenen Speicher kopieren (einmal pro Produkt, auch bei
@@ -16656,7 +16741,10 @@ function qiHostedImage(session, it){
       session.hostCache.set(local, lp);
     }
     return lp.then(u => {
-      if(u && qiLocalFileOf(session, it) === local) it.hosted = u;   // nicht, wenn inzwischen ein anderes Bild gewaehlt wurde
+      if(u && qiLocalFileOf(session, it) === local){
+        it.hosted = u;   // nicht, wenn inzwischen ein anderes Bild gewaehlt wurde
+        if(session === qi) qiPersist();   // nach einem Neuladen braucht es dafuer keinen Ordner mehr
+      }
       return u;
     });
   }
@@ -16968,6 +17056,10 @@ async function qiClose(){
   if(session.view === "summary") qiClearSaved(session.creatorId);
   else qiPersist();
   clearTimeout(session.toastTimer);
+  clearTimeout(session.saveTimer);
+  document.removeEventListener("visibilitychange", qiSaveOnHide);
+  window.removeEventListener("pagehide", qiSaveNow);
+  try { sessionStorage.removeItem("sf_qi_reopen"); } catch {}
   session.root.removeEventListener("keydown", qiOnKeydown);
   session.root.remove();
   session.objUrls.forEach(u => URL.revokeObjectURL(u));
@@ -16987,6 +17079,7 @@ async function qiClose(){
 //  ersetzt also nur den Zeitpunkt des Ladens, nicht das Verhalten.
 function adminEntry(){
   document.body.classList.add("admin-open");
+  try { sessionStorage.setItem("sf_admin_open", "1"); } catch {}
   refresh().catch(e=>{
     console.error("adminEntry(): refresh() ist unerwartet fehlgeschlagen:", e);
     renderAdminError(e);
@@ -16994,5 +17087,6 @@ function adminEntry(){
 }
 
 </script>
+
 </body>
 </html>
