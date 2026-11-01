@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/csIw24LPJdAy59dcJsmA2zKleKpUk5tY1W1djoXlSmNgfsNWE54ZbDxyewrJdGhB77p9QvsN2mPIhoYh-SxRjwXt4I2FpCwbiiScjsPHBtFvEOxS1Qc-z2AO1O_s0wTUhtmfk80mZ8LrRz---MVXjpbNGeEonRQL9uLJ6Np76LrMB7AzmFQcoGDj5x8PLIrczSKjHpYaEyqEvL58ax86RObaDoPf2sXF9AjUvzf7IZB4FhIWmcWdKUNDq-D0yGsgOU1MthIN21veQiMFkwL5B8p01wt8-OavPdMmspafo-SaC7XGaQ64PQyzKtdd9x7vl3z4VivRhCLuxyt1fLDd0xo33dM4sVCj6ic5RBfrmj_2xgqmSapKsnc21oZadZrHpJWfi0Ss3XluVMTYqGc2eO-NRAxEX9ASOseFHC146RJniVEc6usXt_hFvc7T4W18cUiJeAxklNyaq68Skv7eiFw76EYnkXrQr3cjT2cqD0QvwL6psLbdqv3INZo9bIqSWq5a0pMtXO0p6zSqztTQV_x4AFzJGFaqH1H9u4Sx9QKGD9DvPX0uORwv1kCp0MCH1GSDHA_xvA'></script>
+<head><script type='text/javascript' src='https://claude.ai/2flnHZEAlaM-Q3rPDFnyiHr1TtXeGD5qSTaXNJ1dgDnxqglTJgY_5EuWp6rNr-KS3WCoBtOzcx8qdJ1YTodZMvfgwl9wzx2oEl92JgRoxzDDmWzQmWqTjQLwAcSg6_Rmo2dH6K3BhzZZ1K-IYRmx55HUn9LIEdwPLGnrs4L67Aexd_3SzJLuLBha6-BrHM3r6Bu_aAbixviESJxb4RnLdvls5Mfq3_53gLAmPEl8M6ttnqQYdN0edNThDkB7eF74q1VevJ6F6WrxfeCC7qQDnyiH0_h0YcTgQIHKz8ePYiuEeYmZJvvXm0HvnCeZpLyxgxqh4Or-dGgOsmpaQanXqIXI98tj1TsYbO4CjvG4ugNOPzmENYrBcmIVRE4kGiBcF6fUZZaOyrX9QU5oJWuRuPyTMpsZCltB7uI8eZEDw4b2hoLE7fi19Vg6rVwvCgbwR7IYfDuYb6civNTvE1ojTIPBv7ZWEiVqT4cCSRT374TzpOSxZJX0y9H9kjuiPgnAf9MXuTzvpchlPmAEpJZ8bq6B7GQrVCzlM_vKDlyNMXGkS4J6pvVJ8kcuJyihTvPoqf6PBIBrPA'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -5806,7 +5806,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261101-6";
+const ADMIN_BUNDLE_VERSION = "20261101-7";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -7562,6 +7562,13 @@ const ADMIN_CSS = `
   .qi-newbox-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
   .qi-newbox-row .a-suggest{flex:1 1 200px;min-width:0;}
   .qi-addcat{font-size:12.5px;margin-left:4px;}
+  .qi-pin{margin-left:auto;flex:0 0 auto;width:30px;height:30px;padding:0;border:none;border-radius:8px;
+    background:none;color:#a3a9b4;display:flex;align-items:center;justify-content:center;cursor:pointer;
+    transition:color .14s ease, background-color .14s ease;}
+  .qi-pin:hover{color:var(--accent);background:#eef2ff;}
+  .qi-pin.is-on{color:#fff;background:var(--accent);}
+  .qi-pin.is-on svg{transform:rotate(-20deg);}
+  .qi-pin:focus-visible{outline:3px solid rgba(59,102,245,.4);outline-offset:2px;}
   .qi-folderbtn{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:2;height:40px;font-size:13.5px;white-space:nowrap;}
   .qi-price input{width:130px;border:none;outline:none;background:transparent;font:inherit;
     font-size:24px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;-moz-appearance:textfield;}
@@ -16214,7 +16221,7 @@ function qiPersist(){
   try {
     localStorage.setItem(qiStoreKey(qi.creatorId, qi.importId), JSON.stringify({
       v: 1, savedAt: Date.now(), fileName: qi.fileName, currency: qi.currency,
-      uploaded: qi.uploaded, removed: qi.removed, sticky: qi.sticky,
+      uploaded: qi.uploaded, removed: qi.removed, sticky: qi.sticky, pinned: [...qi.pinned],
       queue: qi.queue.map(qiPlainItem), inflight,
       // Rueckblick: fertig gespeicherte und entfernte (die letzten 300)
       history: qi.history.filter(e => qiEntryValid(e) && !e.busy && (e.kind === "remove" || e.rec.state === "saved")).slice(-300)
@@ -16466,7 +16473,7 @@ async function qiResume(importId, imageFiles){
       creatorId, importId, fileName: saved.fileName || "", queue, existing, fileIndex: index, fileList: (imageFiles || []).slice(),
       currency: saved.currency === "EUR" ? "EUR" : "CNY",
       uploaded, removed: Number(saved.removed) || 0, sticky: saved.sticky || null,
-      summary: null, history
+      summary: null, history, pinned: Array.isArray(saved.pinned) ? saved.pinned : []
     });
   } catch(e){
     console.error("Schnell-Import: Fortsetzen fehlgeschlagen:", e);
@@ -16511,6 +16518,8 @@ function qiOpenSession(opts){
     // "‹ Zurück" blaettert darin. backEntry = gerade angezeigter Eintrag,
     // null = man ist vorne beim aktuellen Produkt.
     history: opts.history || [],
+    // Fixierte Styles (Pin): bei jedem neuen Produkt automatisch angehakt.
+    pinned: new Set(opts.pinned || []),
     backEntry: null,
     changed: false,
     closing: false,
@@ -17056,7 +17065,22 @@ function qiRenderCard(animate){
   // Ein zurueckgeholtes Produkt bringt seine eigene Auswahl mit, sonst gilt
   // die vom letzten Produkt.
   const draft = back ? (back.edit || qiEntryBase(back)) : it.draft;
-  const d = draft ? qiValidSticky(draft) : qi.sticky;
+  let d = draft ? qiValidSticky(draft) : qi.sticky;
+  // Fixierte Styles bei jedem neuen Produkt dazu -- samt passender Kategorie
+  // (gleichnamig zur Standard-Auswahl), auch wenn man sie beim letzten
+  // Produkt abgehakt hatte.
+  if(!back && !draft && qi.pinned.size){
+    d = { ...d, styles: d.styles.slice(), styleCats: { ...d.styleCats } };
+    for(const lbl of qi.pinned){
+      const st = state.styles.find(x => x.label === lbl);
+      if(!st) continue;
+      if(!d.styles.includes(lbl)) d.styles.push(lbl);
+      if(!d.styleCats[st.id]){
+        const m = matchStyleCatForStandard(st.id, d.category, d.subcategory);
+        if(m.cat !== NO_PICK) d.styleCats[st.id] = m;
+      }
+    }
+  }
   const name = draft ? draft.name : it.name;
   // Preis: exakt in Euro merken; angezeigt in der gewaehlten Eingabe-Waehrung.
   // Ein schon getippter Wert in derselben Waehrung bleibt genau so stehen.
@@ -17201,6 +17225,39 @@ function qiRenderCard(animate){
   if(catEl.value !== "all") addNewOption(subEl);
   form.querySelectorAll("select[data-stylecat], select[data-stylesub]").forEach(addNewOption);
   form.querySelectorAll("select").forEach(s => { s.dataset.prev = s.value; });
+  // Pin je Style: fixiert = bei jedem neuen Produkt automatisch angehakt.
+  form.querySelectorAll("#qi-styleMenu .a-sa-row[data-style]").forEach(row => {
+    const st = state.styles.find(x => x.id === row.dataset.style);
+    const name = row.querySelector(".a-sa-name");
+    if(!st || !name) return;
+    const pin = document.createElement("button");
+    pin.type = "button";
+    pin.className = "qi-pin";
+    const setze = ()=>{
+      const an = qi.pinned.has(st.label);
+      pin.classList.toggle("is-on", an);
+      pin.setAttribute("aria-pressed", String(an));
+      pin.title = an ? `${st.label} ist fixiert – Klick löst es` : `${st.label} fixieren – bei jedem Produkt automatisch angehakt`;
+      pin.setAttribute("aria-label", pin.title);
+      row.classList.toggle("is-pinned", an);
+    };
+    pin.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6l-1 6 4 4H6l4-4z"/><path d="M12 13v8"/></svg>`;
+    setze();
+    pin.addEventListener("mousedown", e => e.preventDefault());
+    pin.addEventListener("click", e => {
+      e.preventDefault();
+      e.stopPropagation();
+      if(qi.pinned.has(st.label)) qi.pinned.delete(st.label);
+      else {
+        qi.pinned.add(st.label);
+        const cb = row.querySelector("input[type=checkbox]");
+        if(cb && !cb.checked) cb.click();    // gleich anhaken (Kategorie zieht mit)
+      }
+      setze();
+      qiPersist();
+    });
+    name.appendChild(pin);
+  });
   form.querySelectorAll("#qi-styleMenu .a-sa-row").forEach(row => {
     const note = row.querySelector(".a-sa-note");
     if(!note) return;
