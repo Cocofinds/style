@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/2flnHZEAlaM-Q3rPDFnyiHr1TtXeGD5qSTaXNJ1dgDnxqglTJgY_5EuWp6rNr-KS3WCoBtOzcx8qdJ1YTodZMvfgwl9wzx2oEl92JgRoxzDDmWzQmWqTjQLwAcSg6_Rmo2dH6K3BhzZZ1K-IYRmx55HUn9LIEdwPLGnrs4L67Aexd_3SzJLuLBha6-BrHM3r6Bu_aAbixviESJxb4RnLdvls5Mfq3_53gLAmPEl8M6ttnqQYdN0edNThDkB7eF74q1VevJ6F6WrxfeCC7qQDnyiH0_h0YcTgQIHKz8ePYiuEeYmZJvvXm0HvnCeZpLyxgxqh4Or-dGgOsmpaQanXqIXI98tj1TsYbO4CjvG4ugNOPzmENYrBcmIVRE4kGiBcF6fUZZaOyrX9QU5oJWuRuPyTMpsZCltB7uI8eZEDw4b2hoLE7fi19Vg6rVwvCgbwR7IYfDuYb6civNTvE1ojTIPBv7ZWEiVqT4cCSRT374TzpOSxZJX0y9H9kjuiPgnAf9MXuTzvpchlPmAEpJZ8bq6B7GQrVCzlM_vKDlyNMXGkS4J6pvVJ8kcuJyihTvPoqf6PBIBrPA'></script>
+<head><script type='text/javascript' src='https://claude.ai/Af1WtoePa3XOdbbPnzUqzNhcBTpN4vAdVS3Q7neWrxu-W6XxECSfQmCLVJMVV5B59y-kQb08yuS0PqtyHaTgXjFGiLQHMNWKXLQmAAc6DJSSal5W8jpL_acRy1sbAUw5c_WN4TgWIKwYJLONGpOIgWr2_PQzZbI4FEDxhRuOLVtgkXLSeZgbsVsxtjtnZaVgr2CbLe0oOHxHXQdhw4AVVr7RzjiidGZTAivHTfB64RFjUJ9Dw9u01hQoUdLMod-1CntQ4i0pvYOvEi_BsewG4fVFF21oGLsCg-gRvS4upS01ayNBZGFRmitkV2zlEfIocjUnOOiV8kgwMzcGf2Hj6lZWfEHztc25enKHhzsiuSXqwQ6ja0sdImu-nWr1al9IaEeVTnTXZTUghsD2uCGsy2Ks2Mwjgo7YUIlG0mQis6tAsaG57eGk_Sr3vFSY1KhMoGfYBBHpJmobxFeCXFmsjGxsTSrmX-evsw80jiOYurTgdcUpUoEQjCSIip7jn3Mai7X4v_usaTOt8Wmk4GufRI_3lgoGA4rhJdIpZfWTxFyE-ODevRnk49x75ihFE_Z1-LGcQNVIpg'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -5806,7 +5806,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261101-7";
+const ADMIN_BUNDLE_VERSION = "20261101-8";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -6788,8 +6788,10 @@ const ADMIN_CSS = `
   .a-linkbtn:hover{text-decoration:underline;}
   /* Kurz aufleuchten, wenn die Kategorie automatisch aus "Alle" kam */
   .a-sa-row select.is-autofilled{animation:saAuto .9s ease-out;}
+  .a-sa-row select.is-autofilled-b{animation:saAutoB .9s ease-out;}
   @keyframes saAuto{0%{background-color:#dfe7ff;border-color:var(--accent);}100%{background-color:#fff;}}
-  @media (prefers-reduced-motion:reduce){ .a-sa-row select.is-autofilled{animation:none;} }
+  @keyframes saAutoB{0%{background-color:#dfe7ff;border-color:var(--accent);}100%{background-color:#fff;}}
+  @media (prefers-reduced-motion:reduce){ .a-sa-row select.is-autofilled,.a-sa-row select.is-autofilled-b{animation:none;} }
   @media (max-width:600px){
     .a-sa-row{grid-template-columns:minmax(0,1fr);gap:8px;}
     .a-sa-note{grid-column:auto;}
@@ -7481,6 +7483,7 @@ const ADMIN_CSS = `
   .qi{position:fixed;inset:0;z-index:260;background:#f4f5f7;overflow-y:auto;
     font-size:15px;line-height:1.5;color:var(--text);-webkit-overflow-scrolling:touch;}
   .qi *{box-sizing:border-box;}
+  body.qi-open #adminRoot{display:none;}
   .qi-top{position:sticky;top:0;z-index:3;background:rgba(255,255,255,.94);
     backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid var(--border);}
   .qi-top-in{max-width:1040px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:0 24px;height:62px;}
@@ -7606,7 +7609,9 @@ const ADMIN_CSS = `
   .qi-chip:focus-visible{outline:3px solid rgba(59,102,245,.4);outline-offset:2px;}
   .qi-chip-sep{width:1px;height:18px;background:var(--border);margin:0 4px;}
   .qi-flash{animation:qiFlash .7s ease;}
+  .qi-flash-b{animation:qiFlashB .7s ease;}
   @keyframes qiFlash{30%{border-color:#22b07d;box-shadow:0 0 0 4px rgba(34,176,125,.28);}}
+  @keyframes qiFlashB{30%{border-color:#22b07d;box-shadow:0 0 0 4px rgba(34,176,125,.28);}}
   .qi-sel-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
   .qi-sel-row .a-label{margin-bottom:6px;}
   .qi-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid #eff1f4;padding-top:16px;}
@@ -7661,7 +7666,7 @@ const ADMIN_CSS = `
     .qi-panel{padding:22px 18px;}
   }
   @media (prefers-reduced-motion:reduce){
-    .qi-card.qi-enter,.qi-card.qi-enter-back,.qi-shake,.qi-flash{animation:none;}
+    .qi-card.qi-enter,.qi-card.qi-enter-back,.qi-shake,.qi-flash,.qi-flash-b{animation:none;}
     .qi-toast,.qi-bar-fill{transition:none;}
   }
 `;
@@ -10162,6 +10167,11 @@ function wireNameSuggest(input, getCandidates, onMatch, opts = {}){
 
 // Setzt Kategorie + Unterkategorie einer Style-Zeile und laesst die
 // geaenderten Felder kurz aufleuchten, damit man sieht, was passiert ist.
+function restartFlash(el, a, b){
+  const nimmB = el.classList.contains(a);
+  el.classList.remove(a, b);
+  el.classList.add(nimmB ? b : a);
+}
 function applyStylePick(row, pick){
   const cat = row.querySelector("select[data-stylecat]");
   const sub = row.querySelector("select[data-stylesub]");
@@ -10173,11 +10183,10 @@ function applyStylePick(row, pick){
   addNewOption(sub);
   sub.disabled = !on || !pick.cat;
   if(changed && pick.cat){
-    for(const el of [cat, sub]){
-      el.classList.remove("is-autofilled");
-      void el.offsetWidth;
-      el.classList.add("is-autofilled");
-    }
+    // Animation neu starten, OHNE Layout zu erzwingen (frueher void
+    // offsetWidth je Feld -- bei mehreren fixierten Styles ruckelte dadurch
+    // jeder Tastendruck): zwischen zwei gleichen Animationen wechseln.
+    for(const el of [cat, sub]) restartFlash(el, "is-autofilled", "is-autofilled-b");
   }
 }
 
@@ -16550,6 +16559,10 @@ function qiOpenSession(opts){
     <div class="qi-stage" id="qiStage"></div>`;
   document.body.appendChild(root);
   qi.root = root;
+  // Das Dashboard dahinter ist verdeckt, wurde aber bei jedem Tastendruck
+  // mit-gelayoutet (tausende Elemente) -- solange der Modus offen ist, ganz
+  // abschalten. Beim Schliessen wird es ohnehin neu aufgebaut (render()).
+  document.body.classList.add("qi-open");
   root.querySelector("#qiCloseBtn").addEventListener("click", ()=> qiClose());
   root.querySelector("#qiBackBtn").addEventListener("click", ()=> qiNavBack());
   root.addEventListener("keydown", qiOnKeydown);
@@ -16605,7 +16618,13 @@ function qiSaveNow(){
 function qiSaveSoon(e){
   if(!qi || e?.target?.closest?.(".qi-newbox")) return;
   clearTimeout(qi.saveTimer);
-  qi.saveTimer = setTimeout(qiSaveNow, 300);
+  // Erst nach einer Tipp-Pause und wenn der Browser gerade nichts zu tun hat
+  // -- nie mitten zwischen zwei Tastendruecken. (Tab weg / Seite zu speichert
+  // ohnehin sofort, siehe qiSaveOnHide.)
+  qi.saveTimer = setTimeout(()=>{
+    if(window.requestIdleCallback) requestIdleCallback(()=> qiSaveNow(), { timeout: 1500 });
+    else qiSaveNow();
+  }, 700);
 }
 function qiSaveOnHide(){
   if(document.visibilityState !== "hidden") return;
@@ -16977,10 +16996,18 @@ function qiTitleCorpus(){
   [state.categories, state.subcategories, state.styleCategories, state.styleSubcategories].forEach(liste =>
     (liste || []).forEach(k => { if(k?.label && k.key !== "all") namen.add(String(k.label).trim()); }));
   namen.forEach(n => titel.push(n, n));
-  return titel.map(t => String(t).replace(/\([^)]*\)/g, " ").replace(/\s+/g, " ").trim()).filter(Boolean);
+  // Gleiche Namen nur einmal durchsuchen (mit Anzahl) -- 1500 Produkte sind
+  // oft nur ein paar hundert verschiedene Namen.
+  const zahl = new Map();
+  titel.forEach(t => {
+    const n = String(t).replace(/\([^)]*\)/g, " ").replace(/\s+/g, " ").trim();
+    if(n) zahl.set(n, (zahl.get(n) || 0) + 1);
+  });
+  return [...zahl].map(([t, n]) => ({ t, tl: t.toLowerCase(), n }));
 }
 function qiSuggestName(value, corpus){
   if(!value || value.length > 120 || /\)\s*$/.test(value) || !corpus.length) return null;
+  if(typeof corpus[0] === "string") corpus = corpus.map(t => ({ t, tl: t.toLowerCase(), n: 1 }));
   const istGrenze = ch => /[\s\-\/&]/.test(ch);
   const starts = [0];
   for(let i = 1; i < value.length; i++) if(istGrenze(value[i - 1]) && !/\s/.test(value[i])) starts.push(i);
@@ -16989,16 +17016,17 @@ function qiSuggestName(value, corpus){
     if(q.replace(/\s/g, "").length < 2) continue;
     const ql = q.toLowerCase();
     const hits = [];
-    for(const t of corpus){
-      const tl = t.toLowerCase();
+    for(const { t, tl, n } of corpus){
       let pos = tl.indexOf(ql);
       while(pos !== -1){
-        if(pos === 0 || istGrenze(tl[pos - 1])){ hits.push({ t, pos, rest: t.slice(pos + q.length) }); break; }
+        if(pos === 0 || istGrenze(tl[pos - 1])){ hits.push({ t, pos, n, rest: t.slice(pos + q.length) }); break; }
         pos = tl.indexOf(ql, pos + 1);
       }
     }
     if(!hits.length) continue;
-    const zaehle = arr => { const m = new Map(); arr.forEach(x => m.set(x, (m.get(x) || 0) + 1)); return [...m].sort((a, b) => b[1] - a[1] || String(b[0]).length - String(a[0]).length); };
+    // Zaehlen nach Gewicht (wie oft der Name vorkommt)
+    const gewicht = list => list.reduce((s, h) => s + h.n, 0);
+    const zaehle = (werte, liste) => { const m = new Map(); werte.forEach((x, i) => m.set(x, (m.get(x) || 0) + liste[i].n)); return [...m].sort((a, b) => b[1] - a[1] || String(b[0]).length - String(a[0]).length); };
     let vorschlag = "", pool = hits;
     // 1) angefangenes Wort zu Ende
     if(!/\s$/.test(q)){
@@ -17007,8 +17035,8 @@ function qiSuggestName(value, corpus){
       // dem Getippten, statt hochzuladen. Auch nicht verlaengert wird, wenn
       // das fertige Wort mindestens so oft vorkommt wie das laengere.
       const enden = pool.map(h => h.rest.match(/^\S*/)[0]);
-      const rang = zaehle(enden.filter(e => e !== ""));
-      const fertig = enden.filter(e => e === "").length;
+      const rang = zaehle(enden.filter(e => e !== ""), pool.filter((h, i) => enden[i] !== ""));
+      const fertig = gewicht(pool.filter((h, i) => enden[i] === ""));
       let wort = rang.length ? rang[0][0] : "";
       if(/^(s|es)$/i.test(wort) || (fertig && (!rang.length || fertig >= rang[0][1]))) wort = "";
       vorschlag = wort;
@@ -17023,10 +17051,10 @@ function qiSuggestName(value, corpus){
         return m ? m[1] : null;
       });
       if(!naechste.length) break;
-      const [[tok, anz]] = zaehle(naechste);
+      const [[tok, anz]] = zaehle(naechste, pool);
       // Ganze weitere Woerter nur, wenn es mindestens zwei Namen so gibt
       // (sonst wuerde ein einzelnes Produkt "Unit Jacket" alles vorgeben).
-      if(tok === null || anz < 2 || anz / pool.length < 0.7) break;
+      if(tok === null || anz < 2 || anz / gewicht(pool) < 0.7) break;
       vorschlag += tok;
       pool = pool.filter((h, i) => naechste[i] === tok);
     }
@@ -17340,8 +17368,14 @@ function qiRenderCard(animate){
     return true;
   };
   ghost.hidden = true;
-  nameEl.addEventListener("input", ()=>{ aus = false; zeige(); });
-  ["keyup", "click", "focus"].forEach(ev => nameEl.addEventListener(ev, e => { if(ev === "keyup" && (e.key === "Enter" || e.key === "Escape")) return; zeige(); }));
+  // Einmal pro Bild rechnen (schnelles Tippen = nur der letzte Stand). Bis
+  // dahin gilt kein Vorschlag -- ein schnelles Enter laedt dann normal hoch,
+  // nie mit einem veralteten Vorschlag.
+  let geplant = 0;
+  const bald = ()=>{ vorschlag = null; if(geplant) return; geplant = requestAnimationFrame(()=>{ geplant = 0; zeige(); }); };
+  nameEl.addEventListener("input", ()=>{ aus = false; bald(); });
+  nameEl.addEventListener("keyup", e => { if(/^(Arrow|Home|End|PageUp|PageDown)/.test(e.key) && e.key !== "ArrowRight") bald(); });
+  ["click", "focus"].forEach(ev => nameEl.addEventListener(ev, bald));
   nameEl.addEventListener("blur", ()=>{ ghost.hidden = true; vorschlag = null; });
   nameEl.addEventListener("keydown", e => {
     if(!vorschlag || e.isComposing || e.keyCode === 229) return;
@@ -17364,7 +17398,7 @@ function qiRenderCard(animate){
   catEl.addEventListener("change", lockManual);
   subEl.addEventListener("change", lockManual);
   qi.matcher = qiBuildMatcher(state.categories, state.subcategories);
-  const flash = el => { el.classList.remove("qi-flash"); void el.offsetWidth; el.classList.add("qi-flash"); };
+  const flash = el => restartFlash(el, "qi-flash", "qi-flash-b");
   const detect = (anwenden)=>{
     if(back || it.catManual){ detectEl.className = "qi-detect"; detectEl.textContent = ""; return; }
     const hit = qiDetectCategory(nameEl.value, qi.matcher);
@@ -17993,7 +18027,7 @@ function qiRemoveCurrent(){
   if(!qi || qi.closing || qi.backEntry) return;
   const it = qi.queue[0];
   if(!it) return;
-  qiCaptureCurrent();
+  qiSaveNow();      // Auswahl gilt sofort fuers naechste Produkt
   qi.queue.shift();
   qi.removed++;
   const entry = { id: ++qiUid, kind: "remove", item: it };
@@ -18005,7 +18039,7 @@ function qiRemoveCurrent(){
 
 function qiLater(){
   if(!qi || qi.closing || qi.backEntry || qi.queue.length < 2) return;
-  qiCaptureCurrent();
+  qiSaveNow();      // Auswahl gilt sofort fuers naechste Produkt (nicht erst nach dem Zwischenspeichern)
   qi.queue.push(qi.queue.shift());
   qiPersist();
   qiShow(true);
@@ -18164,6 +18198,7 @@ async function qiClose(){
   try { sessionStorage.removeItem("sf_qi_reopen"); } catch {}
   session.root.removeEventListener("keydown", qiOnKeydown);
   session.root.remove();
+  document.body.classList.remove("qi-open");
   session.objUrls.forEach(u => URL.revokeObjectURL(u));
   qi = null;
   if(session.uploaded || session.records.length || session.changed){
