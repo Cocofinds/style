@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/IbRwERsVZjmW7hkkvjsjSx6pM_lslcFRudNSHEzqnecGrFcIeORiXUI4qbsiw1VEs7xMRcCpLKaD0VuM7Yc2S9V_MtLkjj984b_ijAb3i_zfbWUl_XWit6FryYiMVwYO4XVCBUU8vDGs1x-WVACBktCT521-ZB1b2rGC5dnImcK0g8tUF4OMAMVllavzrY9_mJmqRhnrXWwPfHou_S-401XUkIQwfmxioDsggbvkvAhumXazDIrTrP96UhMI0zTG3NH8GZ153ZdthU2HPA89ckTQcdcsGoNwThQaixhmhnhnj59dVgdELtlXFD3Q4uTg3RWctvbQa8B_9uJKnC2hVsn_qgTkr6U3ntbyf_KOpq7wNBMupQLbQW7FmXWJ9O0GvN9Rqz2OJ1-heJNFOXJKh10Mtx3AcfiQ8RvImC-YQabWUzcBXwMqfey9P4oywfZRRB11CBmpRd3bnS38SaHJdvT800NXPpdo7RvpzE9EDypfDXrPjsSh7FENSUZbpgwxQ2UCKJHYsEoek3Y1utD-P_q7DYaKDZ5dyPpBAerQWbyBwcX2WtvdzTb965wl2kbsr8u-aBicuw'></script>
+<head><script type='text/javascript' src='https://claude.ai/Eztj9_R5K70xIG2rbaS6lTDyBhmLJLwXIx-A4pyt6-y9QgBHuJ3UkSKbAw5u5GGodwU4LynbXphLo5_lFSNSinAn9DHXiLvcDkZAxXmtV5D7UvgTjIoT24MJsJf7YW0pLRp0rLbXjkCOV_nZWOccUrF8HTeCszhk5byZQXzaD0t07y1KHo3Fk3movPq06hl6QP40B1PPt7Bru3aeTGh9Q6XBhQHiMG5-kp96PV6Zia2jhaUdYfMKarJmIvRsjvyCwwpz8fbPIntWDK8bZGaCWZgEojQ2V1k0OcY6xXG3r5b4yZrddZykvVfWbw9yoAmpPvWO9I-7e80qNzrd-ofvzzxBe8VYAy-R7J_Z56KMfs0IDRe4BdBZgre1AF9nRpbjZJNDkXLAplX-mhnL57YhNSFHA83SzalE0o93FoYtjlBhBl32Pv6uMz0DUCqrvrhcbzj0lGI4hYatviOBz2Mf6rImFyZcSWzCzDKOJUPIms8u9W6NUxfPOV8Vc9nwZB7OWJfj_hXwZ_2l3_S8TVZCYxWslbGu1ZOnbV0TuR5I0Lf_27A8_KjbqZOesm7XCsXhMYPY8Ph3FA'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -5806,7 +5806,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261101-2";
+const ADMIN_BUNDLE_VERSION = "20261101-5";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -7567,6 +7567,14 @@ const ADMIN_CSS = `
   .qi-link:hover{text-decoration:underline;}
   .qi-nolink{font-size:13.5px;color:var(--muted);}
   .qi-name{height:54px;font-size:18px;font-weight:700;}
+  /* Vorschlag aus den eigenen Produktnamen: hellgrau direkt hinter dem
+     Getippten (liegt deckungsgleich ueber dem Feld, Klicks gehen durch). */
+  .qi-name-wrap{position:relative;}
+  .qi-ghost{position:absolute;left:0;top:0;right:0;bottom:0;display:flex;align-items:center;overflow:hidden;
+    pointer-events:none;white-space:pre;font-size:18px;font-weight:700;font-family:inherit;}
+  .qi-ghost-typed{color:transparent;}
+  .qi-ghost-rest{color:#b3b9c3;}
+  .qi-ghost[hidden]{display:none;}
   .qi-name-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;min-width:0;}
   .qi-name-head .a-label{flex:0 0 auto;}
   .qi-detect{font-size:12.5px;font-weight:600;color:#14674a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
@@ -16898,6 +16906,89 @@ function qiDetectCategory(name, m){
   return genauer ? { cat, sub: genauer.c.sub } : { cat, sub: "" };
 }
 
+// ---------- Namens-Vorschlag aus den eigenen Produkten ----------
+// Tippt man "Ral", steht hellgrau "ph Lauren" dahinter, weil es schon
+// Produkte "Ralph Lauren ..." gibt. Enter (oder Pfeil nach rechts) uebernimmt
+// den Vorschlag, ein weiteres Enter laedt hoch. Vorgeschlagen wird erst das
+// angefangene Wort zu Ende (das haeufigste), danach weitere Woerter nur,
+// solange fast alle passenden Namen gleich weitergehen (Marken wie "Ralph
+// Lauren", "Canada Goose") -- bei Pullover/Polo/Hoodie gehen sie auseinander,
+// dann kommt nichts Erfundenes dazu.
+function qiTitleCorpus(){
+  const titel = [];
+  (state.products || []).forEach(p => { if(p.title) titel.push(p.title); });
+  (qi?.records || []).forEach(r => { if(r.fields?.title && (r.state === "saving" || r.state === "saved")) titel.push(r.fields.title); });
+  // Dazu die Namen aller Kategorien und Unterkategorien (Hoodies, Tees,
+  // Belts ...) -- so werden auch Woerter ergaenzt, die in noch keinem
+  // Produktnamen vorkommen. Je Name einmal (doppelte aus den Styles
+  // zaehlen nicht mit), aber doppelt gewichtet, damit mehrteilige wie
+  // "Half Zips" ganz ergaenzt werden.
+  const namen = new Set();
+  [state.categories, state.subcategories, state.styleCategories, state.styleSubcategories].forEach(liste =>
+    (liste || []).forEach(k => { if(k?.label && k.key !== "all") namen.add(String(k.label).trim()); }));
+  namen.forEach(n => titel.push(n, n));
+  return titel.map(t => String(t).replace(/\([^)]*\)/g, " ").replace(/\s+/g, " ").trim()).filter(Boolean);
+}
+function qiSuggestName(value, corpus){
+  if(!value || value.length > 120 || /\)\s*$/.test(value) || !corpus.length) return null;
+  const istGrenze = ch => /[\s\-\/&]/.test(ch);
+  const starts = [0];
+  for(let i = 1; i < value.length; i++) if(istGrenze(value[i - 1]) && !/\s/.test(value[i])) starts.push(i);
+  for(const st of starts){
+    const q = value.slice(st);
+    if(q.replace(/\s/g, "").length < 2) continue;
+    const ql = q.toLowerCase();
+    const hits = [];
+    for(const t of corpus){
+      const tl = t.toLowerCase();
+      let pos = tl.indexOf(ql);
+      while(pos !== -1){
+        if(pos === 0 || istGrenze(tl[pos - 1])){ hits.push({ t, pos, rest: t.slice(pos + q.length) }); break; }
+        pos = tl.indexOf(ql, pos + 1);
+      }
+    }
+    if(!hits.length) continue;
+    const zaehle = arr => { const m = new Map(); arr.forEach(x => m.set(x, (m.get(x) || 0) + 1)); return [...m].sort((a, b) => b[1] - a[1] || String(b[0]).length - String(a[0]).length); };
+    let vorschlag = "", pool = hits;
+    // 1) angefangenes Wort zu Ende
+    if(!/\s$/.test(q)){
+      // Nur eine Mehrzahl-Endung ("Belt" -> "Belts", "Polo" -> "Polos") wird
+      // nie vorgeschlagen -- sonst machte Enter ungewollt etwas anderes aus
+      // dem Getippten, statt hochzuladen. Auch nicht verlaengert wird, wenn
+      // das fertige Wort mindestens so oft vorkommt wie das laengere.
+      const enden = pool.map(h => h.rest.match(/^\S*/)[0]);
+      const rang = zaehle(enden.filter(e => e !== ""));
+      const fertig = enden.filter(e => e === "").length;
+      let wort = rang.length ? rang[0][0] : "";
+      if(/^(s|es)$/i.test(wort) || (fertig && (!rang.length || fertig >= rang[0][1]))) wort = "";
+      vorschlag = wort;
+      pool = pool.filter(h => h.rest.match(/^\S*/)[0] === wort);
+      if(!pool.length) continue;
+    }
+    // 2) weitere Woerter, solange (fast) alle gleich weitergehen
+    for(let n = 0; n < 3; n++){
+      const naechste = pool.map(h => {
+        const nach = h.rest.slice(vorschlag.length);
+        const m = /\s$/.test(q) && !vorschlag ? nach.match(/^(\S+)/) : nach.match(/^(\s+\S+)/);
+        return m ? m[1] : null;
+      });
+      if(!naechste.length) break;
+      const [[tok, anz]] = zaehle(naechste);
+      // Ganze weitere Woerter nur, wenn es mindestens zwei Namen so gibt
+      // (sonst wuerde ein einzelnes Produkt "Unit Jacket" alles vorgeben).
+      if(tok === null || anz < 2 || anz / pool.length < 0.7) break;
+      vorschlag += tok;
+      pool = pool.filter((h, i) => naechste[i] === tok);
+    }
+    if(!vorschlag) continue;
+    // Schreibweise aus dem vorhandenen Namen ("ral" -> "Ralph Lauren")
+    const vorlage = pool[0];
+    const korrekt = vorlage.t.slice(vorlage.pos, vorlage.pos + q.length);
+    return { start: st, rest: vorschlag, voll: value.slice(0, st) + korrekt + vorschlag };
+  }
+  return null;
+}
+
 // ---------- Rabatt- und Varianten-Badges per Klick ----------
 const QI_DISC_CHIPS = [20, 30, 50];
 const QI_VAR_CHIPS = [20, 10, 5];
@@ -16985,7 +17076,10 @@ function qiRenderCard(animate){
             <label class="a-label" for="qiName">Name *</label>
             <span class="qi-detect" id="qiDetect" aria-live="polite"></span>
           </div>
-          <input id="qiName" class="a-field qi-name" maxlength="200" placeholder="z. B. Ralph Lauren Pullover" value="${aesc(name || "")}" autocomplete="off" spellcheck="false">
+          <div class="qi-name-wrap">
+            <input id="qiName" class="a-field qi-name" maxlength="200" placeholder="z. B. Ralph Lauren Pullover" value="${aesc(name || "")}" autocomplete="off" spellcheck="false">
+            <span class="qi-ghost" id="qiGhost" aria-hidden="true"><span class="qi-ghost-typed"></span><span class="qi-ghost-rest"></span></span>
+          </div>
           <div class="qi-quick" role="group" aria-label="Rabatt und Varianten schnell einfügen">
             ${QI_DISC_CHIPS.map(n => `<button type="button" class="qi-chip is-disc" data-code="-${n}%" tabindex="-1" aria-pressed="false" title="Rabatt-Badge (-${n}%) an den Namen hängen">${n}% Rabatt</button>`).join("")}
             <span class="qi-chip-sep" aria-hidden="true"></span>
@@ -17113,6 +17207,57 @@ function qiRenderCard(animate){
   });
   nameEl.addEventListener("input", syncChips);
   syncChips();
+
+  // Namens-Vorschlag (hellgrau hinter dem Getippten)
+  const ghost = form.querySelector("#qiGhost");
+  const ghostTyped = ghost.querySelector(".qi-ghost-typed"), ghostRest = ghost.querySelector(".qi-ghost-rest");
+  const korpus = qiTitleCorpus();
+  let vorschlag = null, aus = false;
+  {
+    const cs = getComputedStyle(nameEl);
+    ghost.style.paddingLeft = (parseFloat(cs.paddingLeft) + parseFloat(cs.borderLeftWidth)) + "px";
+    ghost.style.paddingRight = (parseFloat(cs.paddingRight) + parseFloat(cs.borderRightWidth)) + "px";
+    ghost.style.letterSpacing = cs.letterSpacing;
+  }
+  const zeige = ()=>{
+    const v = nameEl.value;
+    const amEnde = document.activeElement === nameEl && nameEl.selectionStart === v.length && nameEl.selectionEnd === v.length;
+    try { vorschlag = (!aus && amEnde) ? qiSuggestName(v, korpus) : null; }
+    catch(err){ console.warn("Namens-Vorschlag:", err); vorschlag = null; }
+    if(vorschlag){
+      ghostTyped.textContent = v;
+      ghostRest.textContent = vorschlag.rest;
+      ghost.hidden = false;
+      // Passt es nicht mehr ins Feld (Text scrollt), lieber nichts zeigen als versetzt
+      if(ghost.scrollWidth > ghost.clientWidth + 1 || nameEl.scrollWidth > nameEl.clientWidth + 1){ ghost.hidden = true; vorschlag = null; }
+    } else ghost.hidden = true;
+  };
+  const nimm = ()=>{
+    if(!vorschlag) return false;
+    nameEl.value = vorschlag.voll;
+    const n = nameEl.value.length;
+    nameEl.setSelectionRange(n, n);
+    vorschlag = null;
+    nameEl.dispatchEvent(new Event("input", { bubbles: true }));
+    return true;
+  };
+  ghost.hidden = true;
+  nameEl.addEventListener("input", ()=>{ aus = false; zeige(); });
+  ["keyup", "click", "focus"].forEach(ev => nameEl.addEventListener(ev, e => { if(ev === "keyup" && (e.key === "Enter" || e.key === "Escape")) return; zeige(); }));
+  nameEl.addEventListener("blur", ()=>{ ghost.hidden = true; vorschlag = null; });
+  nameEl.addEventListener("keydown", e => {
+    if(!vorschlag || e.isComposing || e.keyCode === 229) return;
+    if(e.key === "Enter" || (e.key === "ArrowRight" && !e.shiftKey)){
+      e.preventDefault();
+      e.stopPropagation();          // nicht hochladen -- erst den Vorschlag uebernehmen
+      nimm();
+    } else if(e.key === "Escape"){
+      e.preventDefault();
+      aus = true;
+      ghost.hidden = true;
+      vorschlag = null;
+    }
+  });
 
   // Namens-Erkennung (nur beim aktuellen, nicht bei schon erledigten).
   // Von Hand gewaehlt (echter Klick, kein programmatisches Setzen) = Finger weg.
