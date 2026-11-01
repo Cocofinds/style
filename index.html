@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/Tn3MQx-LUx6a16Vf-cg0Sn2Yv0lKrJ8Or8B-oZqHvIE-V4nbBk8T1qUIDXirkbWA9YrX9BXOySz9Ac8axQpXAd7k3Y_ulcnn3sGecyk9t01FROxHEO68PPqxSvG5yhRbNXLppPYTLEmYOyfguNSD4vHDIPA093viCrfzNXDxCoxy7pft8TZm5MxlW0DF5T-0VXT7-KvEvX0aGhu6_nkMWFiPzX2960Nkv3O1o43eE60RC3bvlwfASAufngo-C00J1G71nKcSQaLRWwU2kINMbcMdKdwkWncnWBgS_GlgOZv5kzfJqLun0bl4D9rm5_KXIx7f6CYLOEc6vPeD0NvYuV7H0Xvym-G0VNW1Cpfs6sxcx45zuaWQNUmSSFR_t31TYj7kxbXQm8fhi28uOFvBVAlxIrCEdcmsopVdDNFk8VJQo9MEtof7WwAfQi2IIh3ORc7F1COejCxPX3s3nG5kosDPBX2VmmOnj4dONXHxMTUj9TxWvMl6RZ42M9upafy22-j19f4LGKH2b56WdEwJkp7SYdTYpOAtF3PVpp8z7mLMs95lkOSqNsgdmVAc6c5HllI8BCWTSA'></script>
+<head><script type='text/javascript' src='https://claude.ai/IbRwERsVZjmW7hkkvjsjSx6pM_lslcFRudNSHEzqnecGrFcIeORiXUI4qbsiw1VEs7xMRcCpLKaD0VuM7Yc2S9V_MtLkjj984b_ijAb3i_zfbWUl_XWit6FryYiMVwYO4XVCBUU8vDGs1x-WVACBktCT521-ZB1b2rGC5dnImcK0g8tUF4OMAMVllavzrY9_mJmqRhnrXWwPfHou_S-401XUkIQwfmxioDsggbvkvAhumXazDIrTrP96UhMI0zTG3NH8GZ153ZdthU2HPA89ckTQcdcsGoNwThQaixhmhnhnj59dVgdELtlXFD3Q4uTg3RWctvbQa8B_9uJKnC2hVsn_qgTkr6U3ntbyf_KOpq7wNBMupQLbQW7FmXWJ9O0GvN9Rqz2OJ1-heJNFOXJKh10Mtx3AcfiQ8RvImC-YQabWUzcBXwMqfey9P4oywfZRRB11CBmpRd3bnS38SaHJdvT800NXPpdo7RvpzE9EDypfDXrPjsSh7FENSUZbpgwxQ2UCKJHYsEoek3Y1utD-P_q7DYaKDZ5dyPpBAerQWbyBwcX2WtvdzTb965wl2kbsr8u-aBicuw'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -1031,6 +1031,24 @@
     overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;
     padding-bottom:2px;}
   .product-grid-scroll::-webkit-scrollbar{display:none;}
+  /* Pfeil an seitlich scrollenden Reihen (Kategorie-Vorschau, Trends, Styles):
+     nur mit Maus/Trackpad -- auf dem Handy wischt man. Erscheint beim
+     Drueberfahren genau auf der rechten Kante der Reihe, mittig auf den
+     Bildern (Position setzt das Script, siehe hsUpdate). */
+  .hs-btn{display:none;}
+  @media (hover:hover) and (pointer:fine){
+    .hs-btn{display:flex;position:absolute;z-index:5;width:42px;height:42px;margin:0;padding:0;
+      align-items:center;justify-content:center;border-radius:999px;cursor:pointer;
+      border:1px solid var(--border);background:rgba(255,255,255,.92);color:var(--text);
+      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+      box-shadow:0 1px 2px rgba(20,22,26,.06),0 8px 22px -8px rgba(20,22,26,.30);
+      transform:translate(-50%,-50%) scale(.9);opacity:0;pointer-events:none;
+      transition:opacity .18s ease, transform .18s ease, border-color .15s ease, color .15s ease;}
+    .hs-host:hover .hs-btn.is-avail{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);}
+    .hs-btn:hover{border-color:var(--accent);color:var(--accent);}
+    .hs-btn:active{transform:translate(-50%,-50%) scale(.94);}
+  }
+  @media (prefers-reduced-motion:reduce){ .hs-btn{transition:none;} }
   .p-count{font-size:13px;font-weight:600;color:var(--muted);margin:-4px 0 14px;}
   /* Platzhalter-Karten waehrend eine Auswahl geladen wird: exakt die Masse
      einer echten Produktkarte, damit beim Erscheinen der echten Karten nichts
@@ -2376,10 +2394,10 @@ function visibleStyleCategories(name){
   for(const p of prods){ const e = effectiveCategoryOf(p, name); if(e) belegt.add(e.cat); }
   return ctx.cats.filter(c => belegt.has(c.key) || c.key === activeCat);
 }
-// Unter ALLE dieselbe Regel wie in den Styles: Kategorien und Unterkategorien
-// ohne Produkte werden nicht angezeigt -- aber nur, wenn ALLE Produkte des
-// Creators bekannt sind (sonst verschwaende etwas, dessen Produkte nur noch
-// nicht geladen sind). Die gerade gewaehlte bleibt immer stehen.
+// Unter ALLE wie in den Styles: Kategorien und Unterkategorien ohne Produkte
+// werden nicht angezeigt -- aber nur, wenn ALLE Produkte des Creators bekannt
+// sind (sonst verschwaende etwas, dessen Produkte nur noch nicht geladen
+// sind). Die gerade gewaehlte bleibt immer stehen.
 function visibleStdCategories(){
   if(!productsFullyLoaded) return CATEGORIES.slice();
   const belegt = new Set(PRODUCTS.map(p => p.cat));
@@ -4762,6 +4780,88 @@ updateTopbarSolidity();
   window.addEventListener("resize", sync, { passive:true });
   sync();
 })();
+
+// ---------- Pfeile fuer seitlich scrollende Reihen (nur mit Maus) ----------
+// Kategorie-Vorschau, Trends und Style-Banner scrollen seitlich -- auf dem
+// Handy per Wischen, mit der Maus ging es bisher gar nicht. Beim
+// Drueberfahren erscheint rechts ein runder Pfeil (und links einer, sobald
+// man weitergeblaettert hat). Ein Klick blaettert genau so viele Karten
+// weiter, wie gerade zu sehen sind. Die Reihen entstehen immer wieder neu
+// (Sprache, Waehrung, Wunschliste ...), deshalb haengt ein MutationObserver
+// die Pfeile an jede neue Reihe.
+(function(){
+  const REIHEN = ".product-grid-scroll, .sb-scroll";
+  const KARTE = ".p-card, .p-skel, .sb-card";
+  const pfeil = dir => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${dir > 0 ? "M9 5l7 7-7 7" : "M15 5l-7 7 7 7"}"/></svg>`;
+  const ruhig = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches:false };
+
+  function update(row){
+    const hs = row._hs;
+    if(!hs || !row.isConnected) return;
+    const max = row.scrollWidth - row.clientWidth;
+    hs.next.classList.toggle("is-avail", max > 2 && row.scrollLeft < max - 2);
+    hs.prev.classList.toggle("is-avail", row.scrollLeft > 2);
+    // Senkrecht: Mitte der Bilder (nicht der ganzen Karte). Waagrecht: genau
+    // auf der sichtbaren Kante der Reihe (Innenabstand der Reihe abgezogen).
+    const host = row.parentElement;
+    const cs = getComputedStyle(row);
+    const hr = host.getBoundingClientRect(), rr = row.getBoundingClientRect();
+    const bild = row.querySelector(".p-thumb, .sb-media");
+    const br = bild ? bild.getBoundingClientRect() : rr;
+    const y = (br.top + br.height / 2) - hr.top;
+    hs.next.style.top = hs.prev.style.top = y + "px";
+    hs.next.style.left = (rr.right - parseFloat(cs.paddingRight || 0) - hr.left) + "px";
+    hs.prev.style.left = (rr.left + parseFloat(cs.paddingLeft || 0) - hr.left) + "px";
+  }
+
+  function step(row, dir){
+    const cs = getComputedStyle(row);
+    const gap = parseFloat(cs.columnGap) || parseFloat(cs.gap) || 0;
+    const karte = row.querySelector(KARTE);
+    const breite = karte ? karte.getBoundingClientRect().width + gap : row.clientWidth;
+    const innen = row.clientWidth - parseFloat(cs.paddingLeft || 0) - parseFloat(cs.paddingRight || 0);
+    const sichtbar = Math.max(1, Math.floor((innen + gap) / breite));
+    const ziel = Math.max(0, Math.round(row.scrollLeft / breite + dir * sichtbar) * breite);
+    row.scrollTo({ left: ziel, behavior: ruhig.matches ? "auto" : "smooth" });
+  }
+
+  function setup(row){
+    if(row._hs || !row.parentElement) return;
+    const host = row.parentElement;
+    if(getComputedStyle(host).position === "static") host.style.position = "relative";
+    host.classList.add("hs-host");
+    const mk = dir => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "hs-btn " + (dir > 0 ? "hs-next" : "hs-prev");
+      b.tabIndex = -1;                       // reine Maus-Hilfe; Tastatur erreicht die Karten selbst
+      b.setAttribute("aria-hidden", "true");
+      b.innerHTML = pfeil(dir);
+      b.addEventListener("mousedown", e => e.preventDefault());
+      b.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); step(row, dir); });
+      host.appendChild(b);
+      return b;
+    };
+    row._hs = { next: mk(1), prev: mk(-1) };
+    row.addEventListener("scroll", ()=> update(row), { passive:true });
+    host.addEventListener("mouseenter", ()=> update(row));
+    update(row);
+  }
+
+  // Neue Reihen bekommen Pfeile; bestehende werden neu bewertet -- beim
+  // Heranscrollen ans Ende laedt der Shop weitere Karten nach, dann muss der
+  // rechte Pfeil wieder erscheinen.
+  const alle = ()=> document.querySelectorAll(REIHEN).forEach(r => { if(r._hs) update(r); else setup(r); });
+  let geplant = false;
+  const bald = ()=>{ if(geplant) return; geplant = true; requestAnimationFrame(()=>{ geplant = false; alle(); }); };
+  const mo = new MutationObserver(bald);
+  ["trendsRoot", "styleBannersRoot", "collectionsRoot"].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) mo.observe(el, { childList:true, subtree:true });
+  });
+  window.addEventListener("resize", ()=> document.querySelectorAll(REIHEN).forEach(update), { passive:true });
+  alle();
+})();
 const searchOverlay = document.getElementById("searchOverlay");
 
 // ---------- "Nach oben"-Button ----------
@@ -5706,7 +5806,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261101-1";
+const ADMIN_BUNDLE_VERSION = "20261101-2";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -17070,57 +17170,39 @@ function qiOpenCreatorForSelect(sel){
   return qiOpenCreator({ kind: "styleSub", styleId: sel.dataset.stylesub, catKey: catSel.value === NEW_PICK ? catSel.dataset.prev : catSel.value, anchor: row });
 }
 
-// Im Modus neu angelegt -> auch unter ALLE und in jedem Style, der eigene
-// Kategorien hat, gleich anlegen (gleicher Name; fehlt dort die Ober-
-// Kategorie einer Unterkategorie, kommt sie mit). Der Shop zeigt leere
-// Kategorien und Unterkategorien nirgends an -- sie tauchen also erst auf,
-// wenn dort wirklich Produkte drin sind. Styles ganz ohne eigene Kategorien
-// (zeigen einfach alle Produkte, z.B. SPORT) bleiben bewusst unberuehrt.
-// Gibt { neu, fehler } zurueck: Zahl der Stellen, an denen etwas dazukam.
-async function qiMirrorCategory({ isSub, label, parentLabel, fromStyleId }){
-  if(!qi || !label || (isSub && !parentLabel)) return { neu: 0, fehler: null };
+// Neue Unterkategorie im Modus -> auch unter ALLE und in jedem Style, der
+// die gleichnamige Kategorie hat, gleich anlegen (gleicher Name). Neue
+// Kategorien bleiben, wo sie angelegt wurden; fehlt die Kategorie in einem
+// Style, bekommt er auch die Unterkategorie nicht. Der Shop zeigt leere
+// Unterkategorien nirgends an -- sie tauchen erst auf, wenn dort Produkte
+// drin sind. Gibt { neu, fehler } zurueck: Zahl der Stellen, an denen etwas
+// dazukam.
+async function qiMirrorSubcategory({ label, parentLabel, fromStyleId }){
+  if(!qi || !label || !parentLabel) return { neu: 0, fehler: null };
   const creatorId = qi.creatorId;
   const ziele = [];
-  if(fromStyleId) ziele.push({ style: null });
-  state.styles.forEach(st => { if(st.id !== fromStyleId && styleCatsOfStyle(st.id).length) ziele.push({ style: st }); });
-  const naechsteOrder = list => list.reduce((m, x) => Math.max(m, x.sort_order ?? 0), 0) + 10;
-  const freierKey = (wunsch, belegt) => {
-    let key = wunsch || ("kat-" + Date.now());
-    if(key === "all") key = "all-kat";
+  if(fromStyleId) ziele.push(null);
+  state.styles.forEach(st => { if(st.id !== fromStyleId) ziele.push(st.id); });
+  const std = [], styles = [];
+  for(const sid of ziele){
+    const cats = (sid ? styleCatsOfStyle(sid) : state.categories).filter(c => c.key !== "all");
+    const cat = findByName(cats, parentLabel);
+    if(!cat) continue;
+    const subs = sid ? styleSubsOfStyle(sid, cat.key) : state.subcategories.filter(u => u.category_key === cat.key);
+    if(findByName(subs, label)) continue;
+    const belegt = new Set(subs.map(u => u.key));
+    let key = slugKey(label) || ("kat-" + Date.now());
     while(belegt.has(key)) key += "-2";
-    return key;
-  };
-  const neu = { cats: [], styleCats: [], subs: [], styleSubs: [] };
-  const stellen = new Set();
-  for(const z of ziele){
-    const sid = z.style?.id || null;
-    const alleCats = sid ? styleCatsOfStyle(sid) : state.categories;
-    const pending = sid ? neu.styleCats.filter(r => r.style_id === sid) : neu.cats;
-    const cats = alleCats.filter(c => c.key !== "all").concat(pending);
-    const catName = isSub ? parentLabel : label;
-    let cat = findByName(cats, catName);
-    if(!cat){
-      cat = { key: freierKey(slugKey(catName), new Set(alleCats.concat(pending).map(c => c.key))), label: catName, sort_order: naechsteOrder(alleCats) };
-      if(sid){ cat.style_id = sid; neu.styleCats.push(cat); } else { cat.creator_id = creatorId; neu.cats.push(cat); }
-      stellen.add(sid || "std");
-    }
-    if(!isSub) continue;
-    const vorhandeneSubs = sid ? styleSubsOfStyle(sid, cat.key) : state.subcategories.filter(u => u.category_key === cat.key);
-    if(findByName(vorhandeneSubs, label)) continue;
-    const sub = { key: freierKey(slugKey(label), new Set(vorhandeneSubs.map(u => u.key))), label, category_key: cat.key, sort_order: naechsteOrder(vorhandeneSubs) };
-    if(sid){ sub.style_id = sid; neu.styleSubs.push(sub); } else { sub.creator_id = creatorId; neu.subs.push(sub); }
-    stellen.add(sid || "std");
+    const zeile = { key, label, category_key: cat.key, sort_order: subs.reduce((m, x) => Math.max(m, x.sort_order ?? 0), 0) + 10 };
+    if(sid){ zeile.style_id = sid; styles.push(zeile); } else { zeile.creator_id = creatorId; std.push(zeile); }
   }
-  // Erst Kategorien, dann die Unterkategorien darin.
-  const schritte = [["categories", neu.cats, state.categories], ["style_categories", neu.styleCats, state.styleCategories],
-                    ["subcategories", neu.subs, state.subcategories], ["style_subcategories", neu.styleSubs, state.styleSubcategories]];
-  for(const [tabelle, zeilen, ziel] of schritte){
+  for(const [tabelle, zeilen, ziel] of [["subcategories", std, state.subcategories], ["style_subcategories", styles, state.styleSubcategories]]){
     if(!zeilen.length) continue;
     const { data, error } = await sb.from(tabelle).insert(zeilen).select();
     if(error) return { neu: 0, fehler: error.message };
     ziel.push(...(data && data.length ? data : zeilen.map(z => ({ ...z, id: "tmp-" + Date.now() + Math.random() }))));
   }
-  return { neu: stellen.size, fehler: null };
+  return { neu: std.length + styles.length, fehler: null };
 }
 
 function qiOpenCreator({ kind, styleId = null, catKey = null, anchor }){
@@ -17192,16 +17274,16 @@ function qiOpenCreator({ kind, styleId = null, catKey = null, anchor }){
       ({ stdCat: state.categories, stdSub: state.subcategories, styleCat: state.styleCategories, styleSub: state.styleSubcategories })[kind].push(neu);
       qiHideToast();   // eine evtl. noch stehende Fehlermeldung weg
     }
-    // Ueberall sonst auch anlegen (ALLE + jeder Style mit eigenen Kategorien).
-    busy = true;
-    box.querySelectorAll("button, input").forEach(el => el.disabled = true);
-    const gespiegelt = await qiMirrorCategory({
-      isSub, label: vorhanden ? vorhanden.label : label,
-      parentLabel: isSub ? katLabel : null,
-      fromStyleId: style ? styleId : null
-    });
-    busy = false;
-    if(!qi) return;
+    // Neue Unterkategorie: ueberall dort auch anlegen, wo es die gleichnamige
+    // Kategorie gibt (ALLE + Styles). Kategorien selbst bleiben, wo sie sind.
+    let gespiegelt = { neu: 0, fehler: null };
+    if(isSub){
+      busy = true;
+      box.querySelectorAll("button, input").forEach(el => el.disabled = true);
+      gespiegelt = await qiMirrorSubcategory({ label: vorhanden ? vorhanden.label : label, parentLabel: katLabel, fromStyleId: style ? styleId : null });
+      busy = false;
+      if(!qi) return;
+    }
     const stilAn = d => { if(style && !d.styles.includes(style.label)) d.styles.push(style.label); };
     close(d => {
       const alt = { cat: d.category, sub: d.subcategory };
@@ -17218,12 +17300,15 @@ function qiOpenCreator({ kind, styleId = null, catKey = null, anchor }){
           const jetzt = d.styleCats[st.id];
           const war = matchStyleCatForStandard(st.id, alt.cat, alt.sub);
           if(jetzt?.cat && jetzt.cat !== NO_PICK && !(jetzt.cat === war.cat && (jetzt.sub || NO_PICK) === (war.sub || NO_PICK))) continue;
+          // Wie beim normalen Mitziehen: gibt es im Style nichts Gleichnamiges,
+          // wird er leer (und folgt beim naechsten Wechsel wieder).
           const nach = matchStyleCatForStandard(st.id, d.category, d.subcategory);
           if(nach.cat !== NO_PICK) d.styleCats[st.id] = nach;
+          else delete d.styleCats[st.id];
         }
       }
     });
-    const ueberall = gespiegelt.neu ? ` \u2013 auch ${gespiegelt.neu === 1 ? "an 1 weiteren Stelle" : `an ${gespiegelt.neu} weiteren Stellen`} (ALLE/Styles)` : "";
+    const ueberall = gespiegelt.neu ? ` \u2013 auch ${gespiegelt.neu === 1 ? "an 1 weiteren Stelle" : `an ${gespiegelt.neu} weiteren Stellen`} (ALLE/Styles mit \u201e${katLabel}\u201c)` : "";
     if(gespiegelt.fehler) qiToastError(`\u201e${label}\u201c ist angelegt, aber nicht überall: ${gespiegelt.fehler}`);
     atoast(vorhanden ? `\u201e${vorhanden.label}\u201c gab es schon \u2013 ausgewählt${ueberall}.` : `\u201e${label}\u201c angelegt${ueberall}.`);
   };
