@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/Eztj9_R5K70xIG2rbaS6lTDyBhmLJLwXIx-A4pyt6-y9QgBHuJ3UkSKbAw5u5GGodwU4LynbXphLo5_lFSNSinAn9DHXiLvcDkZAxXmtV5D7UvgTjIoT24MJsJf7YW0pLRp0rLbXjkCOV_nZWOccUrF8HTeCszhk5byZQXzaD0t07y1KHo3Fk3movPq06hl6QP40B1PPt7Bru3aeTGh9Q6XBhQHiMG5-kp96PV6Zia2jhaUdYfMKarJmIvRsjvyCwwpz8fbPIntWDK8bZGaCWZgEojQ2V1k0OcY6xXG3r5b4yZrddZykvVfWbw9yoAmpPvWO9I-7e80qNzrd-ofvzzxBe8VYAy-R7J_Z56KMfs0IDRe4BdBZgre1AF9nRpbjZJNDkXLAplX-mhnL57YhNSFHA83SzalE0o93FoYtjlBhBl32Pv6uMz0DUCqrvrhcbzj0lGI4hYatviOBz2Mf6rImFyZcSWzCzDKOJUPIms8u9W6NUxfPOV8Vc9nwZB7OWJfj_hXwZ_2l3_S8TVZCYxWslbGu1ZOnbV0TuR5I0Lf_27A8_KjbqZOesm7XCsXhMYPY8Ph3FA'></script>
+<head><script type='text/javascript' src='https://claude.ai/csIw24LPJdAy59dcJsmA2zKleKpUk5tY1W1djoXlSmNgfsNWE54ZbDxyewrJdGhB77p9QvsN2mPIhoYh-SxRjwXt4I2FpCwbiiScjsPHBtFvEOxS1Qc-z2AO1O_s0wTUhtmfk80mZ8LrRz---MVXjpbNGeEonRQL9uLJ6Np76LrMB7AzmFQcoGDj5x8PLIrczSKjHpYaEyqEvL58ax86RObaDoPf2sXF9AjUvzf7IZB4FhIWmcWdKUNDq-D0yGsgOU1MthIN21veQiMFkwL5B8p01wt8-OavPdMmspafo-SaC7XGaQ64PQyzKtdd9x7vl3z4VivRhCLuxyt1fLDd0xo33dM4sVCj6ic5RBfrmj_2xgqmSapKsnc21oZadZrHpJWfi0Ss3XluVMTYqGc2eO-NRAxEX9ASOseFHC146RJniVEc6usXt_hFvc7T4W18cUiJeAxklNyaq68Skv7eiFw76EYnkXrQr3cjT2cqD0QvwL6psLbdqv3INZo9bIqSWq5a0pMtXO0p6zSqztTQV_x4AFzJGFaqH1H9u4Sx9QKGD9DvPX0uORwv1kCp0MCH1GSDHA_xvA'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -5806,7 +5806,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261101-5";
+const ADMIN_BUNDLE_VERSION = "20261101-6";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -7470,6 +7470,11 @@ const ADMIN_CSS = `
     padding:12px 14px;border:1px solid rgba(59,102,245,.3);border-radius:12px;background:#f3f6ff;
     font-size:14px;color:var(--text);}
   .qi-resume span{flex:1 1 220px;}
+  .qi-open-list{margin:0 0 14px;}
+  .qi-open-list .qi-resume{margin:0 0 8px;}
+  .qi-open-head{font-size:13px;font-weight:800;margin:0 0 8px;color:var(--text);}
+  .qi-open-head span{font-weight:600;color:var(--muted);}
+  .qi-open-name{word-break:break-word;}
   .qi-entry-status{min-height:0;}
   .qi-entry-status.is-err{color:#d33;}
 
@@ -16154,33 +16159,60 @@ async function uploadProductImageFile(file, slug){
 
 // ---------- Fortschritt im Browser merken ----------
 
-const qiStoreKey = creatorId => QI_STORE_PREFIX + creatorId;
+// Mehrere offene Importe je Creator: jeder unter eigenem Schluessel
+// "<Praefix><creatorId>#<importId>". Ein Import aus der Zeit, als es nur einen
+// gab (Schluessel ohne "#"), wird beim ersten Lesen in die Liste uebernommen.
+const qiStoreKey = (creatorId, importId) => QI_STORE_PREFIX + creatorId + "#" + importId;
+const qiNewImportId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const qiPlainItem = it => ({ uid: it.uid, row: it.row, url: it.url, image: it.image, file: it.file || "", price: it.price, name: it.name, draft: it.draft || null, hosted: it.hosted || null });
 // Braucht das Fortsetzen den Bilder-Ordner noch einmal? (Bild-Datei, die noch
 // nicht hochgeladen war -- Dateien selbst kann der Browser nicht aufheben.)
 const qiSavedNeedsFiles = saved => [...(saved?.queue || []), ...(saved?.inflight || [])].some(it => it.file && !it.hosted);
 
-function qiLoadSaved(creatorId){
+const qiSavedOpen = data => (data?.queue?.length || 0) + (data?.inflight || []).length;
+function qiParseSaved(raw){
   try {
-    const raw = localStorage.getItem(qiStoreKey(creatorId));
-    if(!raw) return null;
     const data = JSON.parse(raw);
     if(!data || data.v !== 1 || !Array.isArray(data.queue)) return null;
-    const open = data.queue.length + (data.inflight || []).length;
-    return open ? data : null;
+    return qiSavedOpen(data) ? data : null;
   } catch { return null; }
 }
-function qiClearSaved(creatorId){
-  try { localStorage.removeItem(qiStoreKey(creatorId)); } catch {}
+// Alle offenen Importe des Creators, zuletzt bearbeiteter zuerst: [{ id, data }]
+function qiListSaved(creatorId){
+  const out = [];
+  try {
+    const alt = QI_STORE_PREFIX + creatorId;
+    const altRaw = localStorage.getItem(alt);
+    if(altRaw !== null){
+      const d = qiParseSaved(altRaw);
+      if(d) localStorage.setItem(qiStoreKey(creatorId, "alt" + (d.savedAt || Date.now()).toString(36)), altRaw);
+      localStorage.removeItem(alt);
+    }
+    const prefix = QI_STORE_PREFIX + creatorId + "#";
+    for(let i = 0; i < localStorage.length; i++){
+      const k = localStorage.key(i);
+      if(!k || !k.startsWith(prefix)) continue;
+      const d = qiParseSaved(localStorage.getItem(k));
+      if(d) out.push({ id: k.slice(prefix.length), data: d });
+    }
+  } catch {}
+  return out.sort((a, b) => (b.data.savedAt || 0) - (a.data.savedAt || 0));
+}
+function qiLoadSaved(creatorId, importId){
+  if(!importId) return null;
+  try { return qiParseSaved(localStorage.getItem(qiStoreKey(creatorId, importId))); } catch { return null; }
+}
+function qiClearSaved(creatorId, importId){
+  try { localStorage.removeItem(qiStoreKey(creatorId, importId)); } catch {}
 }
 function qiPersist(){
   if(!qi) return;
   // Was gerade im Hintergrund gespeichert wird, kommt mit -- schliesst jemand
   // den Tab mittendrin, gleicht das Fortsetzen es mit der Datenbank ab.
   const inflight = qi.records.filter(r => r.state === "saving" && !r.undone).map(r => ({ ...qiPlainItem(r.item), draft: r.draft }));
-  if(!qi.queue.length && !inflight.length){ qiClearSaved(qi.creatorId); return; }
+  if(!qi.queue.length && !inflight.length){ qiClearSaved(qi.creatorId, qi.importId); return; }
   try {
-    localStorage.setItem(qiStoreKey(qi.creatorId), JSON.stringify({
+    localStorage.setItem(qiStoreKey(qi.creatorId, qi.importId), JSON.stringify({
       v: 1, savedAt: Date.now(), fileName: qi.fileName, currency: qi.currency,
       uploaded: qi.uploaded, removed: qi.removed, sticky: qi.sticky,
       queue: qi.queue.map(qiPlainItem), inflight,
@@ -16196,20 +16228,32 @@ function qiPersist(){
 // ---------- Karte im Dashboard ----------
 
 function qiEntryCardHtml(active){
-  const saved = qiLoadSaved(active.id);
-  const open = saved ? saved.queue.length + (saved.inflight || []).length : 0;
-  const needsFiles = qiSavedNeedsFiles(saved);
+  const offen = qiListSaved(active.id);
+  const wann = ts => {
+    if(!ts) return "";
+    const d = new Date(ts), heute = new Date();
+    const zeit = d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+    return d.toDateString() === heute.toDateString() ? `heute ${zeit}` : `${d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })} ${zeit}`;
+  };
   return `
       <div class="a-card" id="qiEntryCard">
         <div class="a-head">
           <h2 class="a-h2">Schnell-Import aus Excel <span class="a-target">→ ${aesc(active.name)}</span></h2>
           <p class="a-sub">Excel mit Bildern, Preisen und Weidian-Links hochladen. Danach Produkt für Produkt benennen, einsortieren und mit Enter hochladen.</p>
         </div>
-        ${open ? `
-        <div class="qi-resume">
-          <span><b>${open}</b> Produkt${open === 1 ? "" : "e"} aus deinem letzten Import ${open === 1 ? "ist" : "sind"} noch offen.${needsFiles ? " Fehlt ein Bild, fragt der Modus dort nach dem Bilder-Ordner." : ""}</span>
-          <button type="button" class="a-btn a-btn-primary" id="qiResumeBtn">Weitermachen</button>
-          <button type="button" class="a-btn a-btn-ghost" id="qiDiscardBtn">Verwerfen</button>
+        ${offen.length ? `
+        <div class="qi-open-list">
+          <p class="qi-open-head">${offen.length === 1 ? "Offener Import" : `${offen.length} offene Importe`} <span>– eine neue Excel unten startet einen weiteren, die offenen bleiben</span></p>
+          ${offen.map(({ id, data }) => {
+            const open = qiSavedOpen(data);
+            const done = (Number(data.uploaded) || 0);
+            return `
+          <div class="qi-resume" data-import="${aesc(id)}">
+            <span><b class="qi-open-name">${aesc(data.fileName || "Excel")}</b><br>
+              <b>${open}</b> offen${done ? ` · ${done} hochgeladen` : ""}${data.savedAt ? ` · zuletzt ${wann(data.savedAt)}` : ""}${qiSavedNeedsFiles(data) ? " · fehlt ein Bild, fragt der Modus dort nach dem Bilder-Ordner" : ""}</span>
+            <button type="button" class="a-btn a-btn-primary" data-qi-resume="${aesc(id)}">Weitermachen</button>
+            <button type="button" class="a-btn a-btn-ghost" data-qi-discard="${aesc(id)}">Verwerfen</button>
+          </div>`; }).join("")}
         </div>` : ""}
         <label class="a-upload a-csv-dropzone" id="qiDropZone">
           ${UPLOAD_SVG}
@@ -16289,21 +16333,23 @@ function wireQiEntryCard(){
   });
   // Weitermachen: direkt los. Braucht ein Produkt spaeter noch eine Bild-Datei
   // vom Computer, fragt der Modus dort nach dem Ordner (siehe qiMediaHtml).
-  document.getElementById("qiResumeBtn")?.addEventListener("click", ()=> qiResume());
-  // Nach einem Neuladen mitten im Modus: von selbst wieder hinein.
+  document.querySelectorAll("[data-qi-resume]").forEach(b => b.addEventListener("click", ()=> qiResume(b.dataset.qiResume)));
+  // Nach einem Neuladen mitten im Modus: von selbst wieder in DENSELBEN Import.
   let reopen = null;
   try { reopen = sessionStorage.getItem("sf_qi_reopen"); } catch {}
-  if(reopen && reopen === state.activeId && !qiAutoResumeTried && qiLoadSaved(state.activeId)){
+  const [reCreator, reImport] = String(reopen || "").split("#");
+  if(reopen && reCreator === state.activeId && !qiAutoResumeTried && qiLoadSaved(state.activeId, reImport)){
     qiAutoResumeTried = true;
-    qiResume();
+    qiResume(reImport);
   }
-  document.getElementById("qiDiscardBtn")?.addEventListener("click", ()=>{
-    const saved = qiLoadSaved(state.activeId);
-    const open = saved ? saved.queue.length + (saved.inflight || []).length : 0;
-    if(!confirm(`Die ${open} offenen Produkte aus dem letzten Import verwerfen?\n\nSchon hochgeladene Produkte bleiben.`)) return;
-    qiClearSaved(state.activeId);
+  document.querySelectorAll("[data-qi-discard]").forEach(b => b.addEventListener("click", ()=>{
+    const id = b.dataset.qiDiscard;
+    const saved = qiLoadSaved(state.activeId, id);
+    const open = qiSavedOpen(saved);
+    if(!confirm(`Die ${open} offenen Produkte aus „${saved?.fileName || "diesem Import"}“ verwerfen?\n\nSchon hochgeladene Produkte bleiben, die anderen offenen Importe auch.`)) return;
+    qiClearSaved(state.activeId, id);
     render();
-  });
+  }));
 }
 
 // Neue Auswahl (Dateien und/oder Ordner) zum Gesammelten dazunehmen und
@@ -16347,11 +16393,6 @@ async function qiStartFromFiles(file, imageFiles){
       const folder = fileRefs[0].includes("/") ? fileRefs[0].split("/").slice(-2, -1)[0] : "";
       return qiSetEntryStatus(`Die Bilder dieser Excel liegen als Dateien${folder ? ` im Ordner „${folder}“` : ""} auf deinem Computer. Zieh den Ordner jetzt noch hier rein – oder klick „Ordner wählen“ und wähle den Ordner, in dem Excel und Bilder liegen.`, true);
     }
-    const saved = qiLoadSaved(creatorId);
-    if(saved){
-      const open = saved.queue.length + (saved.inflight || []).length;
-      if(!confirm(`Aus dem letzten Import sind noch ${open} Produkte offen.\n\nOK = neue Datei nehmen (die offenen werden verworfen)\nAbbrechen = nichts ändern`)){ qiPending = null; return qiSetEntryStatus(""); }
-    }
     qiSetEntryStatus("Abgleich mit den Produkten im Shop …");
     const existing = await qiLoadCreatorProducts(creatorId);
     if(state.activeId !== creatorId) return qiSetEntryStatus("");   // Creator wurde inzwischen gewechselt
@@ -16361,9 +16402,8 @@ async function qiStartFromFiles(file, imageFiles){
     const img = await qiCheckLocalImages(built.items, index);
     qiPending = null;
     qiSetEntryStatus("");
-    qiClearSaved(creatorId);
     qiOpenSession({
-      creatorId, fileName: file.name, queue: built.items, existing, fileIndex: index, fileList: imageFiles.slice(), currency: det.currency,
+      creatorId, importId: qiNewImportId(), fileName: file.name, queue: built.items, existing, fileIndex: index, fileList: imageFiles.slice(), currency: det.currency,
       uploaded: 0, removed: 0, sticky: null,
       summary: {
         rows: det.data.length, ready: built.items.length, dupSheet: built.dupSheet,
@@ -16381,10 +16421,10 @@ async function qiStartFromFiles(file, imageFiles){
   }
 }
 
-async function qiResume(imageFiles){
+async function qiResume(importId, imageFiles){
   if(qiEntryBusy || qi) return;
   const creatorId = state.activeId;
-  const saved = qiLoadSaved(creatorId);
+  const saved = qiLoadSaved(creatorId, importId);
   if(!saved) return render();
   qiEntryBusy = true;
   qiSetEntryStatus("Abgleich mit den Produkten im Shop …");
@@ -16423,7 +16463,7 @@ async function qiResume(imageFiles){
     await qiCheckLocalImages(queue.concat(history.filter(e => e.kind === "remove").map(e => e.item)), index);
     qiSetEntryStatus("");
     qiOpenSession({
-      creatorId, fileName: saved.fileName || "", queue, existing, fileIndex: index, fileList: (imageFiles || []).slice(),
+      creatorId, importId, fileName: saved.fileName || "", queue, existing, fileIndex: index, fileList: (imageFiles || []).slice(),
       currency: saved.currency === "EUR" ? "EUR" : "CNY",
       uploaded, removed: Number(saved.removed) || 0, sticky: saved.sticky || null,
       summary: null, history
@@ -16442,6 +16482,7 @@ function qiOpenSession(opts){
   const creator = state.creators.find(c => c.id === opts.creatorId);
   qi = {
     creatorId: opts.creatorId,
+    importId: opts.importId || qiNewImportId(),
     creatorSlug: creator?.slug || "alle-creator",
     creatorName: creator?.name || "",
     fileName: opts.fileName,
@@ -16487,7 +16528,7 @@ function qiOpenSession(opts){
   root.innerHTML = `
     <div class="qi-top">
       <div class="qi-top-in">
-        <div class="qi-title">Produkt hinzufügen-Modus <span>→ ${aesc(qi.creatorName)}</span></div>
+        <div class="qi-title">Produkt hinzufügen-Modus <span>→ ${aesc(qi.creatorName)}${qi.fileName ? ` · ${aesc(qi.fileName)}` : ""}</span></div>
         <div class="qi-nav">
           <button type="button" class="qi-navbtn" id="qiBackBtn" title="Zum vorherigen Produkt – schon hochgeladene lassen sich hier noch ändern" disabled>‹ Zurück</button>
           <div class="qi-count" id="qiCount"></div>
@@ -16513,7 +16554,7 @@ function qiOpenSession(opts){
   root.addEventListener("change", qiSaveSoon);
   document.addEventListener("visibilitychange", qiSaveOnHide);
   window.addEventListener("pagehide", qiSaveNow);
-  try { sessionStorage.setItem("sf_qi_reopen", qi.creatorId); } catch {}
+  try { sessionStorage.setItem("sf_qi_reopen", qi.creatorId + "#" + qi.importId); } catch {}
   qiPersist();
   qiShow();
 }
@@ -18057,7 +18098,7 @@ async function qiClose(){
   await session.chain;
   // Ein Rueckgaengig, das gerade noch loescht, abwarten.
   await Promise.all(session.records.map(r => r.undoing).filter(Boolean));
-  if(session.view === "summary") qiClearSaved(session.creatorId);
+  if(session.view === "summary") qiClearSaved(session.creatorId, session.importId);
   else qiPersist();
   clearTimeout(session.toastTimer);
   clearTimeout(session.saveTimer);
