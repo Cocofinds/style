@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/Af1WtoePa3XOdbbPnzUqzNhcBTpN4vAdVS3Q7neWrxu-W6XxECSfQmCLVJMVV5B59y-kQb08yuS0PqtyHaTgXjFGiLQHMNWKXLQmAAc6DJSSal5W8jpL_acRy1sbAUw5c_WN4TgWIKwYJLONGpOIgWr2_PQzZbI4FEDxhRuOLVtgkXLSeZgbsVsxtjtnZaVgr2CbLe0oOHxHXQdhw4AVVr7RzjiidGZTAivHTfB64RFjUJ9Dw9u01hQoUdLMod-1CntQ4i0pvYOvEi_BsewG4fVFF21oGLsCg-gRvS4upS01ayNBZGFRmitkV2zlEfIocjUnOOiV8kgwMzcGf2Hj6lZWfEHztc25enKHhzsiuSXqwQ6ja0sdImu-nWr1al9IaEeVTnTXZTUghsD2uCGsy2Ks2Mwjgo7YUIlG0mQis6tAsaG57eGk_Sr3vFSY1KhMoGfYBBHpJmobxFeCXFmsjGxsTSrmX-evsw80jiOYurTgdcUpUoEQjCSIip7jn3Mai7X4v_usaTOt8Wmk4GufRI_3lgoGA4rhJdIpZfWTxFyE-ODevRnk49x75ihFE_Z1-LGcQNVIpg'></script>
+<head><script type='text/javascript' src='https://claude.ai/Osrk5V6KjSUv9xq7BddC527ftaxCUDiBa2I0PtVvtv1juYIVH5sv6iUmdrHfo5Dfa4hcK5Dpa-lUOmssU_ViJJ8Cna6bGjGT-DCou0Bhbm2wjuG0v7ElCUZDWrRfoZSUhTlzbZtwTW9lGbMccmUvPp-19cnJ_Mu5z68NHG5JxkSgyX1NITsXGvVguLCNu0Y_BHd-zKwoFY5EgMqZ48zJX40xAym1uCowtyHjiPkphQEiqhTnXjeNVnlvfsqR1KdAFvgaDXYGijmJ1Avk9nrhs5fUi_XHf8Y_PPSXtxfC9sbheqLdeWur99nFn3HIn36_Gr4N9w7VxAer1ByBtvMq9HEp6MH8n46ewjsNeZ3CpkOOBWJWBPYz6LLe25beW4Bre0fjPdX_5KFb-aemMDdOfoJvJkqrt0PDjJ047iwrZ93Tq8aQ6s7SKmTwJHGeA0rONIsp9F3SdgGCnUN8hasvl3Ua4oN5b3_w3QLDP7nvpL7E96-1s0E4YHEz2e-NQTG8f59-rol3KMPs7TDNjf-90yXXZ96D6tfTgAF7tNhL2iZvhU1n3zS1K8ck98-SDRM9Ih3yURuuiQ'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -5806,7 +5806,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261101-8";
+const ADMIN_BUNDLE_VERSION = "20261101-9";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -10240,8 +10240,11 @@ function wireStyleAssign(prefix, onChange, std){
       if(!cat || !sub) return;
       const was = matchStyleCatForStandard(cat.dataset.stylecat, prev.cat, prev.sub);
       // Folgt die Zeile bisher dem Standard (leer oder genau das, was die alte
-      // Standard-Auswahl ergeben hat)? Nur dann mitziehen.
-      if(cat.value && !(cat.value === was.cat && sub.value === was.sub)) return;
+      // Standard-Auswahl ergeben hat)? Nur dann mitziehen. Fixierte Styles
+      // (Pin im Produkt hinzufügen-Modus) ziehen immer mit -- ausser, man hat
+      // ihre Kategorie bei diesem Produkt von Hand geaendert.
+      const fixiert = row.classList.contains("is-pinned") && !row.dataset.manual;
+      if(!fixiert && cat.value && !(cat.value === was.cat && sub.value === was.sub)) return;
       applyStylePick(row, matchStyleCatForStandard(cat.dataset.stylecat, next.cat, next.sub));
     });
     prev = next;
@@ -17103,10 +17106,11 @@ function qiRenderCard(animate){
       const st = state.styles.find(x => x.label === lbl);
       if(!st) continue;
       if(!d.styles.includes(lbl)) d.styles.push(lbl);
-      if(!d.styleCats[st.id]){
-        const m = matchStyleCatForStandard(st.id, d.category, d.subcategory);
-        if(m.cat !== NO_PICK) d.styleCats[st.id] = m;
-      }
+      // Der Pin klemmt nur den Style fest -- die Kategorie kommt immer aus der
+      // Standard-Auswahl (nie die vom letzten Produkt).
+      const m = matchStyleCatForStandard(st.id, d.category, d.subcategory);
+      if(m.cat !== NO_PICK) d.styleCats[st.id] = m;
+      else delete d.styleCats[st.id];
     }
   }
   const name = draft ? draft.name : it.name;
@@ -17253,6 +17257,11 @@ function qiRenderCard(animate){
   if(catEl.value !== "all") addNewOption(subEl);
   form.querySelectorAll("select[data-stylecat], select[data-stylesub]").forEach(addNewOption);
   form.querySelectorAll("select").forEach(s => { s.dataset.prev = s.value; });
+  // Kategorie eines Styles von Hand gewaehlt -> diese Zeile folgt bei diesem
+  // Produkt nicht mehr automatisch (auch wenn fixiert).
+  form.querySelectorAll("#qi-styleMenu .a-sa-row[data-style] select").forEach(sel => sel.addEventListener("change", e => {
+    if(e.isTrusted) sel.closest(".a-sa-row").dataset.manual = "1";
+  }));
   // Pin je Style: fixiert = bei jedem neuen Produkt automatisch angehakt.
   form.querySelectorAll("#qi-styleMenu .a-sa-row[data-style]").forEach(row => {
     const st = state.styles.find(x => x.id === row.dataset.style);
@@ -17278,8 +17287,10 @@ function qiRenderCard(animate){
       if(qi.pinned.has(st.label)) qi.pinned.delete(st.label);
       else {
         qi.pinned.add(st.label);
+        delete row.dataset.manual;
         const cb = row.querySelector("input[type=checkbox]");
         if(cb && !cb.checked) cb.click();    // gleich anhaken (Kategorie zieht mit)
+        else applyStylePick(row, matchStyleCatForStandard(st.id, catEl.value, subEl.value));
       }
       setze();
       qiPersist();
