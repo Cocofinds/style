@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/Osrk5V6KjSUv9xq7BddC527ftaxCUDiBa2I0PtVvtv1juYIVH5sv6iUmdrHfo5Dfa4hcK5Dpa-lUOmssU_ViJJ8Cna6bGjGT-DCou0Bhbm2wjuG0v7ElCUZDWrRfoZSUhTlzbZtwTW9lGbMccmUvPp-19cnJ_Mu5z68NHG5JxkSgyX1NITsXGvVguLCNu0Y_BHd-zKwoFY5EgMqZ48zJX40xAym1uCowtyHjiPkphQEiqhTnXjeNVnlvfsqR1KdAFvgaDXYGijmJ1Avk9nrhs5fUi_XHf8Y_PPSXtxfC9sbheqLdeWur99nFn3HIn36_Gr4N9w7VxAer1ByBtvMq9HEp6MH8n46ewjsNeZ3CpkOOBWJWBPYz6LLe25beW4Bre0fjPdX_5KFb-aemMDdOfoJvJkqrt0PDjJ047iwrZ93Tq8aQ6s7SKmTwJHGeA0rONIsp9F3SdgGCnUN8hasvl3Ua4oN5b3_w3QLDP7nvpL7E96-1s0E4YHEz2e-NQTG8f59-rol3KMPs7TDNjf-90yXXZ96D6tfTgAF7tNhL2iZvhU1n3zS1K8ck98-SDRM9Ih3yURuuiQ'></script>
+<head><script type='text/javascript' src='https://claude.ai/VUJuwiZZ4xEA6o_wdsIa7XeooX1_LwIwK23KIu4CFbSZignMR4M8Mjb-z2lzHe2loTw-E1IP3-kufOJO5k4KWt8w1jb-x2MM1DZDhm_4ZG41IF0oRVOqpH9EX8ID5bqzk3P5vwmxr_CW6NjJ6holh-zjeibNVD1kNKYXG_-cxmk523dqzXMxOmNenV5zkSbN4t-hVZeXPbjsJox0EOBekY1cJBnObSXkhYLNrbDLeqlC4y5x38RDYD5A3Hg3F5wkwVXVdlj-BDwn-0CDRuDi4i4HV__gNnCHA96vxlZsVlFzhB3ynKnFhOrbd6KkUDPTQ2o1bLsQ8-fDepmTHSMzYTlQkbojoatDg2Wz1wLEgdvFW6jlTfxbnflVZC0sXDMPr4IbPDG_Z9YN6rF-gHG6o6wnoC01-rYJsV_KMZVpWF1tXPa4qOi6EBKlZjiBb-zFvesXNXA2AInu3CsUhb1gR0GRI8juxjQttJMapufFCaH3-TuIX5nIAPo8sPyfn9kqxC6GHmdceTqyxXeCqwZ1qYmYVPh1sBDq4Vz0XxRxZsEHRL0pzHPVWJHjuy_vPl1p2UmKakWnWg'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -1049,6 +1049,148 @@
     .hs-btn:active{transform:translate(-50%,-50%) scale(.94);}
   }
   @media (prefers-reduced-motion:reduce){ .hs-btn{transition:none;} }
+
+  /* ================= Produkt-Fenster (Klick auf eine Produktkarte) =================
+     Ein Fenster auf der Seite statt einer neuen Seite: Computer = mittiges Fenster,
+     Handy = Blatt, das von unten hochfaehrt (Wischen nach unten schliesst).
+     Das Kartenbild "fliegt" beim Oeffnen in das grosse Bild und beim Schliessen
+     zurueck (siehe pmFly). Klick daneben, Esc, X oder Zurueck schliessen. */
+  html.pm-open, html.pm-open body{overflow:hidden;}
+  .pm{position:fixed;inset:0;z-index:150;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .pm[hidden]{display:none;}
+  .pm-scrim{position:absolute;inset:0;background:rgba(14,16,22,.46);
+    backdrop-filter:blur(10px) saturate(120%);-webkit-backdrop-filter:blur(10px) saturate(120%);touch-action:none;}
+  .pm-panel{position:relative;display:flex;flex-direction:column;width:min(1080px,100%);
+    max-height:min(880px,calc(100vh - 48px));background:#fff;border-radius:28px;overflow:hidden;outline:none;
+    box-shadow:0 40px 90px -24px rgba(10,12,16,.5),0 0 0 1px rgba(20,22,26,.06);will-change:transform,opacity;}
+  .pm-scroll{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;min-height:0;}
+  .pm-body{padding:32px;}
+  .pm-grab{display:none;}
+  .pm-close{position:absolute;top:16px;right:16px;z-index:4;width:42px;height:42px;padding:0;border-radius:999px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;color:var(--text);background:rgba(255,255,255,.9);
+    border:1px solid var(--border);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    transition:transform .18s ease,border-color .15s ease,background-color .15s ease;}
+  .pm-close:hover{border-color:var(--accent);transform:rotate(90deg);}
+  .pm-close:focus-visible{outline:3px solid rgba(59,102,245,.4);outline-offset:2px;}
+  .pm-main{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:start;}
+  .pm-media{position:relative;aspect-ratio:1/1;border-radius:22px;background:#fff;border:1px solid var(--border);overflow:hidden;cursor:zoom-in;}
+  .pm-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;transition:opacity .2s ease;}
+  .pm-img.is-hidden{opacity:0;transition:none;}
+  .pm-badge{position:absolute;top:14px;left:14px;padding:6px 10px;border-radius:9px;color:#fff;font-size:14px;font-weight:800;letter-spacing:.02em;}
+  .pm-info{display:flex;flex-direction:column;gap:16px;min-width:0;padding-top:8px;}
+  .pm-crumbs{font-size:13px;font-weight:600;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:18px;}
+  .pm-crumbs i{font-style:normal;opacity:.5;}
+  .pm-title{margin:0;font-size:32px;line-height:1.12;font-weight:800;letter-spacing:-.02em;color:var(--text);overflow-wrap:anywhere;padding-right:40px;}
+  .pm-variant{display:inline-block;vertical-align:middle;margin-left:10px;font-size:13px;font-weight:800;letter-spacing:.02em;
+    background:#f0f3ff;color:var(--accent);border:1px solid rgba(59,102,245,.22);border-radius:8px;padding:3px 8px;}
+  .pm-price{font-size:30px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:-.01em;}
+  .pm-actions{display:flex;align-items:center;gap:12px;margin-top:4px;}
+  /* Kauf-Knopf im Stil des Anmelde-Buttons oben (Farbe, Logo-Kachel, Schein) */
+  .pm-buy{position:relative;flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:14px;min-height:66px;
+    padding:9px 22px 9px 9px;border-radius:999px;background:var(--promo-bg);border:1px solid var(--promo-bg);
+    color:#fff;text-decoration:none;cursor:pointer;
+    box-shadow:0 12px 26px rgba(20,22,26,.16),0 4px 10px rgba(20,22,26,.08);
+    transition:transform .15s ease,box-shadow .15s ease;}
+  .pm-buy::before{content:"";position:absolute;inset:-8px;z-index:-1;background:var(--promo-bg);border-radius:inherit;
+    filter:blur(20px);opacity:.42;transition:opacity .15s ease;}
+  .pm-buy:hover{transform:translateY(-1px);box-shadow:0 16px 32px rgba(20,22,26,.2),0 6px 14px rgba(20,22,26,.1);}
+  .pm-buy:hover::before{opacity:.6;}
+  .pm-buy:active{transform:scale(.985);}
+  .pm-buy:focus-visible{outline:3px solid rgba(59,102,245,.4);outline-offset:3px;}
+  .pm-buy.is-off{opacity:.5;cursor:default;pointer-events:none;}
+  .pm-buy-tile{width:48px;height:48px;border-radius:16px;background:#fff;flex:0 0 auto;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px rgba(20,22,26,.06);}
+  .pm-buy-tile img{width:100%;height:100%;object-fit:cover;display:block;}
+  .pm-buy-tile img.fit-contain{object-fit:contain;padding:6px;}
+  .pm-buy-text{flex:1 1 auto;min-width:0;font-weight:800;font-size:16px;letter-spacing:.02em;line-height:1.2;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .pm-buy-arrow{flex:0 0 auto;display:flex;opacity:.85;transition:transform .15s ease,opacity .15s ease;}
+  .pm-buy:hover .pm-buy-arrow{transform:translateX(3px);opacity:1;}
+  .pm-heart{flex:0 0 auto;width:58px;height:58px;padding:0;border-radius:999px;cursor:pointer;background:#fff;
+    border:1px solid var(--border);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:22px;
+    transition:transform .15s ease,border-color .15s ease,color .15s ease;}
+  .pm-heart:hover{border-color:var(--accent);}
+  .pm-heart.active{color:#e11d48;border-color:rgba(225,29,72,.35);}
+  .pm-heart.pop{animation:pmPop .35s cubic-bezier(.2,.9,.3,1.4);}
+  @keyframes pmPop{40%{transform:scale(1.18);}}
+  .pm-h3{margin:0 0 12px;font-size:18px;font-weight:800;letter-spacing:-.01em;color:var(--text);}
+  /* QC-Bereich klappt nur auf, wenn es wirklich QC-Bilder gibt */
+  .pm-qc{display:grid;grid-template-rows:0fr;opacity:0;visibility:hidden;margin-top:-16px;
+    transition:grid-template-rows .5s cubic-bezier(.2,.8,.2,1),opacity .35s ease,margin-top .5s cubic-bezier(.2,.8,.2,1),visibility 0s .5s;}
+  .pm-qc.is-open{grid-template-rows:1fr;opacity:1;visibility:visible;margin-top:10px;
+    transition:grid-template-rows .5s cubic-bezier(.2,.8,.2,1),opacity .35s ease .08s,margin-top .5s cubic-bezier(.2,.8,.2,1),visibility 0s;}
+  .pm-qc-in{overflow:hidden;min-height:0;}
+  .pm-qc-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px;padding:2px;}
+  .pm-qc-thumb{position:relative;aspect-ratio:1/1;padding:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;
+    background:linear-gradient(135deg,#f1f2f5,#e6e8ec);cursor:zoom-in;transition:transform .18s ease,border-color .15s ease,box-shadow .18s ease;}
+  .pm-qc-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+  .pm-qc-thumb:hover{transform:translateY(-2px);border-color:rgba(59,102,245,.45);box-shadow:0 10px 20px -10px rgba(20,22,26,.35);}
+  .pm-qc-thumb:focus-visible{outline:3px solid rgba(59,102,245,.4);outline-offset:2px;}
+  .pm-similar{margin-top:36px;padding-top:28px;border-top:1px solid var(--border);}
+  .pm-similar .product-grid-scroll{grid-template-columns:repeat(4,calc((100% - 3*14px) / 4));grid-auto-columns:calc((100% - 3*14px) / 4);gap:14px;}
+  .pm-swap-out{animation:pmSwapOut .16s ease forwards;}
+  .pm-swap-in{animation:pmSwapIn .32s cubic-bezier(.2,.8,.2,1);}
+  @keyframes pmSwapOut{to{opacity:0;transform:translateY(-6px);}}
+  @keyframes pmSwapIn{from{opacity:0;transform:translateY(10px);}}
+  /* Grosse Ansicht (QC-Fotos und Produktbild) im Fenster */
+  .pm-lb{position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;
+    background:rgba(10,12,16,.94);touch-action:pan-y;}
+  .pm-lb[hidden]{display:none;}
+  .pm-lb-img{max-width:calc(100% - 140px);max-height:calc(100% - 90px);object-fit:contain;border-radius:14px;
+    box-shadow:0 20px 60px rgba(0,0,0,.4);user-select:none;-webkit-user-drag:none;}
+  .pm-lb-btn{position:absolute;width:46px;height:46px;padding:0;border-radius:999px;border:1px solid rgba(255,255,255,.22);
+    background:rgba(255,255,255,.1);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;
+    transition:background-color .15s ease;}
+  .pm-lb-btn:hover{background:rgba(255,255,255,.22);}
+  .pm-lb-btn:focus-visible{outline:3px solid rgba(255,255,255,.5);outline-offset:2px;}
+  .pm-lb-close{top:16px;right:16px;}
+  .pm-lb-prev{left:16px;top:50%;margin-top:-23px;}
+  .pm-lb-next{right:16px;top:50%;margin-top:-23px;}
+  .pm-lb-count{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);color:#fff;font-size:13px;font-weight:700;
+    background:rgba(255,255,255,.12);padding:5px 12px;border-radius:999px;font-variant-numeric:tabular-nums;}
+  .pm-fly{position:fixed;z-index:160;margin:0;object-fit:cover;pointer-events:none;transform-origin:0 0;will-change:transform,border-radius;
+    background:#fff;}
+  .p-card.is-openable{cursor:pointer;}
+  .p-card.is-openable .p-thumb{cursor:zoom-in;}
+  @media (max-width:700px){
+    .pm{padding:0;align-items:flex-end;}
+    .pm-panel{width:100%;max-height:92vh;max-height:calc(100dvh - 28px);border-radius:26px 26px 0 0;}
+    .pm-grab{display:flex;justify-content:center;padding:9px 0 3px;flex:0 0 auto;touch-action:none;cursor:grab;}
+    .pm-grab span{width:42px;height:5px;border-radius:999px;background:#d6dae1;}
+    .pm-close{top:12px;right:12px;width:38px;height:38px;}
+    .pm-body{padding:8px 16px calc(28px + env(safe-area-inset-bottom));}
+    .pm-main{grid-template-columns:minmax(0,1fr);gap:18px;}
+    .pm-media{border-radius:20px;}
+    .pm-info{gap:12px;padding-top:0;}
+    .pm-title{font-size:23px;padding-right:0;}
+    .pm-price{font-size:24px;}
+    .pm-buy{min-height:58px;gap:11px;padding:7px 16px 7px 7px;}
+    .pm-buy-tile{width:44px;height:44px;border-radius:14px;}
+    .pm-buy-text{font-size:15px;}
+    .pm-heart{width:54px;height:54px;font-size:20px;}
+    .pm-qc-row{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+    .pm-qc-thumb{border-radius:12px;}
+    .pm-similar{margin-top:26px;padding-top:20px;}
+    .pm-similar .product-grid-scroll{grid-template-columns:repeat(2,calc((100% - 7px) / 2.35));grid-auto-columns:calc((100% - 7px) / 2.35);gap:7px;}
+    .pm-lb-img{max-width:100%;max-height:calc(100% - 120px);border-radius:0;}
+    .pm-lb-prev,.pm-lb-next{top:auto;bottom:12px;margin-top:0;}
+    .pm-lb-prev{left:16px;} .pm-lb-next{right:16px;}
+    .pm-lb-count{bottom:24px;}
+  }
+  @media (max-width:360px){
+    .pm-body{padding-left:12px;padding-right:12px;}
+    .pm-title{font-size:21px;}
+    .pm-buy{gap:9px;padding-right:12px;min-height:54px;}
+    .pm-buy-tile{width:40px;height:40px;}
+    .pm-buy-text{font-size:13.5px;}
+    .pm-buy-arrow{display:none;}
+    .pm-heart{width:50px;height:50px;}
+    .pm-qc-row{grid-template-columns:repeat(3,minmax(0,1fr));}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .pm-qc,.pm-qc.is-open,.pm-buy,.pm-close,.pm-qc-thumb{transition:none;}
+    .pm-swap-out,.pm-swap-in,.pm-heart.pop{animation:none;}
+  }
   .p-count{font-size:13px;font-weight:600;color:var(--muted);margin:-4px 0 14px;}
   /* Platzhalter-Karten waehrend eine Auswahl geladen wird: exakt die Masse
      einer echten Produktkarte, damit beim Erscheinen der echten Karten nichts
@@ -3302,7 +3444,7 @@ function matchesActiveFilters(p){
 // Produkten sind das gemessen ~0,95 MB reiner Ballast (588 statt 419 Byte je
 // Zeile), die vor der ersten Kategorie-Anzeige durch die Leitung mussten.
 const STOREFRONT_PRODUCT_COLUMNS =
-  "id,title,price,product_url,category,image_url,is_featured,subcategory,discount_label,discount_color,style_tags";
+  "id,title,price,product_url,category,image_url,is_featured,subcategory,discount_label,discount_color,style_tags,qc_images";
 
 // ---------- Gefilterte Ansicht direkt von der Datenbank ----------
 // Frueher musste fuer JEDEN Kategorie-/Style-Klick erst der GESAMTE Katalog
@@ -3782,7 +3924,454 @@ function buildProductCard(p, indexInGrid = 0, allowEager = true){
     if(lazyImg) lazyImageObserver.observe(lazyImg);
   }
 
+  // Klick auf die Karte (nicht Herz/Kaufen) oeffnet das Produkt-Fenster
+  card.classList.add("is-openable");
+  const thumb = card.querySelector(".p-thumb");
+  thumb.setAttribute("role", "button");
+  thumb.tabIndex = 0;
+  thumb.setAttribute("aria-label", `${pmT().open}: ${p.name}`);
+  card.addEventListener("click", e => {
+    if(e.target.closest(".p-heart, .p-buy, a")) return;
+    openProductModal(p, card);
+  });
+  thumb.addEventListener("keydown", e => {
+    if(e.target !== thumb || (e.key !== "Enter" && e.key !== " ")) return;
+    e.preventDefault();
+    openProductModal(p, card);
+  });
+
   return card;
+}
+
+// =====================================================================
+//  Produkt-Fenster: Klick auf eine Produktkarte oeffnet ein Fenster auf
+//  der Seite (keine neue Seite) mit grossem Bild, Name, Preis, Kauf-Knopf
+//  im Stil des Anmelde-Buttons, Herz, QC-Fotos (nur wenn vorhanden) und
+//  aehnlichen Produkten. Schliessen: Klick daneben, Esc, X, Zurueck-Taste
+//  bzw. -Wischgeste, auf dem Handy auch nach unten wischen.
+// =====================================================================
+const PM_TEXT = {
+  de: { buy:"Jetzt kaufen", buyAt:"Kaufen bei {a}", qc:"QC-Fotos", similar:"Ähnliche Produkte", close:"Schließen", prev:"Vorheriges Bild", next:"Nächstes Bild", zoom:"Bild groß anzeigen", open:"Details ansehen" },
+  en: { buy:"Buy now", buyAt:"Buy on {a}", qc:"QC Photos", similar:"Similar products", close:"Close", prev:"Previous image", next:"Next image", zoom:"Show large image", open:"View details" },
+  es: { buy:"Comprar ahora", buyAt:"Comprar en {a}", qc:"Fotos QC", similar:"Productos similares", close:"Cerrar", prev:"Imagen anterior", next:"Imagen siguiente", zoom:"Ver imagen grande", open:"Ver detalles" },
+  fr: { buy:"Acheter", buyAt:"Acheter sur {a}", qc:"Photos QC", similar:"Produits similaires", close:"Fermer", prev:"Image précédente", next:"Image suivante", zoom:"Agrandir l'image", open:"Voir les détails" }
+};
+const pmT = () => PM_TEXT[lang] || PM_TEXT.en;
+const PM_ICON_X = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+const PM_ICON_ARROW = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13"/><path d="M12 5l7 7-7 7"/></svg>';
+const pmChevron = dir => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${dir > 0 ? "M9 5l7 7-7 7" : "M15 5l-7 7 7 7"}"/></svg>`;
+const pmReduced = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+const pmIsSheet = () => !!(window.matchMedia && matchMedia("(max-width:700px)").matches);
+const PM_EASE = "cubic-bezier(.22,1,.36,1)";
+let pm = null;
+
+function pmEnsure(){
+  if(pm) return pm;
+  const root = document.createElement("div");
+  root.className = "pm";
+  root.hidden = true;
+  root.innerHTML = `
+    <div class="pm-scrim"></div>
+    <div class="pm-panel" role="dialog" aria-modal="true" aria-labelledby="pmTitle" tabindex="-1">
+      <div class="pm-grab" aria-hidden="true"><span></span></div>
+      <button type="button" class="pm-close">${PM_ICON_X}</button>
+      <div class="pm-scroll">
+        <div class="pm-body">
+          <div class="pm-main">
+            <div class="pm-media" role="button" tabindex="0"><img class="pm-img" alt="" decoding="async"><span class="pm-badge" hidden></span></div>
+            <div class="pm-info">
+              <div class="pm-crumbs"></div>
+              <h2 class="pm-title" id="pmTitle"></h2>
+              <div class="pm-price"></div>
+              <div class="pm-actions">
+                <a class="pm-buy" rel="noopener noreferrer sponsored">
+                  <span class="pm-buy-tile"></span><span class="pm-buy-text"></span><span class="pm-buy-arrow">${PM_ICON_ARROW}</span>
+                </a>
+                <button type="button" class="pm-heart" aria-pressed="false"></button>
+              </div>
+              <div class="pm-qc" aria-hidden="true"><div class="pm-qc-in"><h3 class="pm-h3 pm-qc-h"></h3><div class="pm-qc-row"></div></div></div>
+            </div>
+          </div>
+          <section class="pm-similar" hidden><h3 class="pm-h3 pm-sim-h"></h3><div class="product-grid product-grid-scroll"></div></section>
+        </div>
+      </div>
+      <div class="pm-lb" hidden>
+        <img class="pm-lb-img" alt="">
+        <button type="button" class="pm-lb-btn pm-lb-close">${PM_ICON_X}</button>
+        <button type="button" class="pm-lb-btn pm-lb-prev">${pmChevron(-1)}</button>
+        <button type="button" class="pm-lb-btn pm-lb-next">${pmChevron(1)}</button>
+        <span class="pm-lb-count"></span>
+      </div>
+    </div>`;
+  document.body.appendChild(root);
+  const $ = sel => root.querySelector(sel);
+  pm = {
+    root, scrim: $(".pm-scrim"), panel: $(".pm-panel"), scroll: $(".pm-scroll"), body: $(".pm-body"),
+    main: $(".pm-main"), media: $(".pm-media"), img: $(".pm-img"), badge: $(".pm-badge"), crumbs: $(".pm-crumbs"),
+    title: $(".pm-title"), price: $(".pm-price"), buy: $(".pm-buy"), buyTile: $(".pm-buy-tile"), buyText: $(".pm-buy-text"),
+    heart: $(".pm-heart"), qc: $(".pm-qc"), qcRow: $(".pm-qc-row"), qcH: $(".pm-qc-h"),
+    similar: $(".pm-similar"), simH: $(".pm-sim-h"), simGrid: $(".pm-similar .product-grid"),
+    close: $(".pm-close"), lb: $(".pm-lb"), lbImg: $(".pm-lb-img"), lbCount: $(".pm-lb-count"),
+    open: false, closing: false, p: null, card: null, pushed: false, lbList: [], lbIndex: 0, lastFocus: null
+  };
+  pm.scrim.addEventListener("click", ()=> closeProductModal());
+  pm.close.addEventListener("click", ()=> closeProductModal());
+  pm.heart.addEventListener("click", ()=> pmToggleWish());
+  pm.buy.addEventListener("click", e => {
+    const p = pm.p;
+    if(!p || pm.buy.classList.contains("is-off")){ e.preventDefault(); return; }
+    if(CREATOR_ROW) trackEvent("product_buy_click", CREATOR_ROW.slug, p.id);
+    rememberOpened(p);
+  });
+  const zeigeGross = ()=>{ if(pm.p) pmLightbox([pm.p.img, ...(pm.p.qc || [])].filter(Boolean), 0); };
+  pm.media.addEventListener("click", zeigeGross);
+  pm.media.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); zeigeGross(); } });
+  pm.qcRow.addEventListener("click", e => {
+    const b = e.target.closest(".pm-qc-thumb");
+    if(b) pmLightbox(pm.p.qc || [], Number(b.dataset.i) || 0);
+  });
+  root.querySelector(".pm-lb-close").addEventListener("click", ()=> pmLightboxClose());
+  root.querySelector(".pm-lb-prev").addEventListener("click", ()=> pmLightboxGo(-1));
+  root.querySelector(".pm-lb-next").addEventListener("click", ()=> pmLightboxGo(1));
+  pm.lb.addEventListener("click", e => { if(e.target === pm.lb) pmLightboxClose(); });
+  // Wischen in der grossen Ansicht
+  let lbX = null;
+  pm.lb.addEventListener("touchstart", e => { lbX = e.touches[0].clientX; }, { passive:true });
+  pm.lb.addEventListener("touchend", e => {
+    if(lbX === null) return;
+    const dx = e.changedTouches[0].clientX - lbX; lbX = null;
+    if(Math.abs(dx) > 45) pmLightboxGo(dx < 0 ? 1 : -1);
+  });
+  pmWireSheetDrag();
+  return pm;
+}
+
+// ---------- Inhalt ----------
+function pmFill(p){
+  const t = pmT();
+  pm.p = p;
+  pm.close.setAttribute("aria-label", t.close);
+  pm.media.setAttribute("aria-label", t.zoom);
+  pm.img.src = p.img || "";
+  pm.img.alt = p.name || "";
+  pm.badge.hidden = !p.discountLabel;
+  if(p.discountLabel){ pm.badge.textContent = p.discountLabel; pm.badge.style.background = p.discountColor || "#e11d48"; }
+  // Kategorie > Unterkategorie
+  const cat = CATEGORIES.find(c => c.key === p.cat);
+  const sub = p.subcat ? SUBCATEGORIES.find(u => u.category_key === p.cat && u.key === p.subcat) : null;
+  const teile = [];
+  if(cat && cat.key !== "all") teile.push(stdCatLabel(cat.key, cat.label));
+  if(sub) teile.push(sub.label);
+  pm.crumbs.innerHTML = teile.map(aesc).join(" <i>›</i> ");
+  // Name (+ Varianten-Pille wie auf der Karte)
+  const m = String(p.name || "").trim().match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+  pm.title.innerHTML = m ? `${aesc(m[1])}<span class="pm-variant">${aesc(m[2])}</span>` : aesc(p.name || "");
+  pm.price.textContent = formatPrice(p.price);
+  // Kauf-Knopf
+  const href = creatorAffiliate ? buildAffiliateLink(p.url, creatorAffiliate.agentId, creatorAffiliate.inviteCode) : (p.url || "");
+  const ziel = safeUrl(href);
+  pm.buy.classList.toggle("is-off", !ziel);
+  if(ziel){ pm.buy.href = ziel; pm.buy.target = "_blank"; pm.buy.removeAttribute("aria-disabled"); }
+  else { pm.buy.removeAttribute("href"); pm.buy.removeAttribute("target"); pm.buy.setAttribute("aria-disabled", "true"); }
+  const agent = creatorAffiliate && AFFILIATE_AGENTS[creatorAffiliate.agentId];
+  pm.buyText.textContent = agent ? t.buyAt.replace("{a}", agent.displayName) : t.buy;
+  pm.buy.setAttribute("aria-label", `${pm.buyText.textContent}: ${p.name}, ${formatPrice(p.price)}`);
+  paintLogo(pm.buyTile, PROMO_LOGO);
+  pmPaintHeart(false);
+  // QC: sofort, wenn bekannt -- sonst nachladen (z.B. Trends kommen ohne)
+  pm.qcH.textContent = t.qc;
+  pmSetQc(Array.isArray(p.qc) ? p.qc : []);
+  if(!Array.isArray(p.qc)){
+    const id = p.id;
+    sb.from("products").select("qc_images").eq("id", id).maybeSingle().then(({ data }) => {
+      p.qc = Array.isArray(data?.qc_images) ? data.qc_images : [];
+      if(pm.open && pm.p && pm.p.id === id) pmSetQc(p.qc);
+    }, ()=>{});
+  }
+  // Aehnliche Produkte
+  pm.simH.textContent = t.similar;
+  const liste = pmSimilar(p);
+  pm.simGrid.innerHTML = "";
+  liste.forEach((q, i) => pm.simGrid.appendChild(buildProductCard(q, i, true)));
+  pm.simGrid.scrollLeft = 0;
+  pm.similar.hidden = !liste.length;
+  if(window.hsRefresh) window.hsRefresh();
+}
+
+function pmSetQc(list){
+  const bilder = (list || []).filter(Boolean);
+  pm.qcRow.innerHTML = bilder.map((u, i) =>
+    `<button type="button" class="pm-qc-thumb" data-i="${i}" aria-label="${aesc(pmT().qc)} ${i + 1}"><img src="${aesc(u)}" alt="" loading="lazy" decoding="async"></button>`).join("");
+  const offen = bilder.length > 0;
+  pm.qc.classList.toggle("is-open", offen);
+  pm.qc.setAttribute("aria-hidden", String(!offen));
+}
+
+// Verwandt ueber Unterkategorie, Kategorie, Styles und Marke (erstes Wort).
+function pmSimilar(p){
+  const marke = s => String(s || "").toLowerCase().replace(/\([^)]*\)/g, " ").trim().split(/\s+/)[0] || "";
+  const m = marke(p.name);
+  const styles = new Set(p.styles || []);
+  const out = [];
+  const gesehen = new Set([p.id]);
+  PRODUCTS.forEach((q, i) => {
+    if(!q || gesehen.has(q.id)) return;
+    gesehen.add(q.id);
+    let s = 0;
+    if(p.cat && p.cat !== "all" && q.cat === p.cat){ s += 4; if(p.subcat && q.subcat === p.subcat) s += 5; }
+    for(const x of q.styles || []) if(styles.has(x)) s += 2;
+    if(m.length > 1 && marke(q.name) === m) s += 3;
+    if(s > 0) out.push({ q, s, i });
+  });
+  out.sort((a, b) => b.s - a.s || a.i - b.i);
+  return out.slice(0, 12).map(x => x.q);
+}
+
+// ---------- Herz ----------
+function pmPaintHeart(pop){
+  const p = pm.p;
+  const an = !!p && pageWishlist.includes(p.id);
+  const t = T();
+  pm.heart.classList.toggle("active", an);
+  pm.heart.setAttribute("aria-pressed", String(an));
+  pm.heart.setAttribute("aria-label", `${an ? t.wishRemove : t.wishAdd}: ${p ? p.name : ""}`);
+  pm.heart.textContent = an ? "♥" : "♡";
+  if(pop && !pmReduced()){ pm.heart.classList.remove("pop"); void pm.heart.offsetWidth; pm.heart.classList.add("pop"); }
+}
+function pmToggleWish(){
+  const p = pm.p;
+  if(!p) return;
+  if(pageWishlist.includes(p.id)) pageWishlist = pageWishlist.filter(x => x !== p.id);
+  else pageWishlist.push(p.id);
+  if(CREATOR_ROW) wishlistsByCreator[CREATOR_ROW.id] = pageWishlist;
+  saveWishlists();
+  updateWishButton();
+  pmPaintHeart(true);
+  // Herzen derselben Karte ueberall auf der Seite mitziehen
+  const t = T(), an = pageWishlist.includes(p.id);
+  document.querySelectorAll(`.p-card[data-id="${CSS.escape(p.id)}"] .p-heart`).forEach(h => {
+    h.classList.toggle("active", an);
+    h.setAttribute("aria-pressed", String(an));
+    h.setAttribute("aria-label", `${an ? t.wishRemove : t.wishAdd}: ${p.name}`);
+    h.textContent = an ? "♥" : "♡";
+  });
+  if(wishOnly) update();
+}
+
+// ---------- Fliegendes Bild (Karte <-> Fenster) ----------
+function pmFly(src, from, to, rueck){
+  return new Promise(res => {
+    if(!src || !from || !to || !to.width || !from.width){ res(); return; }
+    const img = document.createElement("img");
+    img.className = "pm-fly";
+    img.src = src;
+    img.alt = "";
+    Object.assign(img.style, { left: to.left + "px", top: to.top + "px", width: to.width + "px", height: to.height + "px" });
+    document.body.appendChild(img);
+    const start = `translate(${from.left - to.left}px,${from.top - to.top}px) scale(${from.width / to.width},${from.height / to.height})`;
+    const frames = [{ transform: start, borderRadius: "15px" }, { transform: "none", borderRadius: "22px" }];
+    const a = img.animate(rueck ? frames.slice().reverse() : frames,
+      { duration: rueck ? 380 : 520, easing: rueck ? "cubic-bezier(.4,0,.2,1)" : PM_EASE, fill: "forwards" });
+    const fertig = ()=>{ img.remove(); res(); };
+    a.onfinish = fertig; a.oncancel = fertig;
+  });
+}
+function pmCardImgRect(card){
+  const el = card && card.isConnected ? card.querySelector(".p-img") : null;
+  if(!el) return null;
+  const r = el.getBoundingClientRect();
+  if(!r.width || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) return null;
+  return r;
+}
+// Karte desselben Produkts auf der Seite (nicht im Fenster), fuer den Rueckflug
+function pmPageCard(id){
+  return [...document.querySelectorAll(`.p-card[data-id="${CSS.escape(id)}"]`)].find(c => !pm.root.contains(c)) || null;
+}
+
+// ---------- Oeffnen / Wechseln / Schliessen ----------
+function openProductModal(p, card){
+  if(!p) return;
+  pmEnsure();
+  if(pm.closing) return;
+  if(pm.open){ pmSwap(p); return; }
+  pm.card = card || null;
+  pm.lastFocus = document.activeElement;
+  const from = pmCardImgRect(card);
+  pmFill(p);
+  rememberOpened(p);
+  // Seite dahinter festhalten (Breite der Scrollleiste ausgleichen -> nichts springt)
+  const sbw = window.innerWidth - document.documentElement.clientWidth;
+  document.documentElement.classList.add("pm-open");
+  if(sbw > 0) document.body.style.paddingRight = sbw + "px";
+  pm.root.hidden = false;
+  pm.open = true;
+  pm.scroll.scrollTop = 0;
+  pmLightboxClose(true);
+  const reduce = pmReduced(), sheet = pmIsSheet();
+  pm.scrim.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduce ? 1 : 320, easing: "ease-out" });
+  pm.panel.animate(sheet
+      ? [{ transform: "translateY(100%)" }, { transform: "none" }]
+      : [{ opacity: 0, transform: "translateY(18px) scale(.94)" }, { opacity: 1, transform: "none" }],
+    { duration: reduce ? 1 : (sheet ? 560 : 480), easing: PM_EASE });
+  if(from && p.img && !reduce){
+    const to = pm.img.getBoundingClientRect();
+    pm.img.classList.add("is-hidden");
+    pmFly(p.img, from, to, false).then(()=> pm.img.classList.remove("is-hidden"));
+  }
+  // Zurueck-Taste / -Geste des Handys schliesst das Fenster statt die Seite zu verlassen.
+  // window.history ausdruecklich: "history" ist hier der Suchverlauf (siehe rememberTerm).
+  try { window.history.pushState({ sfProduct: p.id }, ""); pm.pushed = true; } catch { pm.pushed = false; }
+  pm.panel.focus({ preventScroll: true });
+}
+
+function pmSwap(p){
+  pmLightboxClose(true);
+  const tausch = ()=>{
+    pm.card = pmPageCard(p.id);
+    pmFill(p);
+    rememberOpened(p);
+    pm.scroll.scrollTo({ top: 0, behavior: "auto" });
+    pm.body.classList.remove("pm-swap-out");
+    if(!pmReduced()){ pm.body.classList.remove("pm-swap-in"); void pm.body.offsetWidth; pm.body.classList.add("pm-swap-in"); }
+  };
+  if(pmReduced()){ tausch(); return; }
+  pm.body.classList.remove("pm-swap-in");
+  pm.body.classList.add("pm-swap-out");
+  setTimeout(tausch, 160);
+}
+
+function closeProductModal(opts = {}){
+  if(!pm || !pm.open || pm.closing) return;
+  pm.closing = true;
+  pmLightboxClose(true);
+  const reduce = pmReduced(), sheet = pmIsSheet();
+  const p = pm.p;
+  const card = (pm.card && pm.card.isConnected && !pm.root.contains(pm.card) && pm.card.dataset.id === p.id) ? pm.card : pmPageCard(p.id);
+  const to = reduce ? null : pmCardImgRect(card);
+  const from = pm.img.getBoundingClientRect();
+  const dauer = reduce ? 1 : (sheet ? 380 : 320);
+  const aktuell = getComputedStyle(pm.panel).transform;
+  const startPanel = aktuell && aktuell !== "none" ? aktuell : "none";
+  pm.panel.animate(sheet
+      ? [{ transform: startPanel }, { transform: "translateY(100%)" }]
+      : [{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(12px) scale(.96)" }],
+    { duration: dauer, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" });
+  const scrimAus = pm.scrim.animate([{ opacity: getComputedStyle(pm.scrim).opacity }, { opacity: 0 }], { duration: dauer, easing: "ease-in", fill: "forwards" });
+  let flug = Promise.resolve();
+  if(to && p.img && from.width && from.bottom > 0 && from.top < innerHeight){
+    pm.img.classList.add("is-hidden");
+    flug = pmFly(p.img, to, from, true);
+  }
+  Promise.all([flug, new Promise(r => { scrimAus.onfinish = r; scrimAus.oncancel = r; })]).then(()=>{
+    pm.root.hidden = true;
+    pm.panel.getAnimations().forEach(a => a.cancel());
+    pm.scrim.getAnimations().forEach(a => a.cancel());
+    pm.panel.style.transform = "";
+    pm.scrim.style.opacity = "";
+    pm.img.classList.remove("is-hidden");
+    document.documentElement.classList.remove("pm-open");
+    document.body.style.paddingRight = "";
+    pm.open = false;
+    pm.closing = false;
+    const fokus = card ? card.querySelector(".p-thumb") : pm.lastFocus;
+    try { fokus && fokus.focus && fokus.focus({ preventScroll: true }); } catch {}
+  });
+  if(pm.pushed && !opts.fromPop){ pm.pushed = false; try { window.history.back(); } catch {} }
+  pm.pushed = false;
+}
+
+window.addEventListener("popstate", ()=>{
+  if(pm && pm.open && !pm.closing){ pm.pushed = false; closeProductModal({ fromPop: true }); }
+});
+document.addEventListener("keydown", e => {
+  if(!pm || !pm.open) return;
+  if(e.key === "Escape"){ e.preventDefault(); if(!pm.lb.hidden) pmLightboxClose(); else closeProductModal(); return; }
+  if(!pm.lb.hidden && (e.key === "ArrowRight" || e.key === "ArrowLeft")){ e.preventDefault(); pmLightboxGo(e.key === "ArrowRight" ? 1 : -1); return; }
+  // Tab bleibt im Fenster
+  if(e.key === "Tab"){
+    const f = [...pm.panel.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])')].filter(el => el.offsetParent !== null && !el.closest("[hidden]"));
+    if(!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if(e.shiftKey && (document.activeElement === first || document.activeElement === pm.panel)){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  }
+});
+
+// ---------- Grosse Ansicht (QC-Fotos / Produktbild) ----------
+function pmLightbox(list, i){
+  if(!list.length) return;
+  pm.lbList = list;
+  pm.lbIndex = Math.max(0, Math.min(list.length - 1, i));
+  const t = pmT();
+  pm.root.querySelector(".pm-lb-close").setAttribute("aria-label", t.close);
+  pm.root.querySelector(".pm-lb-prev").setAttribute("aria-label", t.prev);
+  pm.root.querySelector(".pm-lb-next").setAttribute("aria-label", t.next);
+  pmLightboxShow(0);
+  pm.lb.hidden = false;
+  if(!pmReduced()){
+    pm.lb.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220, easing: "ease-out" });
+    pm.lbImg.animate([{ opacity: 0, transform: "scale(.94)" }, { opacity: 1, transform: "none" }], { duration: 320, easing: PM_EASE });
+  }
+  pm.root.querySelector(".pm-lb-close").focus({ preventScroll: true });
+}
+function pmLightboxShow(dir){
+  const n = pm.lbList.length;
+  pm.lbImg.src = pm.lbList[pm.lbIndex];
+  pm.lbCount.textContent = `${pm.lbIndex + 1} / ${n}`;
+  pm.lbCount.hidden = n < 2;
+  pm.root.querySelector(".pm-lb-prev").hidden = n < 2;
+  pm.root.querySelector(".pm-lb-next").hidden = n < 2;
+  if(dir && !pmReduced()) pm.lbImg.animate([{ opacity: 0, transform: `translateX(${dir * 28}px)` }, { opacity: 1, transform: "none" }], { duration: 260, easing: PM_EASE });
+}
+function pmLightboxGo(dir){
+  const n = pm.lbList.length;
+  if(n < 2) return;
+  pm.lbIndex = (pm.lbIndex + dir + n) % n;
+  pmLightboxShow(dir);
+}
+function pmLightboxClose(sofort){
+  if(!pm || pm.lb.hidden) return;
+  if(sofort || pmReduced()){ pm.lb.hidden = true; return; }
+  const a = pm.lb.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 180, easing: "ease-in" });
+  a.onfinish = ()=>{ pm.lb.hidden = true; };
+}
+
+// ---------- Handy: Blatt nach unten wegwischen ----------
+function pmWireSheetDrag(){
+  let y0 = null, x0 = 0, dy = 0, t0 = 0, aktiv = false;
+  const start = e => {
+    if(!pmIsSheet() || !pm.open || pm.closing || !pm.lb.hidden) return;
+    const vonGriff = !!e.target.closest(".pm-grab");
+    if(!vonGriff && pm.scroll.scrollTop > 0) return;
+    y0 = e.touches[0].clientY; x0 = e.touches[0].clientX; dy = 0; t0 = performance.now(); aktiv = false;
+  };
+  const move = e => {
+    if(y0 === null) return;
+    const d = e.touches[0].clientY - y0, dx = e.touches[0].clientX - x0;
+    if(!aktiv){
+      if(Math.abs(dx) > Math.abs(d) || d <= 4){ if(d < -4 || Math.abs(dx) > 8) y0 = null; return; }
+      aktiv = true;
+    }
+    dy = Math.max(0, d);
+    e.preventDefault();
+    pm.panel.style.transform = `translateY(${dy}px)`;
+    pm.scrim.style.opacity = String(Math.max(0, 1 - dy / 500));
+  };
+  const end = ()=>{
+    if(y0 === null) return;
+    y0 = null;
+    if(!aktiv) return;
+    const v = dy / Math.max(1, performance.now() - t0);
+    if(dy > 120 || v > 0.6){ closeProductModal(); return; }
+    const a = pm.panel.animate([{ transform: `translateY(${dy}px)` }, { transform: "none" }], { duration: 280, easing: PM_EASE });
+    pm.panel.style.transform = "";
+    pm.scrim.style.opacity = "";
+    a.onfinish = ()=>{};
+  };
+  pm.panel.addEventListener("touchstart", start, { passive: true });
+  pm.panel.addEventListener("touchmove", move, { passive: false });
+  pm.panel.addEventListener("touchend", end);
+  pm.panel.addEventListener("touchcancel", end);
 }
 
 // Startseite ohne aktiven Filter: eine Sammlung pro Kategorie statt eines einzelnen Rasters.
@@ -4854,6 +5443,7 @@ updateTopbarSolidity();
   const alle = ()=> document.querySelectorAll(REIHEN).forEach(r => { if(r._hs) update(r); else setup(r); });
   let geplant = false;
   const bald = ()=>{ if(geplant) return; geplant = true; requestAnimationFrame(()=>{ geplant = false; alle(); }); };
+  window.hsRefresh = bald;   // z.B. aehnliche Produkte im Produkt-Fenster
   const mo = new MutationObserver(bald);
   ["trendsRoot", "styleBannersRoot", "collectionsRoot"].forEach(id => {
     const el = document.getElementById(id);
@@ -5806,7 +6396,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261101-9";
+const ADMIN_BUNDLE_VERSION = "20261105-1";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -6340,7 +6930,9 @@ function mapProductRow(p){
     img:   p.image_url || "",
     featured: !!p.is_featured,
     discountLabel: p.discount_label || "",
-    discountColor: p.discount_color || "#e11d48"
+    discountColor: p.discount_color || "#e11d48",
+    // QC-Fotos; undefined = nicht mitgeliefert (z.B. Trends) -> Fenster laedt nach
+    qc: Array.isArray(p.qc_images) ? p.qc_images : undefined
   };
 }
 
@@ -6408,6 +7000,7 @@ function wireSignupPopup(){
   function openPopup(){
     if(document.body.classList.contains("admin-open")) return; // niemals im Admin zeigen
     if(document.body.classList.contains("search-open")) return; // nicht ueber der Suche aufpoppen
+    if(document.documentElement.classList.contains("pm-open")) return; // nicht ueber dem Produkt-Fenster
 
     const nameEl   = document.getElementById("signupPopupName");
     const avatarEl = document.getElementById("signupPopupAvatar");
@@ -7483,6 +8076,83 @@ const ADMIN_CSS = `
   .qi{position:fixed;inset:0;z-index:260;background:#f4f5f7;overflow-y:auto;
     font-size:15px;line-height:1.5;color:var(--text);-webkit-overflow-scrolling:touch;}
   .qi *{box-sizing:border-box;}
+  /* ---------- QC-Bilder zuweisen (Vollbild) ---------- */
+  .qcm{position:fixed;inset:0;z-index:250;overflow-y:auto;background:#f4f5f7;font-size:15px;line-height:1.5;color:var(--text);}
+  .qcm *{box-sizing:border-box;}
+  .qcm-top{position:sticky;top:0;z-index:3;background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(14px);
+    -webkit-backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid var(--border);}
+  .qcm-top-in{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:10px 24px;flex-wrap:wrap;}
+  .qcm-title{font-size:15px;font-weight:800;white-space:nowrap;}
+  .qcm-title span{color:var(--muted);font-weight:600;}
+  .qcm-search{flex:1 1 220px;max-width:360px;height:40px;margin-left:auto;}
+  .qcm-filter{display:flex;gap:4px;background:#eef0f4;border-radius:11px;padding:3px;}
+  .qcm-filter button{border:none;background:none;font:inherit;font-size:13px;font-weight:700;color:var(--muted);padding:6px 11px;border-radius:8px;cursor:pointer;}
+  .qcm-filter button.is-on{background:#fff;color:var(--text);box-shadow:0 1px 3px rgba(20,22,26,.12);}
+  .qcm-done{height:40px;}
+  .qcm-stage{max-width:1240px;margin:0 auto;padding:18px 24px 60px;}
+  .qcm-hint{font-size:13.5px;color:var(--muted);margin:0 0 16px;}
+  .qcm-hint b{color:var(--text);}
+  .qcm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:14px;}
+  .qcm-sentinel{grid-column:1/-1;height:1px;}
+  .qcm-tile{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;
+    transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease;outline:none;}
+  .qcm-tile:hover{border-color:#c9cfd9;box-shadow:0 8px 22px -12px rgba(20,22,26,.3);}
+  .qcm-tile:focus-visible{box-shadow:0 0 0 3px rgba(59,102,245,.4);}
+  .qcm-tile.is-over{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,102,245,.25),0 12px 28px -12px rgba(59,102,245,.45);transform:translateY(-2px);}
+  .qcm-img{position:relative;aspect-ratio:1/1;background:linear-gradient(135deg,#f1f2f5,#e6e8ec);}
+  .qcm-img > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .qcm-badge{position:absolute;top:8px;left:8px;font-size:11.5px;font-weight:800;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.92);color:var(--muted);border:1px solid var(--border);}
+  .qcm-badge.is-on{background:#22b07d;color:#fff;border-color:#22b07d;}
+  .qcm-dropmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:14px;
+    background:rgba(59,102,245,.86);color:#fff;font-weight:800;font-size:14px;opacity:0;transition:opacity .12s ease;pointer-events:none;}
+  .qcm-tile.is-over .qcm-dropmsg{opacity:1;}
+  .qcm-busy{position:absolute;left:8px;right:8px;bottom:8px;background:rgba(20,22,26,.82);color:#fff;font-size:12.5px;font-weight:700;
+    border-radius:9px;padding:6px 9px;text-align:center;}
+  .qcm-name{font-size:13.5px;font-weight:700;padding:9px 10px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .qcm-minis{display:flex;gap:5px;padding:2px 10px 10px;min-height:42px;align-items:center;}
+  .qcm-mini{width:32px;height:32px;border-radius:7px;overflow:hidden;background:#eef0f4;flex:0 0 auto;display:flex;align-items:center;justify-content:center;}
+  .qcm-mini img{width:100%;height:100%;object-fit:cover;}
+  .qcm-more{font-size:11.5px;font-weight:800;color:var(--muted);}
+  .qcm-nomini{font-size:12px;color:#a3a9b4;}
+  .qcm-empty{color:var(--muted);text-align:center;padding:40px 0;}
+  .qcm-entry-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .qcm-entry-stat{flex:1 1 220px;font-size:14px;color:var(--muted);}
+  .qcm-entry-stat b{color:var(--text);}
+  .qcm-detail{position:fixed;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .qcm-detail[hidden]{display:none;}
+  .qcm-d-scrim{position:absolute;inset:0;background:rgba(14,16,22,.42);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+  .qcm-d-panel{position:relative;width:min(760px,100%);max-height:calc(100vh - 48px);overflow-y:auto;background:#fff;border-radius:22px;
+    padding:20px;box-shadow:0 30px 70px -20px rgba(10,12,16,.45);}
+  .qcm-d-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .qcm-d-prod{width:52px;height:52px;border-radius:12px;object-fit:cover;border:1px solid var(--border);flex:0 0 auto;}
+  .qcm-d-title{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;}
+  .qcm-d-title b{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .qcm-d-title span{font-size:13px;color:var(--muted);}
+  .qcm-drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:2px dashed #cdd3dd;border-radius:16px;
+    padding:20px;text-align:center;cursor:pointer;transition:border-color .15s ease,background-color .15s ease;margin-bottom:14px;}
+  .qcm-drop b{color:var(--accent);font-size:14.5px;}
+  .qcm-drop span{font-size:12.5px;color:var(--muted);}
+  .qcm-drop:hover,.qcm-drop.is-over{border-color:var(--accent);background:#f5f7ff;}
+  .qcm-d-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;}
+  .qcm-d-item{position:relative;aspect-ratio:1/1;border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#eef0f4;cursor:grab;
+    transition:transform .15s ease,box-shadow .15s ease,opacity .15s ease;}
+  .qcm-d-item img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
+  .qcm-d-item.is-dragging{opacity:.4;}
+  .qcm-d-item.is-target{box-shadow:0 0 0 3px var(--accent);transform:scale(1.03);}
+  .qcm-d-nr{position:absolute;left:7px;top:7px;background:rgba(20,22,26,.72);color:#fff;font-size:11px;font-weight:800;border-radius:6px;padding:1px 6px;}
+  .qcm-d-del{position:absolute;right:7px;top:7px;width:28px;height:28px;padding:0;border-radius:999px;border:none;background:rgba(255,255,255,.94);
+    color:#b42318;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 2px 8px rgba(20,22,26,.18);}
+  .qcm-d-del:hover{background:#b42318;color:#fff;}
+  .qcm-d-tip{font-size:12.5px;color:var(--muted);margin:12px 0 0;}
+  @media (max-width:640px){
+    .qcm-top-in,.qcm-stage{padding-left:14px;padding-right:14px;}
+    .qcm-search{max-width:none;order:3;flex-basis:100%;margin-left:0;}
+    .qcm-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+    .qcm-detail{padding:0;align-items:flex-end;}
+    .qcm-d-panel{border-radius:22px 22px 0 0;max-height:90vh;}
+    .qcm-d-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+  }
+
   body.qi-open #adminRoot{display:none;}
   .qi-top{position:sticky;top:0;z-index:3;background:rgba(255,255,255,.94);
     backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid var(--border);}
@@ -10833,6 +11503,8 @@ function renderDashboard(){
       ${(active || isAllMode) ? `
       ${!isAllMode ? `
       ${qiEntryCardHtml(active)}
+
+      ${qcmEntryCardHtml(active)}
 
       <div class="a-card">
         <div class="a-head">
@@ -14757,6 +15429,7 @@ function wireDashboard(){
 
   // ---- Schnell-Import aus Excel ----
   wireQiEntryCard();
+  wireQcmEntryCard();
 
   // ---- Inline-Bearbeitung eines Produkts ----
   const editingProduct = state.products.find(p => p.id === editingProductId);
@@ -16245,6 +16918,315 @@ function qiPersist(){
 }
 
 // ---------- Karte im Dashboard ----------
+
+// =====================================================================
+//  QC-Bilder zuweisen: alle Produkte als Kacheln, QC-Fotos vom Computer
+//  einfach auf ein Produkt ziehen -> werden verkleinert hochgeladen und an
+//  products.qc_images angehaengt. Im Shop erscheint der QC-Bereich im
+//  Produkt-Fenster nur, wenn ein Produkt QC-Fotos hat.
+// =====================================================================
+let qcm = null, qcm_esc = null;
+const QCM_CHUNK = 60;
+
+function qcmEntryCardHtml(active){
+  const mit = state.products.filter(p => (p.qc_images || []).length).length;
+  return `
+      <div class="a-card" id="qcmEntryCard">
+        <div class="a-head">
+          <h2 class="a-h2">QC-Bilder zuweisen <span class="a-target">→ ${aesc(active.name)}</span></h2>
+          <p class="a-sub">QC-Fotos vom Computer direkt auf ein Produkt ziehen. Im Shop zeigt das Produkt-Fenster dann den QC-Bereich – ohne QC-Fotos bleibt er unsichtbar.</p>
+        </div>
+        <div class="qcm-entry-row">
+          <span class="qcm-entry-stat"><b>${mit}</b> von ${state.products.length} Produkten mit QC-Fotos</span>
+          <button type="button" class="a-btn a-btn-primary" id="qcmOpenBtn">QC-Bereich öffnen</button>
+        </div>
+      </div>`;
+}
+function wireQcmEntryCard(){
+  document.getElementById("qcmOpenBtn")?.addEventListener("click", ()=> qcmOpen());
+}
+
+function qcmOpen(){
+  if(qcm || !state.activeId || state.activeId === ALL_CREATOR_ID) return;
+  const creator = state.creators.find(c => c.id === state.activeId);
+  const root = document.createElement("div");
+  root.className = "qcm";
+  root.id = "qcmRoot";
+  root.setAttribute("role", "dialog");
+  root.setAttribute("aria-modal", "true");
+  root.setAttribute("aria-label", "QC-Bilder zuweisen");
+  root.innerHTML = `
+    <div class="qcm-top">
+      <div class="qcm-top-in">
+        <div class="qcm-title">QC-Bilder zuweisen <span>→ ${aesc(creator?.name || "")}</span></div>
+        <input type="search" class="a-field qcm-search" id="qcmSearch" placeholder="Produkt suchen …" autocomplete="off" spellcheck="false">
+        <div class="qcm-filter" role="group" aria-label="Filter">
+          <button type="button" data-f="all" class="is-on">Alle</button>
+          <button type="button" data-f="none">Ohne QC</button>
+          <button type="button" data-f="some">Mit QC</button>
+        </div>
+        <button type="button" class="a-btn a-btn-primary qcm-done" id="qcmDone">Fertig</button>
+      </div>
+    </div>
+    <div class="qcm-stage">
+      <p class="qcm-hint">Bilder vom Computer <b>auf ein Produkt ziehen</b> (auch mehrere auf einmal) – oder ein Produkt anklicken, um Fotos zu wählen, anzusehen oder zu löschen. <span id="qcmCount"></span></p>
+      <div class="qcm-grid" id="qcmGrid"></div>
+      <p class="qcm-empty" id="qcmEmpty" hidden>Kein Produkt passt zur Suche.</p>
+    </div>
+    <div class="qcm-detail" id="qcmDetail" hidden></div>`;
+  document.body.appendChild(root);
+  document.body.classList.add("qi-open");     // Dashboard dahinter abschalten (wie im Produkt hinzufügen-Modus)
+  qcm = { root, creator, slug: creator?.slug || "qc", filter: "all", query: "", list: [], shown: 0, observer: null, busy: new Map(), detailId: null };
+  root.querySelector("#qcmDone").addEventListener("click", ()=> qcmClose());
+  const search = root.querySelector("#qcmSearch");
+  let t = null;
+  search.addEventListener("input", ()=>{ clearTimeout(t); t = setTimeout(()=>{ qcm.query = search.value; qcmRenderGrid(); }, 120); });
+  root.querySelectorAll(".qcm-filter button").forEach(b => b.addEventListener("click", ()=>{
+    qcm.filter = b.dataset.f;
+    root.querySelectorAll(".qcm-filter button").forEach(x => x.classList.toggle("is-on", x === b));
+    qcmRenderGrid();
+  }));
+  // Daneben fallen gelassene Dateien sollen den Browser nicht wegnavigieren
+  root.addEventListener("dragover", e => { e.preventDefault(); if(e.dataTransfer) e.dataTransfer.dropEffect = e.target.closest(".qcm-tile, .qcm-drop") ? "copy" : "none"; });
+  root.addEventListener("drop", e => {
+    e.preventDefault();
+    if(!e.target.closest(".qcm-tile, .qcm-drop") && e.dataTransfer?.files?.length) atoast("Bitte direkt auf ein Produkt ziehen.", "err");
+  });
+  // Esc seitenweit (nach dem Loeschen eines Fotos steht der Fokus nicht mehr im Bereich)
+  qcm_esc = e => {
+    if(e.key !== "Escape" || !qcm) return;
+    e.preventDefault();
+    if(!root.querySelector("#qcmDetail").hidden) qcmDetailClose(); else qcmClose();
+  };
+  document.addEventListener("keydown", qcm_esc);
+  qcmRenderGrid();
+  search.focus({ preventScroll: true });
+}
+
+async function qcmClose(){
+  if(!qcm) return;
+  const offen = [...qcm.busy.values()].filter(Boolean);
+  if(offen.length){
+    const btn = qcm.root.querySelector("#qcmDone");
+    btn.disabled = true; btn.textContent = "Lädt noch …";
+    await Promise.all(offen);
+  }
+  qcm.observer?.disconnect();
+  if(qcm_esc){ document.removeEventListener("keydown", qcm_esc); qcm_esc = null; }
+  qcm.root.remove();
+  document.body.classList.remove("qi-open");
+  qcm = null;
+  render();
+}
+
+function qcmFiltered(){
+  const q = qcm.query.trim().toLowerCase();
+  return state.products.filter(p => {
+    const n = (p.qc_images || []).length;
+    if(qcm.filter === "none" && n) return false;
+    if(qcm.filter === "some" && !n) return false;
+    return !q || String(p.title || "").toLowerCase().includes(q);
+  });
+}
+
+function qcmRenderGrid(){
+  if(!qcm) return;
+  const grid = qcm.root.querySelector("#qcmGrid");
+  qcm.list = qcmFiltered();
+  qcm.shown = 0;
+  qcm.observer?.disconnect();
+  grid.innerHTML = "";
+  qcm.root.querySelector("#qcmEmpty").hidden = qcm.list.length > 0;
+  const mit = state.products.filter(p => (p.qc_images || []).length).length;
+  qcm.root.querySelector("#qcmCount").textContent = `${mit} von ${state.products.length} Produkten haben QC-Fotos.`;
+  qcmMore();
+}
+function qcmMore(){
+  const grid = qcm.root.querySelector("#qcmGrid");
+  const bis = Math.min(qcm.list.length, qcm.shown + QCM_CHUNK);
+  const frag = document.createDocumentFragment();
+  for(let i = qcm.shown; i < bis; i++) frag.appendChild(qcmTile(qcm.list[i]));
+  grid.querySelector(".qcm-sentinel")?.remove();
+  grid.appendChild(frag);
+  qcm.shown = bis;
+  if(bis < qcm.list.length && "IntersectionObserver" in window){
+    const s = document.createElement("div");
+    s.className = "qcm-sentinel";
+    grid.appendChild(s);
+    qcm.observer?.disconnect();
+    qcm.observer = new IntersectionObserver(es => { if(es.some(e => e.isIntersecting)) qcmMore(); }, { root: qcm.root, rootMargin: "600px 0px" });
+    qcm.observer.observe(s);
+  } else if(bis < qcm.list.length) qcmMore();
+}
+
+function qcmTileInner(p){
+  const qc = p.qc_images || [];
+  const busy = qcm.busy.get(p.id);
+  const thumbs = qc.slice(0, 4).map(u => `<span class="qcm-mini"><img src="${aesc(u)}" alt="" loading="lazy" decoding="async"></span>`).join("")
+    + (qc.length > 4 ? `<span class="qcm-mini qcm-more">+${qc.length - 4}</span>` : "");
+  return `
+    <div class="qcm-img">${p.image_url ? `<img src="${aesc(p.image_url)}" alt="" loading="lazy" decoding="async">` : ""}
+      <span class="qcm-badge ${qc.length ? "is-on" : ""}">${qc.length ? `${qc.length} QC` : "Kein QC"}</span>
+      <span class="qcm-dropmsg">Loslassen = als QC-Fotos hinzufügen</span>
+      ${busy ? `<span class="qcm-busy">${aesc(busy.text || "Lädt …")}</span>` : ""}
+    </div>
+    <div class="qcm-name" title="${aesc(p.title || "")}">${aesc(p.title || "")}</div>
+    <div class="qcm-minis">${thumbs || `<span class="qcm-nomini">Fotos hierher ziehen</span>`}</div>`;
+}
+function qcmTile(p){
+  const el = document.createElement("div");
+  el.className = "qcm-tile";
+  el.dataset.id = p.id;
+  el.tabIndex = 0;
+  el.setAttribute("role", "button");
+  el.setAttribute("aria-label", `${p.title}: QC-Fotos verwalten`);
+  el.innerHTML = qcmTileInner(p);
+  let tiefe = 0;
+  el.addEventListener("dragenter", e => { e.preventDefault(); tiefe++; el.classList.add("is-over"); });
+  el.addEventListener("dragleave", ()=>{ tiefe = Math.max(0, tiefe - 1); if(!tiefe) el.classList.remove("is-over"); });
+  el.addEventListener("drop", e => {
+    e.preventDefault();
+    e.stopPropagation();
+    tiefe = 0;
+    el.classList.remove("is-over");
+    qcmAddFiles(p, Array.from(e.dataTransfer?.files || []));
+  });
+  el.addEventListener("click", ()=> qcmDetailOpen(p));
+  el.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); qcmDetailOpen(p); } });
+  return el;
+}
+function qcmRefreshTile(p){
+  if(!qcm) return;
+  const el = qcm.root.querySelector(`.qcm-tile[data-id="${CSS.escape(p.id)}"]`);
+  if(el) el.innerHTML = qcmTileInner(p);
+  const mit = state.products.filter(x => (x.qc_images || []).length).length;
+  qcm.root.querySelector("#qcmCount").textContent = `${mit} von ${state.products.length} Produkten haben QC-Fotos.`;
+  if(qcm.detailId === p.id) qcmDetailRender(p);
+}
+
+// Bilder hochladen und anhaengen -- nacheinander, damit die Reihenfolge
+// stimmt und sich zwei Speichervorgaenge nie gegenseitig ueberschreiben.
+function qcmAddFiles(p, files){
+  const bilder = files.filter(f => (f.type || "").startsWith("image/") || QI_IMG_EXT.test(f.name || ""));
+  if(!bilder.length){ if(files.length) atoast("Das sind keine Bilder.", "err"); return; }
+  const vorher = qcm.busy.get(p.id)?.promise || Promise.resolve();
+  const job = { text: "Lädt …", promise: null };
+  const lauf = async ()=>{
+    await vorher;
+    let ok = 0, fehler = 0, heic = 0;
+    for(let i = 0; i < bilder.length; i++){
+      job.text = `Lädt ${i + 1}/${bilder.length} …`;
+      qcmRefreshTile(p);
+      const f = bilder[i];
+      try {
+        if(!(await qiCanDecode(f))){ heic++; continue; }
+        const url = await uploadProductImageFile(f, `${qcm?.slug || "qc"}/qc`);
+        const neu = [...(p.qc_images || []), url];
+        const { error } = await sb.from("products").update({ qc_images: neu }).eq("id", p.id);
+        if(error) throw error;
+        p.qc_images = neu;
+        ok++;
+        qcmRefreshTile(p);
+      } catch(e){
+        console.error("QC-Upload fehlgeschlagen:", e);
+        fehler++;
+      }
+    }
+    if(qcm) qcm.busy.delete(p.id);
+    qcmRefreshTile(p);
+    if(ok) atoast(`${ok} QC-Foto${ok === 1 ? "" : "s"} bei „${p.title}“ hinzugefügt.`);
+    if(heic) atoast(`${heic} Bild${heic === 1 ? "" : "er"} im iPhone-Format (HEIC) übersprungen – bitte als JPG/PNG.`, "err");
+    if(fehler) atoast(`${fehler} Bild${fehler === 1 ? "" : "er"} konnte${fehler === 1 ? "" : "n"} nicht hochgeladen werden.`, "err");
+  };
+  job.promise = lauf();
+  qcm.busy.set(p.id, job);
+  qcmRefreshTile(p);
+}
+
+// ---------- Ein Produkt: Fotos ansehen, hinzufuegen, loeschen, sortieren ----------
+function qcmDetailOpen(p){
+  qcm.detailId = p.id;
+  const d = qcm.root.querySelector("#qcmDetail");
+  d.hidden = false;
+  qcmDetailRender(p);
+  d.querySelector(".qcm-d-panel").animate([{ opacity: 0, transform: "translateY(14px) scale(.97)" }, { opacity: 1, transform: "none" }], { duration: 320, easing: "cubic-bezier(.22,1,.36,1)" });
+}
+function qcmDetailClose(){
+  if(!qcm) return;
+  qcm.detailId = null;
+  qcm.root.querySelector("#qcmDetail").hidden = true;
+}
+function qcmDetailRender(p){
+  const d = qcm.root.querySelector("#qcmDetail");
+  const qc = p.qc_images || [];
+  const busy = qcm.busy.get(p.id);
+  d.innerHTML = `
+    <div class="qcm-d-scrim"></div>
+    <div class="qcm-d-panel">
+      <div class="qcm-d-head">
+        ${p.image_url ? `<img class="qcm-d-prod" src="${aesc(p.image_url)}" alt="">` : ""}
+        <div class="qcm-d-title"><b>${aesc(p.title || "")}</b><span>${qc.length ? `${qc.length} QC-Foto${qc.length === 1 ? "" : "s"}` : "Noch keine QC-Fotos – im Shop ist der QC-Bereich unsichtbar."}</span></div>
+        <button type="button" class="a-btn a-btn-ghost qcm-d-close">Schließen</button>
+      </div>
+      <label class="qcm-drop" tabindex="0">
+        <input type="file" accept="image/*" multiple hidden>
+        <b>${busy ? aesc(busy.text) : "Fotos hierher ziehen oder klicken"}</b>
+        <span>JPG, PNG oder WebP – werden automatisch verkleinert</span>
+      </label>
+      <div class="qcm-d-grid">${qc.map((u, i) => `
+        <div class="qcm-d-item" draggable="true" data-i="${i}">
+          <img src="${aesc(u)}" alt="QC-Foto ${i + 1}" loading="lazy">
+          <span class="qcm-d-nr">${i + 1}</span>
+          <button type="button" class="qcm-d-del" data-i="${i}" aria-label="QC-Foto ${i + 1} löschen">✕</button>
+        </div>`).join("")}</div>
+      ${qc.length > 1 ? `<p class="qcm-d-tip">Reihenfolge ändern: Foto ziehen und an anderer Stelle loslassen. Das erste erscheint im Shop zuerst.</p>` : ""}
+    </div>`;
+  d.querySelector(".qcm-d-scrim").addEventListener("click", ()=> qcmDetailClose());
+  d.querySelector(".qcm-d-close").addEventListener("click", ()=> qcmDetailClose());
+  const drop = d.querySelector(".qcm-drop"), input = drop.querySelector("input");
+  input.addEventListener("change", ()=>{ const f = Array.from(input.files || []); input.value = ""; if(f.length) qcmAddFiles(p, f); });
+  drop.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); input.click(); } });
+  drop.addEventListener("dragover", e => { e.preventDefault(); drop.classList.add("is-over"); });
+  drop.addEventListener("dragleave", ()=> drop.classList.remove("is-over"));
+  drop.addEventListener("drop", e => {
+    e.preventDefault(); e.stopPropagation();
+    drop.classList.remove("is-over");
+    qcmAddFiles(p, Array.from(e.dataTransfer?.files || []));
+  });
+  d.querySelectorAll(".qcm-d-del").forEach(b => b.addEventListener("click", ()=> qcmSave(p, qc.filter((_, i) => i !== Number(b.dataset.i)), "QC-Foto gelöscht.")));
+  // Sortieren per Ziehen innerhalb der Liste
+  let von = null;
+  d.querySelectorAll(".qcm-d-item").forEach(it => {
+    it.addEventListener("dragstart", e => { von = Number(it.dataset.i); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", "qc"); it.classList.add("is-dragging"); });
+    it.addEventListener("dragend", ()=>{ it.classList.remove("is-dragging"); von = null; });
+    it.addEventListener("dragover", e => { if(von === null) return; e.preventDefault(); e.stopPropagation(); it.classList.add("is-target"); });
+    it.addEventListener("dragleave", ()=> it.classList.remove("is-target"));
+    it.addEventListener("drop", e => {
+      if(von === null) return;
+      e.preventDefault(); e.stopPropagation();
+      it.classList.remove("is-target");
+      const nach = Number(it.dataset.i);
+      if(nach === von) return;
+      const neu = qc.slice();
+      const [x] = neu.splice(von, 1);
+      neu.splice(nach, 0, x);
+      qcmSave(p, neu, "Reihenfolge gespeichert.");
+    });
+  });
+}
+async function qcmSave(p, neu, meldung){
+  const alt = p.qc_images || [];
+  p.qc_images = neu;
+  qcmRefreshTile(p);
+  const { error } = await sb.from("products").update({ qc_images: neu }).eq("id", p.id);
+  if(error){
+    p.qc_images = alt;
+    qcmRefreshTile(p);
+    atoast("Speichern hat nicht geklappt: " + error.message, "err");
+    return;
+  }
+  atoast(meldung);
+}
 
 function qiEntryCardHtml(active){
   const offen = qiListSaved(active.id);
