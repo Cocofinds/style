@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/Ra6stLgXKNienco7QnbaYodDZXImzdQY9xKJfoZAqRG781TR7pXemElPsGMnkrkfcBlvt_QgUyYo1mzes3uFfO6svucjNr-6aDU7NlaSIJSTIHtLM4kJ4GRYCQ5CQLF8Tw4p8AkqZBC_yp81P8F2tBnA601ENjrQpkg_aTGxESa7W52cIXvx5h7-fC_SYfCprZ4KNgOgB14xXOBxtq8oEJGXs5jjtxWsaG1eM2L__AkuZIIPCxxtZ49y-bhhIjOH-UjVVBex38UmE2hHV3VUB1rIAlOpIWCGVkDflsnKrEzm1-64ZQM7oBnm5YtPn2cYClu4eqgEwWSK4xSr7-fx0CU7C9nXC5Qw4IEo2G6MzisjsKTYZkkuXrBUO5_pbnbULYp6OLzmrE4u-me-IgNedi0SsZR84dYvL3k6PevJH2-mU7IWytnwJOS75GTI9dBcl8gkPJDwnPSSsJRniserXB_H6Q50pe3yu5lFCc32lwp-03RCX6mCYo-XmdblKMT940VoW4JTA0YZTFHBoCYaKNWPYplw8AJm4rtJI2VCe0FUjMVk4iPRXvag6ULaBINRpd4vFgBvMw'></script>
+<head><script type='text/javascript' src='https://claude.ai/zk6EA9N7JLzztaIegDhY73BD2Be-abURW-3cdQhxNKgGmDuYjbG_2Vo42MeHE2WY1z0-wjzt3yJ1UHu_k8umcAVhXsVySGKno_fFCSd_-hNfw-4eHtWDpVGQ2lPQBP8gcJgHXOF6QD3VdvW4Cgv-e15qv90MY24h4NcQNgFAZUlR3U1X-a4mp2a7ejN9Y594eJ-rEwzRL9fCQcmNHhWaaYi2UyX4U9EQovDt7p9PlXTO1jX2PbkhUhcvqOeXqrfZaNrD6CwfPGiXVvHEeS74CmL_wTSWUsdhiG5cHeUbb_L-m4esREbXvhA-RRr2jByZXhWaCAkOOcth7nB6OcXRNBZcSLz2Uh8nGI_6cAwY7gxeG-YSLKCHUuzz7x5nOFUHXtP-LNFQW5QEGLBwtx-sWlZ32eQ_92PWakmbmY0lbrJSm2iEUtdUfSAmbQFu0iPzt_5DuYzWQO5R0Lm0OqJxZTsroLeyBbI3vctJVxQxHJIs3tETdLMBDH5_VN2kl7GvUJvcDm7XYphm7EQQMz28E2_nslBV9gQ-gqJoWGjzA4AWAusPbcU9NNOPRhCSNoORj7r2beVm4Q'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -54,6 +54,16 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=2">
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png?v=2">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+<!-- Home-Bildschirm-App: noetig fuer Push-Nachrichten auf dem iPhone (iOS 16.4+
+     zeigt Web-Push nur fuer Seiten, die als App auf dem Home-Bildschirm liegen).
+     Ohne start_url: die App startet auf der Seite, auf der sie hinzugefuegt wurde
+     (z.B. /cocofinds). scope "/" haelt alle Seiten -- auch /?sf=orders aus einer
+     Mitteilung -- in der App statt in Safari. -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="StyleFinder">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
   :root{
     --bg:#f7f8fa; --card:#ffffff; --border:#e6e8ec;
@@ -1088,17 +1098,19 @@
   /* Kauf-Knopf: eine Pille im Stil des Anmelde-Buttons oben (Farbe, Logo-
      Kachel, Schein), rechts ein abgetrennter kleiner Teil zum Kopieren des
      Kauf-Links. Daneben der runde Teilen-Knopf. */
+  /* Schwarz (Wunsch): unabhaengig von der Promo-Farbe des Creators, Schrift weiss,
+     Logo-Kreis bleibt weiss. Weicher dunkler Schein statt farbigem Leuchten. */
   .pm-buy-group{position:relative;flex:1 1 auto;min-width:0;display:flex;align-items:stretch;min-height:66px;border-radius:999px;
-    background:var(--promo-bg);box-shadow:0 12px 26px rgba(20,22,26,.16),0 4px 10px rgba(20,22,26,.08);
+    background:#121316;box-shadow:0 12px 26px rgba(20,22,26,.22),0 4px 10px rgba(20,22,26,.12);
     transition:transform .15s ease,box-shadow .15s ease;}
-  .pm-buy-group::before{content:"";position:absolute;inset:-8px;z-index:-1;background:var(--promo-bg);border-radius:inherit;
-    filter:blur(20px);opacity:.4;transition:opacity .15s ease;pointer-events:none;}
-  .pm-buy-group:hover{box-shadow:0 16px 32px rgba(20,22,26,.2),0 6px 14px rgba(20,22,26,.1);}
-  .pm-buy-group:hover::before{opacity:.55;}
+  .pm-buy-group::before{content:"";position:absolute;inset:-6px;z-index:-1;background:#121316;border-radius:inherit;
+    filter:blur(18px);opacity:.18;transition:opacity .15s ease;pointer-events:none;}
+  .pm-buy-group:hover{box-shadow:0 16px 32px rgba(20,22,26,.28),0 6px 14px rgba(20,22,26,.14);}
+  .pm-buy-group:hover::before{opacity:.26;}
   .pm-buy{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:13px;padding:9px 18px 9px 9px;border-radius:999px 0 0 999px;
     color:#fff;text-decoration:none;cursor:pointer;transition:background-color .15s ease;}
-  .pm-buy:hover{background:rgba(255,255,255,.08);}
-  .pm-buy:active{background:rgba(0,0,0,.08);}
+  .pm-buy:hover{background:rgba(255,255,255,.09);}
+  .pm-buy:active{background:rgba(255,255,255,.04);}
   .pm-buy:focus-visible,.pm-buy-copy:focus-visible,.pm-share:focus-visible,.pm-heart:focus-visible{outline:3px solid rgba(59,102,245,.45);outline-offset:3px;}
   .pm-buy.is-off{opacity:.55;cursor:default;pointer-events:none;}
   .pm-buy-tile{width:48px;height:48px;border-radius:999px;background:#fff;flex:0 0 auto;overflow:hidden;
@@ -1109,9 +1121,9 @@
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .pm-buy-copy{flex:0 0 64px;position:relative;display:flex;align-items:center;justify-content:center;padding:0;border:none;
     border-radius:0 999px 999px 0;background:none;color:#fff;cursor:pointer;transition:background-color .15s ease;}
-  .pm-buy-copy::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:1px;background:rgba(255,255,255,.38);}
+  .pm-buy-copy::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:1px;background:rgba(255,255,255,.26);}
   .pm-buy-copy:hover{background:rgba(255,255,255,.1);}
-  .pm-buy-copy:active{background:rgba(0,0,0,.1);}
+  .pm-buy-copy:active{background:rgba(255,255,255,.05);}
   .pm-buy-copy.is-done svg{animation:pmPop .35s cubic-bezier(.2,.9,.3,1.4);}
   .pm-buy-copy[hidden]{display:none;}
   .pm-buy-group:has(.pm-buy-copy[hidden]) .pm-buy{border-radius:999px;}
@@ -1458,6 +1470,24 @@
     body.promo-bar-open .site-footer{
       padding-bottom:calc(28px + 78px + env(safe-area-inset-bottom));}
   }
+  /* ---------- Bestell-Hinweis in der offenen App (Push kam an, waehrend man drin ist) ---------- */
+  .sf-ob{position:fixed;top:calc(10px + env(safe-area-inset-top));left:50%;z-index:2147483000;
+    width:min(420px, calc(100% - 24px));display:flex;gap:12px;align-items:center;padding:12px 14px;
+    border:0;border-radius:18px;background:rgba(255,255,255,.97);color:var(--text);font:inherit;text-align:left;cursor:pointer;
+    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+    box-shadow:0 14px 40px rgba(20,22,26,.18),0 0 0 1px rgba(20,22,26,.06);
+    transform:translate(-50%,calc(-100% - 24px - env(safe-area-inset-top)));visibility:hidden;
+    transition:transform .5s cubic-bezier(.2,.9,.25,1.12),visibility 0s linear .5s;}
+  .sf-ob.is-in{transform:translate(-50%,0);visibility:visible;transition:transform .5s cubic-bezier(.2,.9,.25,1.12),visibility 0s;}
+  .sf-ob-ic{flex:0 0 42px;height:42px;border-radius:13px;background:var(--accent);display:grid;place-items:center;font-size:21px;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);}
+  .sf-ob-ic.has-img{background:#fff;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(20,22,26,.08);}
+  .sf-ob-ic img{width:100%;height:100%;object-fit:cover;display:block;}
+  .sf-ob-tx{display:flex;flex-direction:column;min-width:0;font-size:13.5px;line-height:1.3;}
+  .sf-ob-tx b{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sf-ob-amt{font-weight:600;color:var(--accent);}
+  .sf-ob-sub{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  @media (prefers-reduced-motion: reduce){ .sf-ob,.sf-ob.is-in{transition:none;} }
 </style>
 </head>
 <body>
@@ -6593,7 +6623,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261105-2";
+const ADMIN_BUNDLE_VERSION = "20261105-3";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -6642,9 +6672,12 @@ function failAdminLoading(){
   document.getElementById("adminLoadingRetry").hidden = false;
 }
 
-async function openAdmin(){
+// opts.view: gleich eine bestimmte Ansicht zeigen (z.B. "revenue" nach
+// Tippen auf eine Bestell-Mitteilung). adminView steht in admin.js.
+async function openAdmin(opts){
+  const view = opts && opts.view;
   // Schon geladen (zweites Oeffnen in derselben Sitzung)? Dann ohne Umweg.
-  if(typeof adminEntry === "function"){ adminEntry(); return; }
+  if(typeof adminEntry === "function"){ if(view) adminView = view; adminEntry(); return; }
   showAdminLoading();
   try {
     await loadAdminBundle();
@@ -6659,6 +6692,7 @@ async function openAdmin(){
     return;
   }
   finishAdminLoading();
+  if(view) adminView = view;
   adminEntry();
 }
 
@@ -6689,6 +6723,180 @@ function safeUrl(u){
   if(/^[a-z][a-z0-9+.-]*:/i.test(s)) return "";   // andere Schemata (javascript:, data:, ...)
   return s;   // relative/schema-lose Links (z.B. "#", "/x") bleiben erlaubt
 }
+
+// ---------- Bestell-Push: Mitteilung antippen, Ton + Hinweis in der offenen App ----------
+// Der Service Worker (sw.js) zeigt jede Bestellung als Mitteilung. Tippt man sie
+// an, oeffnet sich der Umsatz-Bereich; ist die App gerade offen, kommt zusaetzlich
+// ein eigener Ton und ein Hinweis oben. (Den Ton der Mitteilung selbst legt iOS
+// fest -- eigene Toene erlaubt Apple fuer Web-Apps nicht.)
+const SF_PUSH_FLAG = "sf_push_on";   // gesetzt, sobald auf diesem Geraet Push aktiviert wurde
+function sfPushOn(){ try { return localStorage.getItem(SF_PUSH_FLAG) === "1"; } catch { return false; } }
+
+function sfOpenOrders(){
+  if(document.body.classList.contains("search-open")) closeSearch();
+  openAdmin({ view: "revenue" });
+}
+
+// Aufruf ueber eine Mitteilung (/?sf=orders): Parameter entfernen, damit ein
+// Neuladen nicht wieder in den Umsatz springt. true = es war ein solcher Aufruf.
+function sfTakeOrdersLaunch(){
+  try {
+    const u = new URL(location.href);
+    if(u.searchParams.get("sf") !== "orders") return false;
+    u.searchParams.delete("sf");
+    window.history.replaceState(window.history.state, "", u.pathname + u.search + u.hash);
+    return true;
+  } catch { return false; }
+}
+
+// iOS spielt Web-Audio erst nach einer Beruehrung ab -- deshalb beim ersten
+// Tippen still "aufwecken" (nur auf Geraeten mit aktiviertem Push).
+let sfAudio = null;
+function sfAudioUnlock(){
+  if(!sfPushOn()) return;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return;
+    if(!sfAudio){
+      sfAudio = new AC();
+      const b = sfAudio.createBuffer(1, 1, 22050), src = sfAudio.createBufferSource();
+      src.buffer = b; src.connect(sfAudio.destination); src.start(0);
+    }
+    if(sfAudio.state !== "running") sfAudio.resume().catch(()=>{});
+    sfLoadOrderSound();   // Bestell-Ton schon jetzt laden, damit er sofort spielt
+  } catch {}
+}
+
+// Eigener Bestell-Ton (order-sound.mp3, 2,8 s). Einmal geladen und dekodiert,
+// danach ohne Verzoegerung abspielbar.
+const SF_ORDER_SOUND_URL = "/order-sound.mp3?v=1";
+let sfOrderSound = null, sfOrderSoundLoading = null;
+function sfLoadOrderSound(){
+  if(sfOrderSound) return Promise.resolve(sfOrderSound);
+  if(sfOrderSoundLoading) return sfOrderSoundLoading;
+  const ctx = sfAudio;
+  if(!ctx) return Promise.resolve(null);
+  sfOrderSoundLoading = fetch(SF_ORDER_SOUND_URL)
+    .then(r => { if(!r.ok) throw new Error("HTTP " + r.status); return r.arrayBuffer(); })
+    // aeltere Safari-Versionen kennen decodeAudioData nur mit Callbacks
+    .then(buf => new Promise((res, rej) => { const p = ctx.decodeAudioData(buf, res, rej); if(p && p.then) p.then(res, rej); }))
+    .then(b => (sfOrderSound = b))
+    .catch(e => { console.warn("Bestell-Ton konnte nicht geladen werden:", e); sfOrderSoundLoading = null; return null; });
+  return sfOrderSoundLoading;
+}
+function sfPlayBuffer(buf){
+  const ctx = sfAudio;
+  const src = ctx.createBufferSource(), g = ctx.createGain();
+  g.gain.value = 0.9;
+  src.buffer = buf;
+  src.connect(g); g.connect(ctx.destination);
+  src.start(ctx.currentTime + 0.02);
+}
+
+// Bei jeder Bestellung (App offen): der eigene Ton; nur falls der nicht
+// geladen werden kann, der eingebaute Gong. Haelt sich an den Lautlos-Schalter.
+function sfChime(){
+  const ctx = sfAudio;
+  if(!ctx) return;
+  try {
+    if(ctx.state !== "running") ctx.resume().catch(()=>{});
+    if(sfOrderSound){ sfPlayBuffer(sfOrderSound); return; }
+    const start = Date.now();
+    sfLoadOrderSound().then(b => {
+      try {
+        if(b && Date.now() - start < 3000) sfPlayBuffer(b);
+        else sfGong();
+      } catch {}
+    });
+  } catch {}
+}
+["pointerdown", "touchend", "keydown"].forEach(t => document.addEventListener(t, sfAudioUnlock, { passive: true }));
+
+// Ersatz-Ton, falls order-sound.mp3 nicht geladen werden kann: kurzer, heller
+// Zwei-Ton-Gong (Grundton + leise Obertoene, die schneller verklingen).
+function sfGong(){
+  const ctx = sfAudio;
+  if(!ctx) return;
+  try {
+    if(ctx.state !== "running") ctx.resume().catch(()=>{});
+    const out = ctx.createGain();
+    out.gain.value = 0.5;
+    out.connect(ctx.destination);
+    const t0 = ctx.currentTime + 0.03;
+    const note = (freq, at, len) => {
+      [[1, 0.55, "sine"], [2, 0.16, "sine"], [3, 0.05, "triangle"]].forEach(([mul, vol, type]) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = type;
+        o.frequency.value = freq * mul;
+        g.gain.setValueAtTime(0.0001, at);
+        g.gain.exponentialRampToValueAtTime(vol, at + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, at + len / mul);
+        o.connect(g); g.connect(out);
+        o.start(at); o.stop(at + len + 0.05);
+      });
+    };
+    note(987.77, t0, 0.9);          // H5
+    note(1318.51, t0 + 0.13, 1.4);  // E6
+  } catch {}
+}
+
+function sfOrderBanner(title, body, image){
+  let el = document.getElementById("sfOrderBanner");
+  if(!el){
+    el = document.createElement("button");
+    el.type = "button";
+    el.id = "sfOrderBanner";
+    el.className = "sf-ob";
+    el.setAttribute("aria-live", "polite");
+    el.addEventListener("click", ()=>{ el.classList.remove("is-in"); sfOpenOrders(); });
+    document.body.appendChild(el);
+  }
+  const [amount, ...rest] = String(body || "").split("\n");
+  // Produktbild der Bestellung (Weidian); faellt es aus, bleibt die Tuete
+  const img = /^https:\/\/[^\s"'<>]+$/.test(String(image || "")) ? String(image) : "";
+  el.innerHTML = `<span class="sf-ob-ic${img ? " has-img" : ""}" aria-hidden="true">${img
+      ? `<img src="${aesc(img)}" alt="" referrerpolicy="no-referrer" onerror="this.parentNode.classList.remove('has-img');this.replaceWith('\u{1F6CD}\uFE0F')">`
+      : "\u{1F6CD}\uFE0F"}</span>
+    <span class="sf-ob-tx"><b>${aesc(String(title || "").replace(/^\u{1F6CD}\uFE0F?\s*/u, "") || "Neue Bestellung")}</b>
+    ${amount ? `<span class="sf-ob-amt">${aesc(amount)}</span>` : ""}
+    ${rest.length ? `<span class="sf-ob-sub">${aesc(rest.join(" "))}</span>` : ""}</span>`;
+  el.classList.remove("is-in");
+  void el.offsetWidth;
+  el.classList.add("is-in");
+  clearTimeout(sfOrderBanner._t);
+  sfOrderBanner._t = setTimeout(()=> el.classList.remove("is-in"), 6500);
+}
+
+// Umsatz angesehen: Zahl am App-Symbol und die Bestell-Mitteilungen wegraeumen
+// (sonst zaehlt das naechste Badge die alten mit).
+async function sfClearOrderNotifs(){
+  try { if(navigator.clearAppBadge) await navigator.clearAppBadge(); } catch {}
+  try {
+    const reg = navigator.serviceWorker ? await navigator.serviceWorker.getRegistration("/") : null;
+    if(reg && reg.getNotifications) (await reg.getNotifications()).forEach(n => n.close());
+  } catch {}
+}
+
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.addEventListener("message", e => {
+    const d = e.data || {};
+    if(d.type === "sf-open-orders"){ sfOpenOrders(); return; }
+    if(d.type !== "sf-order") return;
+    // Nur wenn man die App gerade wirklich vor sich hat -- keine verspaeteten
+    // Toene beim spaeteren Oeffnen.
+    if(document.visibilityState !== "visible" || Date.now() - (Number(d.at) || 0) > 6000) return;
+    sfChime();
+    sfOrderBanner(d.title, d.body, d.image);
+    // Umsatz gerade offen? Liste gleich auffrischen (nicht waehrend man tippt).
+    try {
+      const tippt = document.activeElement && document.activeElement.closest && document.activeElement.closest("input,textarea,select");
+      if(document.body.classList.contains("admin-open") && adminView === "revenue" && !tippt) render();
+    } catch {}
+  });
+  try { navigator.serviceWorker.startMessages(); } catch {}
+}
+// Android/Chrome wuerde Shop-Besuchern sonst ungefragt "App installieren" einblenden.
+window.addEventListener("beforeinstallprompt", e => e.preventDefault());
 
 function atoast(text, kind = "ok"){
   toastEl.className = "toast " + kind;
@@ -7396,7 +7604,9 @@ async function boot(){
       // War das Dashboard in DIESEM Tab offen, als die Seite neu geladen wurde
       // (Safari laedt Hintergrund-Tabs gern neu, z.B. nach einem Blick auf
       // Weidian in einem anderen Tab)? Dann gleich wieder oeffnen.
-      try { if(sessionStorage.getItem("sf_admin_open") === "1") openAdmin(); } catch {}
+      // Aufruf ueber eine Bestell-Mitteilung (/?sf=orders): direkt in den Umsatz.
+      if(sfTakeOrdersLaunch()) openAdmin({ view: "revenue" });
+      else { try { if(sessionStorage.getItem("sf_admin_open") === "1") openAdmin(); } catch {} }
     }
   } catch(e) {
     // Egal was in applyCreator/applyLang/applyView/wireSignupPopup schiefgeht:
@@ -8537,6 +8747,30 @@ const ADMIN_CSS = `
     .qi-card.qi-enter,.qi-card.qi-enter-back,.qi-shake,.qi-flash,.qi-flash-b{animation:none;}
     .qi-toast,.qi-bar-fill{transition:none;}
   }
+
+  /* ---------- Bestell-Benachrichtigungen (Push aufs Handy) ---------- */
+  .pu-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .pu-ic{flex:0 0 46px;height:46px;border-radius:14px;background:var(--accent);color:#fff;display:grid;place-items:center;
+    box-shadow:0 6px 16px rgba(59,102,245,.28);}
+  .pu-card.is-on .pu-ic{background:#16a34a;box-shadow:0 6px 16px rgba(22,163,74,.25);}
+  .pu-txt{flex:1 1 220px;min-width:0;}
+  .pu-title{font-size:16px;font-weight:800;letter-spacing:-.01em;}
+  .pu-sub{font-size:13.5px;color:var(--muted);margin-top:2px;}
+  .pu-card.is-on .pu-sub{color:#15803d;font-weight:600;}
+  .pu-actions{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto;}
+  .pu-actions .a-btn{height:40px;padding:0 16px;font-size:13.5px;}
+  .pu-help{margin-top:14px;padding:14px 16px;border-radius:12px;background:#f6f8fc;border:1px solid #e3e8f2;font-size:13.5px;line-height:1.55;}
+  .pu-help ol{margin:6px 0 0;padding-left:20px;}
+  .pu-help li{margin:3px 0;}
+  .pu-share{display:inline-block;vertical-align:-3px;margin:0 2px;color:var(--accent);}
+  .pu-prev{margin-top:14px;display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border-radius:16px;
+    background:rgba(242,242,247,.9);border:1px solid #e7e7ee;max-width:430px;}
+  .pu-prev-ic{flex:0 0 38px;height:38px;border-radius:9px;background:#fff center/cover no-repeat;box-shadow:0 0 0 1px rgba(0,0,0,.06);}
+  .pu-prev-tx{flex:1 1 auto;min-width:0;font-size:13px;line-height:1.32;color:#1c1c1e;}
+  .pu-prev-top{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;color:#8a8a8e;text-transform:uppercase;letter-spacing:.02em;margin-bottom:1px;}
+  .pu-prev-tx b{display:block;font-size:13.5px;}
+  .pu-prev-cap{font-size:11.5px;color:var(--muted);margin:6px 0 0 2px;}
+  @media (max-width:520px){ .pu-actions{margin-left:0;width:100%;} .pu-actions .a-btn{flex:1 1 0;} }
 `;
 
 // ============================================================================
@@ -10069,6 +10303,7 @@ function render(){
   // noch dorthin durchlassen.
   if(adminView === "shopassign" && !state.isSuperAdmin) adminView = "dashboard";
   if(adminView === "adminaccounts" && !state.isSuperAdmin) adminView = "dashboard";
+  if(!pushHealDone) pushAutoHeal();
   if(adminView === "analytics") return renderAnalytics();
   if(adminView === "revenue") return renderRevenue();
   if(adminView === "shopassign") return renderShopAssign();
@@ -13782,6 +14017,7 @@ async function renderRevenue(){
     </div>
 
     <div class="a-wrap">
+      ${pushCardHtml()}
       <div class="a-card">
         <div class="a-head-row">
           <div style="flex:1 1 auto;min-width:0">
@@ -13973,6 +14209,9 @@ async function renderRevenue(){
 
   document.getElementById("backToDashboard").onclick = ()=>{ adminView = "dashboard"; render(); };
   document.getElementById("openAnalytics").onclick = ()=>{ adminView = "analytics"; render(); };
+  // Bestell-Push: Karte fuellen; Umsatz angesehen -> Badge/Mitteilungen wegraeumen
+  wirePushCard();
+  if(typeof sfClearOrderNotifs === "function") sfClearOrderNotifs();
   document.getElementById("brandBackToSite").onclick = async ()=>{
     closeAdmin();
     await boot();
@@ -19400,6 +19639,274 @@ async function qiClose(){
 }
 
 // ============================================================================
+//  Bestell-Benachrichtigungen (Push aufs Handy)
+// ============================================================================
+//  Jede neue, bezahlte Weidian-Bestellung kommt als Mitteilung aufs Geraet --
+//  mit @Creator, Betrag und Produkt. Verschickt wird serverseitig von der Edge
+//  Function "order-push" (jede Minute per Cron); hier wird nur das Geraet
+//  angemeldet. Auf dem iPhone geht das nur, wenn die Seite als App auf dem
+//  Home-Bildschirm liegt (Apple-Vorgabe, iOS 16.4+).
+const PUSH_SW_URL = "/sw.js";
+let pushVapidKey = null;   // oeffentlicher Server-Schluessel, vorab geladen
+let pushHealDone = false;
+let pushBusyNow = false;
+const PUSH_BELL_SVG = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>`;
+const PUSH_SHARE_SVG = `<svg class="pu-share" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-label="Teilen"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>`;
+
+function pushIsIOS(){
+  return /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+function pushIsStandalone(){
+  return window.navigator.standalone === true || !!(window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+}
+function pushSupported(){
+  return !!window.isSecureContext && /^https?:$/.test(location.protocol) && "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+}
+function pushB64ToBytes(s){
+  s = String(s).replace(/-/g, "+").replace(/_/g, "/");
+  while(s.length % 4) s += "=";
+  const bin = atob(s), u = new Uint8Array(bin.length);
+  for(let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+  return u;
+}
+function pushSameKey(sub, key){
+  const a = sub && sub.options && sub.options.applicationServerKey;
+  if(!a || !key) return true;   // unbekannt -> nicht unnoetig neu anmelden
+  const x = new Uint8Array(a), y = pushB64ToBytes(key);
+  return x.length === y.length && x.every((v, i) => v === y[i]);
+}
+async function pushRegistration(){
+  await navigator.serviceWorker.register(PUSH_SW_URL, { scope: "/" });
+  return navigator.serviceWorker.ready;
+}
+async function pushLoadKey(){
+  if(pushVapidKey) return pushVapidKey;
+  const { data, error } = await sb.functions.invoke("order-push", { body: { action: "config" } });
+  if(error) throw new Error(await extractFnError(error));
+  if(!data || !data.publicKey) throw new Error("Kein Server-Schlüssel erhalten.");
+  pushVapidKey = data.publicKey;
+  return pushVapidKey;
+}
+async function pushSave(sub){
+  const j = sub.toJSON();
+  const clean = v => String(v || "").replace(/=+$/, "");
+  const { error } = await sb.rpc("save_push_subscription", {
+    p_endpoint: j.endpoint, p_p256dh: clean(j.keys && j.keys.p256dh), p_auth: clean(j.keys && j.keys.auth),
+    p_user_agent: navigator.userAgent,
+  });
+  if(error) throw new Error(error.message || "Speichern fehlgeschlagen.");
+}
+// Erlaubnis-Abfrage: aeltere Safari-Versionen kennen nur die Callback-Form.
+function pushAskPermission(){
+  return new Promise(resolve => {
+    try {
+      const r = Notification.requestPermission(resolve);
+      if(r && typeof r.then === "function") r.then(resolve, () => resolve(Notification.permission));
+    } catch { resolve(Notification.permission); }
+  });
+}
+
+// Zustand dieses Geraets: ios-browser | unsupported | denied | off | on
+async function pushState(){
+  if(!pushSupported()) return (pushIsIOS() && !pushIsStandalone()) ? "ios-browser" : "unsupported";
+  if(Notification.permission === "denied") return "denied";
+  try {
+    const reg = await pushRegistration();
+    const sub = await reg.pushManager.getSubscription();
+    if(!sub || Notification.permission !== "granted") return "off";
+    const { data } = await sb.from("push_subscriptions").select("id").eq("endpoint", sub.endpoint).maybeSingle();
+    if(data) return "on";
+    // Auf diesem Geraet aktiviert, aber nicht (mehr) gespeichert -- z.B. anderes
+    // Konto vorher oder vom Server als erloschen geloescht: still neu speichern.
+    if(typeof sfPushOn === "function" && sfPushOn()){ await pushSave(sub); return "on"; }
+    return "off";
+  } catch(e){
+    console.warn("Push-Status:", e);
+    return "off";
+  }
+}
+
+function pushPreviewHtml(){
+  const c = state.creators.find(x => x.weidian_shop_id) || state.creators[0];
+  const handle = c ? "@" + c.slug : "@creator";
+  return `<div class="pu-prev" aria-hidden="true">
+      <span class="pu-prev-ic" style="background-image:url('/apple-touch-icon.png?v=2')"></span>
+      <span class="pu-prev-tx">
+        <span class="pu-prev-top"><span>StyleFinder</span><span>jetzt</span></span>
+        <b>\u{1F6CD}️ Neue Bestellung · ${aesc(handle)}</b>
+        ¥358,00 (≈ 45,61 €)<br>Moncler Parkas (+5)
+      </span>
+    </div>
+    <div class="pu-prev-cap">So sieht jede neue Bestellung aus.</div>`;
+}
+
+function pushCardHtml(){
+  return `
+      <div class="a-card pu-card" id="pushCard">
+        <div class="pu-row">
+          <span class="pu-ic">${PUSH_BELL_SVG}</span>
+          <div class="pu-txt">
+            <div class="pu-title">Bestell-Benachrichtigungen</div>
+            <div class="pu-sub" id="pushSub">Wird geprüft …</div>
+          </div>
+          <div class="pu-actions" id="pushActions"></div>
+        </div>
+        <div id="pushMore"></div>
+      </div>`;
+}
+
+function pushPaint(card, st){
+  const sub = card.querySelector("#pushSub"), act = card.querySelector("#pushActions"), more = card.querySelector("#pushMore");
+  card.classList.toggle("is-on", st === "on");
+  card.dataset.state = st;
+  const ios = pushIsIOS();
+  if(st === "on"){
+    sub.textContent = "Aktiv auf diesem Gerät ✓";
+    act.innerHTML = `<button type="button" class="a-btn a-btn-ghost" data-push="test">Test senden</button>
+      <button type="button" class="a-btn a-btn-ghost" data-push="off">Ausschalten</button>`;
+    more.innerHTML = "";
+  } else if(st === "off"){
+    sub.textContent = "Bei jeder neuen Bestellung eine Mitteilung aufs Handy — mit @Creator und Betrag.";
+    act.innerHTML = `<button type="button" class="a-btn a-btn-primary" data-push="on">Aktivieren</button>`;
+    more.innerHTML = pushPreviewHtml();
+  } else if(st === "ios-browser"){
+    sub.textContent = "Auf dem iPhone nur als App vom Home-Bildschirm möglich.";
+    act.innerHTML = "";
+    more.innerHTML = `<div class="pu-help"><b>So geht’s (einmalig):</b><ol>
+        <li>In Safari unten auf ${PUSH_SHARE_SVG} <b>Teilen</b> tippen</li>
+        <li><b>„Zum Home-Bildschirm“</b> wählen und hinzufügen</li>
+        <li>StyleFinder über das neue Symbol öffnen, einloggen, hier <b>Aktivieren</b> tippen</li>
+      </ol></div>` + pushPreviewHtml();
+  } else if(st === "denied"){
+    sub.textContent = "Mitteilungen sind für StyleFinder blockiert.";
+    act.innerHTML = "";
+    more.innerHTML = `<div class="pu-help">${ios
+      ? "iPhone-<b>Einstellungen</b> → <b>Mitteilungen</b> → <b>StyleFinder</b> → <b>Mitteilungen erlauben</b> einschalten, dann hier neu laden."
+      : "In den Website-Einstellungen des Browsers (Schloss-Symbol neben der Adresse) <b>Benachrichtigungen erlauben</b>, dann neu laden."}</div>`;
+  } else {
+    sub.textContent = "Dieser Browser kann keine Push-Nachrichten empfangen.";
+    act.innerHTML = "";
+    more.innerHTML = `<div class="pu-help">Am iPhone: Seite in Safari zum Home-Bildschirm hinzufügen (iOS 16.4 oder neuer). Am PC: Chrome, Edge, Firefox oder Safari.</div>`;
+  }
+  act.querySelectorAll("button").forEach(b => { b.disabled = pushBusyNow; });
+}
+
+async function pushRefreshCard(){
+  const card = document.getElementById("pushCard");
+  if(!card) return;
+  const st = await pushState();
+  if(card.isConnected) pushPaint(card, st);
+  // Schluessel schon vorab holen: beim Tippen auf "Aktivieren" soll iOS sofort fragen koennen
+  if(st === "off" && !pushVapidKey) pushLoadKey().catch(()=>{});
+}
+
+function pushBusy(on){
+  pushBusyNow = on;
+  document.querySelectorAll("#pushActions button").forEach(b => { b.disabled = on; });
+}
+
+function pushEnable(){
+  // iOS: Die Erlaubnis-Frage MUSS direkt aus dem Tippen kommen -- deshalb
+  // als Allererstes, ohne vorheriges await.
+  const permP = Notification.permission === "granted" ? Promise.resolve("granted") : pushAskPermission();
+  // Merker schon jetzt setzen, damit der Ton im selben Tippen freigeschaltet wird
+  // (bei Fehlschlag unten wieder entfernt).
+  try { localStorage.setItem(SF_PUSH_FLAG, "1"); } catch {}
+  if(typeof sfAudioUnlock === "function") sfAudioUnlock();
+  pushBusy(true);
+  (async () => {
+    let ok = false;
+    try {
+      const perm = await permP;
+      if(perm !== "granted"){
+        atoast(perm === "denied" ? "Mitteilungen wurden abgelehnt." : "Keine Erlaubnis erteilt.", "err");
+        return;
+      }
+      const [reg, key] = await Promise.all([pushRegistration(), pushLoadKey()]);
+      let sub = await reg.pushManager.getSubscription();
+      if(sub && !pushSameKey(sub, key)){ await sub.unsubscribe().catch(()=>{}); sub = null; }
+      if(!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: pushB64ToBytes(key) });
+      await pushSave(sub);
+      ok = true;
+      atoast("Push aktiviert ✓ — bei jeder Bestellung kommt eine Mitteilung.");
+    } catch(e){
+      console.error("Push aktivieren:", e);
+      atoast("Push konnte nicht aktiviert werden: " + (e && e.message ? e.message : e), "err");
+    } finally {
+      if(!ok){ try { localStorage.removeItem(SF_PUSH_FLAG); } catch {} }
+      pushBusy(false);
+      pushRefreshCard();
+    }
+  })();
+}
+
+async function pushDisable(){
+  pushBusy(true);
+  try {
+    const reg = await navigator.serviceWorker.getRegistration("/");
+    const sub = reg ? await reg.pushManager.getSubscription() : null;
+    if(sub){
+      const { error } = await sb.from("push_subscriptions").delete().eq("endpoint", sub.endpoint);
+      if(error) throw new Error(error.message);
+      await sub.unsubscribe().catch(()=>{});
+    }
+    try { localStorage.removeItem(SF_PUSH_FLAG); } catch {}
+    atoast("Push auf diesem Gerät ausgeschaltet.");
+  } catch(e){
+    atoast("Ausschalten fehlgeschlagen: " + (e && e.message ? e.message : e), "err");
+  } finally {
+    pushBusy(false);
+    pushRefreshCard();
+  }
+}
+
+async function pushTest(){
+  pushBusy(true);
+  try {
+    const { data, error } = await sb.functions.invoke("order-push", { body: { action: "test" } });
+    if(error) throw new Error(await extractFnError(error));
+    if(data && data.ok) atoast(data.ok === 1 ? "Test gesendet ✓ — kommt gleich an." : `Test gesendet ✓ — an ${data.ok} Geräte.`);
+    else atoast("Test kam nicht an — bitte Push aus- und wieder einschalten.", "err");
+  } catch(e){
+    atoast("Test fehlgeschlagen: " + (e && e.message ? e.message : e), "err");
+  } finally {
+    pushBusy(false);
+    pushRefreshCard();
+  }
+}
+
+function wirePushCard(){
+  const card = document.getElementById("pushCard");
+  if(!card) return;
+  card.addEventListener("click", e => {
+    const b = e.target.closest("[data-push]");
+    if(!b || b.disabled || pushBusyNow) return;
+    if(b.dataset.push === "on") pushEnable();      // synchron -- iOS-Erlaubnis im selben Tippen
+    else if(b.dataset.push === "off") pushDisable();
+    else if(b.dataset.push === "test") pushTest();
+  });
+  pushRefreshCard();
+}
+
+// Beim Oeffnen des Admins einmal still abgleichen: Geraet war aktiviert ->
+// Abo erneuern/speichern (iOS erneuert die Adresse gelegentlich).
+async function pushAutoHeal(){
+  pushHealDone = true;
+  if(typeof sfPushOn !== "function" || !sfPushOn() || !pushSupported() || Notification.permission !== "granted") return;
+  try {
+    const reg = await pushRegistration();
+    let sub = await reg.pushManager.getSubscription();
+    if(!sub){
+      const key = await pushLoadKey();
+      sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: pushB64ToBytes(key) });
+    }
+    await pushSave(sub);
+  } catch(e){
+    console.warn("Push-Abgleich:", e);
+  }
+}
+
+// ============================================================================
 //  Einstiegspunkt
 // ============================================================================
 //  Ruft index.html auf, sobald diese Datei geladen ist (siehe openAdmin()
@@ -19415,6 +19922,5 @@ function adminEntry(){
 }
 
 </script>
-
 </body>
 </html>
