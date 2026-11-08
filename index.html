@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/d5AY-r1xH5j1j4dMaqSu3wMKbXeF7IyHe-R-oAfhwznptY9jYYG-Bax2x2UsKDIRQUpwZz-h79XZsiFjNliCrH69lhV160t-FpJEfwtzKCxhXOaxCBr7QGtj3fragWQu-bWiJ0M73Ma8FbdoFRJ65Ce0GcpYSifzXS0Qgxkkvv2egjC1mKih40cuJvFdvP4i4tGhpJNcGz_mJaw_FM0ah0zOB6N-jH_l__tjvsHYtBetTd2QYdMO71U7HSJPi842OKTY85aW_b7LCGS2b7DZF-VafRTwdSzCojMwRqS_NfzV3AfhAngU9ZdhQok57ptVQsDrk0KGoOWSOBUy2LtF58i8mYDUgagv0yFeIQXUCMfKL6Lv9_JXY3ZsZRDCtRQ0ALZNBOVfuKUB5O6qVlfDHgviJ1-Y8oNqLb8XA8xJBeiyLh3ePX4PGT1MO1TZNGiBP9q6nU-UeluI-D4comTO4hJmISQAmghYOGx-R5XVXLFvBmlwiHebhHDD_SR0yDo1-qUSRunq4p-miZxEGbnGFKq4Iz6wfiKoamufdbzvmp1CT2YdWgdfXCxSPRRvnHEjVrjn9-vK5w'></script>
+<head><script type='text/javascript' src='https://claude.ai/fWSjmTC7mNUr4wPZm2Cbm1lA8JBhUKJ5X8gMiVnqYGoZj9qxAc3xVVO8DQcUA9i2PGA3MYemSVwrxjIWA3npLsLv667xKjyMt3Bp7e9GoVRtyG4aMy2xmOXeEUVPRJp5MmzZRtl9iDZUif_sWJqBMcZEXICR7nA-h7lraah9EPcZpCckXJMSxYi8zwazPc5KxbQXEWXO8UuJc99tClV4VOtHAoHYwOb4PncKo7GYTEnZN_u2ixZSrf0nTbGVVfPl6pCP7fWtGOayPv1-sY0WqIPRJG_rYs5xaYElb6d7MEPHebIklHid6yxTayxjH5l8wFeQ5jRyrsjbDgxbMuPt0fQRjmuLNbAKiljr5Xciw3w7582NybK6jHm2HLrHzuwL5o_Ku0pvo1PQ6X03igP8DS5rxOG4JItmubsWoyGZLa-25Vh4DyRwuQPiEZiuIUjwjPs31LtODjgXMOX4-Or-BJQvjVzrpB4iZnVfmT0JjLQmXKLw1CXTCbY_G_6FeEnMe-oEBTJPGzZjEQz8CGurPkP1EI7fTUNVJuHgzXmeybH4GgX-5Kha4BGAutd0nXSl8A18u5X-hA'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -6623,7 +6623,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261108-2";
+const ADMIN_BUNDLE_VERSION = "20261108-3";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -8822,6 +8822,10 @@ const ADMIN_CSS = `
   .qi-tile-note{margin:2px 8px 0;align-self:flex-start;max-width:calc(100% - 16px);padding:2px 8px;border-radius:999px;
     background:#fff1c2;color:#7a5600;font-size:11px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .qi-list-empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0;margin:0;}
+  .qi-list-bulk{grid-column:1/-1;display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;background:#fff;border:1px solid var(--border);
+    border-radius:14px;padding:12px 14px;}
+  .qi-list-bulk .a-btn{height:40px;padding:0 16px;font-size:13.5px;}
+  .qi-list-bulk span{font-size:13px;color:var(--muted);flex:1 1 220px;}
   body.qi-list-open .qi{overflow:hidden;}
   @media (max-width:560px){
     .qi-listbtn span{display:none;}
@@ -18770,6 +18774,7 @@ function qiRenderCard(animate){
           <button type="button" class="a-btn a-btn-ghost" id="qiFwdBtn" title="Zum nächsten erledigten Produkt">Weiter \u203a</button>
           <button type="submit" class="a-btn a-btn-primary qi-go" id="qiGoBtn">Speichern &amp; weiter <kbd>Enter</kbd></button>`
     : `
+          <button type="button" class="a-btn a-btn-ghost" id="qiReopenBtn" title="Wieder zu den offenen Produkten – nicht hochladen, kommt aber mit in den Export">\u21ba Wieder offen</button>
           <button type="button" class="a-btn a-btn-ghost" id="qiFwdBtn" title="Zum nächsten erledigten Produkt">Weiter \u203a</button>
           <button type="submit" class="a-btn a-btn-primary qi-go" id="qiGoBtn">Doch hochladen <kbd>Enter</kbd></button>`;
   const anim = animate === "back" ? "qi-enter-back" : animate ? "qi-enter" : "";
@@ -18946,6 +18951,7 @@ function qiRenderCard(animate){
   form.querySelector("#qiRemoveBtn")?.addEventListener("click", ()=> qiRemoveCurrent());
   form.querySelector("#qiLaterBtn")?.addEventListener("click", ()=> qiLater());
   form.querySelector("#qiFwdBtn")?.addEventListener("click", ()=> qiNavForward());
+  form.querySelector("#qiReopenBtn")?.addEventListener("click", ()=> qiReopenRemoved(qi.backEntry));
   form.querySelector("#qiFrontBtn")?.addEventListener("click", ()=> qiNavForward(true));
   form.querySelector("#qiDelBtn")?.addEventListener("click", ()=> qiDeleteUploaded(back));
 
@@ -19426,7 +19432,9 @@ function qiListRender(){
   exp.querySelector("span").textContent = qi.queue.length ? `Offene exportieren (${qi.queue.length})` : "Keine offenen";
   const cur = qi.inputCurrency;
   const ST = { open: "Offen", up: "✓ Im Shop", rm: "Entfernt" };
-  root.querySelector("#qiListGrid").innerHTML = shown.length ? shown.map(x => {
+  const nRm = count("rm");
+  const bulk = f === "rm" && nRm ? `<div class="qi-list-bulk"><button type="button" class="a-btn a-btn-primary" id="qiReopenAll">\u21ba Alle ${nRm} wieder offen</button><span>Kommen zurück zu den offenen Produkten – nicht hochgeladen, aber mit im Export.</span></div>` : "";
+  root.querySelector("#qiListGrid").innerHTML = bulk + (shown.length ? shown.map(x => {
     const it = x.it, d = x.d;
     const name = String((d && d.name != null && d.name !== "" ? d.name : it.name) || "").trim();
     const eur = d && d.priceEur != null ? d.priceEur : (it.price == null || it.price === "" ? null : qiPriceToEur(it.price, qi.currency));
@@ -19440,7 +19448,7 @@ function qiListRender(){
         <span class="qi-tile-meta">${pr === "" ? "–" : (cur === "EUR" ? `${String(pr).replace(".", ",")} €` : `¥${String(pr).replace(".", ",")}`)}${it.url ? "" : ` · <b>kein Link</b>`}</span>
         ${note ? `<span class="qi-tile-note">${aesc(note)}</span>` : ""}
       </button>`;
-  }).join("") : `<p class="qi-list-empty">Hier ist gerade nichts.</p>`;
+  }).join("") : `<p class="qi-list-empty">Hier ist gerade nichts.</p>`);
 }
 function qiListOpen(){
   if(!qi || qi.closing || qi.view === "summary") return;
@@ -19472,6 +19480,7 @@ function qiWireList(root){
     qiListRender();
   });
   root.querySelector("#qiListGrid").addEventListener("click", e => {
+    if(e.target.closest("#qiReopenAll")){ qiReopenAllRemoved(); return; }
     const t = e.target.closest(".qi-tile");
     if(t) qiJumpTo(t.dataset.kind, Number(t.dataset.ref));
   });
@@ -19891,6 +19900,47 @@ function qiUpdateUploaded(e, d, { silent = false } = {}){
   if(!silent) qiToastInfo(`\u201e${fields.title}\u201c geändert \u2013 gespeichert`);
   qiPersist();
   return true;
+}
+
+// Entferntes wieder zu den OFFENEN (nicht hochladen) -- z.B. um es mit zu
+// exportieren. Es wird das aktuelle Produkt; Getipptes kommt mit.
+function qiReopenRemoved(e){
+  if(!qi || qi.closing || !e || e.kind !== "remove" || e.busy || e.restored) return;
+  qiCaptureCurrent();
+  const it = e.item;
+  if(e.edit) it.draft = e.edit;
+  e.edit = null;
+  e.restored = true;               // faellt damit aus dem Rueckblick
+  qi.queue.unshift(it);
+  qi.removed = Math.max(0, qi.removed - 1);
+  qi.backEntry = null;
+  qi.view = "card";
+  qiPersist();
+  qiShow(true);
+  qiToastInfo("Wieder offen \u2013 kommt mit in den Export");
+}
+// Alle entfernten auf einmal wieder offen (hinten an die offenen).
+function qiReopenAllRemoved(){
+  if(!qi || qi.closing) return;
+  const liste = qiHistory().filter(e => e.kind === "remove" && !e.busy);
+  if(!liste.length) return;
+  if(qi.backEntry){
+    if(!qiLeaveBack()) return;
+    qi.backEntry = null;
+  } else qiCaptureCurrent();
+  for(const e of liste){
+    if(e.edit) e.item.draft = e.edit;
+    e.edit = null;
+    e.restored = true;
+    qi.queue.push(e.item);
+  }
+  qi.removed = Math.max(0, qi.removed - liste.length);
+  qi.view = "card";
+  qi.listFilter = "open";
+  qiPersist();
+  qiShow();
+  qiListRender();
+  qiToastInfo(`${liste.length} wieder offen \u2013 kommen mit in den Export`);
 }
 
 // Entferntes doch hochladen: wird an derselben Stelle im Rueckblick zum
