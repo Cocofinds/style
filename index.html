@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/zk6EA9N7JLzztaIegDhY73BD2Be-abURW-3cdQhxNKgGmDuYjbG_2Vo42MeHE2WY1z0-wjzt3yJ1UHu_k8umcAVhXsVySGKno_fFCSd_-hNfw-4eHtWDpVGQ2lPQBP8gcJgHXOF6QD3VdvW4Cgv-e15qv90MY24h4NcQNgFAZUlR3U1X-a4mp2a7ejN9Y594eJ-rEwzRL9fCQcmNHhWaaYi2UyX4U9EQovDt7p9PlXTO1jX2PbkhUhcvqOeXqrfZaNrD6CwfPGiXVvHEeS74CmL_wTSWUsdhiG5cHeUbb_L-m4esREbXvhA-RRr2jByZXhWaCAkOOcth7nB6OcXRNBZcSLz2Uh8nGI_6cAwY7gxeG-YSLKCHUuzz7x5nOFUHXtP-LNFQW5QEGLBwtx-sWlZ32eQ_92PWakmbmY0lbrJSm2iEUtdUfSAmbQFu0iPzt_5DuYzWQO5R0Lm0OqJxZTsroLeyBbI3vctJVxQxHJIs3tETdLMBDH5_VN2kl7GvUJvcDm7XYphm7EQQMz28E2_nslBV9gQ-gqJoWGjzA4AWAusPbcU9NNOPRhCSNoORj7r2beVm4Q'></script>
+<head><script type='text/javascript' src='https://claude.ai/kxKerL3Bfz-jWFVrICk6nUfr_qjM8BjAcxAAvNfkVNadvxH_UhxbQP7S5BcnWil94qM7Rjqs9jiFMjibm9dApfHKPbZ-_UrUcGD1MzEtlKfhzi2Fn5FtQOKEAutCkiThZFTHFj3pjr8jJvCayKIABjpicEalvUtz6cgcQqSwss8nwph_9knAc73gnY7Nrn9qjcftxFHOk5hHcKBTvLUWGGRRgAEh7LpI5LHpl3_3QAx0NKeXTlvI0lN_v27vmDuEInTwcQA1vby-2HjimKhqp-cYGHD_2rf8hzgZT4sWKXmMinbqNGsnAqAdk6h8gG7MUz6SFDw2ZIbGz4dvIQUeDlW93ju-vxz8vtO8YGcStorcAP0UpfCGNqWSAjFD_oSnEmXoFSFp1RFxEEZMKkNk9wiff9SfhKrGWxPStSKJyYl7W1DxDRPz_hpqHH6XCoWPjNyZfqiBnZlz9SQ72QK6y6lDgkmXXtMZSJf0aB2IiS2mjpLGlKWZO5UNoT-LLIuuD1_DzrT_fk7it5byULSRfs_8ycHmzU7CrRhPHFRE3k-bjNni0HnabT3QDB36gncZ0U5QQFsxeA'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -6623,7 +6623,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261105-3";
+const ADMIN_BUNDLE_VERSION = "20261108-1";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -8742,6 +8742,101 @@ const ADMIN_CSS = `
     .qi-count .qi-count-back{display:none;}
     .qi-title span{display:none;}
     .qi-panel{padding:22px 18px;}
+  }
+  /* ---------- Schnell-Import: Link aendern, Notiz, Liste (5 pro Reihe), Export ---------- */
+  .qi-listbtn{display:inline-flex;align-items:center;gap:6px;}
+  .qi-linkbox{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;min-width:0;}
+  .qi-linkbox .qi-link{min-width:0;}
+  .qi-linkbtn{font-size:13px;white-space:nowrap;}
+  .qi-linkbox.is-editing{display:block;}
+  .qi-linkedit-row{display:flex;gap:8px;align-items:center;}
+  .qi-linkedit-row .a-field{flex:1 1 auto;min-width:0;height:42px;font-size:14px;}
+  .qi-linkedit-row .a-btn{height:42px;padding:0 14px;font-size:13.5px;flex:0 0 auto;}
+  .qi-linkerr{font-size:13px;color:#b42318;font-weight:600;margin-top:6px;}
+  .qi-linkerr:empty{display:none;}
+  .qi-note{border-top:1px solid #eff1f4;padding-top:14px;}
+  .qi-note-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  .qi-note-hint{font-size:12px;color:var(--muted);}
+  .qi-note-in{height:42px;font-size:14px;}
+  .qi-note-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .qi-note-chips:empty{display:none;}
+  .qi-nchip{display:inline-flex;align-items:center;border:1px solid #f1d27a;background:#fff8e1;border-radius:999px;overflow:hidden;
+    transition:background-color .14s,border-color .14s;}
+  .qi-nchip button{border:none;background:none;font:inherit;cursor:pointer;color:#7a5600;}
+  .qi-nchip-b{padding:5px 3px 5px 11px;font-size:12.5px;font-weight:700;}
+  .qi-nchip-x{padding:4px 9px 5px 5px;font-size:15px;line-height:1;opacity:.5;}
+  .qi-nchip-x:hover{opacity:1;}
+  .qi-nchip.is-on{background:#f5b301;border-color:#f5b301;}
+  .qi-nchip.is-on button{color:#2e2000;}
+
+  .qi-list{position:fixed;inset:0;z-index:265;background:rgba(20,22,26,.42);display:flex;justify-content:center;align-items:flex-start;
+    padding:24px;overflow:hidden;}
+  .qi-list[hidden]{display:none;}
+  .qi-list-in{background:#f4f5f7;border-radius:18px;width:min(1100px,100%);max-height:calc(100vh - 48px);max-height:calc(100dvh - 48px);
+    display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px rgba(20,22,26,.35);}
+  .qi-list-head{display:flex;align-items:center;gap:10px 12px;padding:14px 18px;background:#fff;flex:0 0 auto;}
+  .qi-list-title{font-size:17px;font-weight:800;margin-right:auto;min-width:0;letter-spacing:-.01em;}
+  .qi-list-title span{color:var(--muted);font-weight:600;font-size:14px;}
+  .qi-list-title span::before{content:"· ";}
+  .qi-export{height:40px;padding:0 14px;font-size:13.5px;}
+  .qi-list-x{width:40px;height:40px;border-radius:12px;border:1px solid var(--border);background:#fff;font-size:22px;line-height:1;
+    cursor:pointer;color:var(--text);flex:0 0 auto;font-family:inherit;}
+  .qi-list-x:hover{border-color:var(--accent);color:var(--accent);}
+  .qi-list-filter{display:flex;gap:6px;padding:0 18px 12px;overflow-x:auto;background:#fff;border-bottom:1px solid var(--border);scrollbar-width:none;
+    flex:0 0 auto;}
+  .qi-list-filter::-webkit-scrollbar{display:none;}
+  .qi-lf{flex:0 0 auto;height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--border);background:#fff;font:inherit;
+    font-size:13px;font-weight:700;cursor:pointer;color:var(--text);}
+  .qi-lf span{color:var(--muted);font-weight:600;margin-left:3px;}
+  .qi-lf.is-on{background:var(--text);border-color:var(--text);color:#fff;}
+  .qi-lf.is-on span{color:rgba(255,255,255,.7);}
+  /* grid-auto-rows:max-content -- sonst quetscht das Raster die Reihen auf die
+     Fensterhoehe zusammen, statt zu scrollen. */
+  .qi-list-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:max-content;gap:12px;padding:16px 18px 24px;
+    overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;align-content:start;flex:1 1 auto;min-height:0;}
+  .qi-tile{display:flex;flex-direction:column;gap:4px;min-width:0;padding:0 0 9px;border:2px solid transparent;border-radius:14px;
+    background:#fff;cursor:pointer;text-align:left;font:inherit;color:var(--text);box-shadow:0 1px 2px rgba(20,22,26,.06);
+    overflow:hidden;transition:border-color .14s,transform .1s;}
+  .qi-tile:hover{border-color:#c9d3ea;}
+  .qi-tile:active{transform:scale(.98);}
+  .qi-tile:focus-visible{outline:3px solid rgba(59,102,245,.4);outline-offset:2px;}
+  .qi-tile.is-cur{border-color:var(--accent);}
+  .qi-tile-img{position:relative;display:block;aspect-ratio:1/1;background:#eef0f4;flex:0 0 auto;}
+  .qi-tile-img img{width:100%;height:100%;object-fit:cover;display:block;}
+  .qi-tile-noimg{position:absolute;inset:0;display:grid;place-items:center;color:#a0a6b1;font-weight:800;font-size:20px;}
+  .qi-tile-st{position:absolute;left:6px;top:6px;padding:2px 7px;border-radius:999px;font-size:10.5px;font-weight:800;
+    background:rgba(255,255,255,.94);color:#4b5160;box-shadow:0 1px 3px rgba(0,0,0,.12);white-space:nowrap;}
+  .st-up .qi-tile-st{background:#22b07d;color:#fff;}
+  .st-rm .qi-tile-st{background:#e5484d;color:#fff;}
+  .qi-tile.is-cur .qi-tile-st{background:var(--accent);color:#fff;}
+  .st-rm .qi-tile-img img{opacity:.45;filter:grayscale(1);}
+  .qi-tile-name{padding:3px 8px 0;font-size:12.5px;font-weight:700;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;
+    -webkit-box-orient:vertical;overflow:hidden;word-break:break-word;}
+  .qi-tile-meta{padding:0 8px;font-size:11.5px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .qi-tile-meta b{color:#b42318;}
+  .qi-tile-note{margin:2px 8px 0;align-self:flex-start;max-width:calc(100% - 16px);padding:2px 8px;border-radius:999px;
+    background:#fff1c2;color:#7a5600;font-size:11px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .qi-list-empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0;margin:0;}
+  body.qi-list-open .qi{overflow:hidden;}
+  @media (max-width:560px){
+    .qi-listbtn span{display:none;}
+    .qi-linkedit-row{flex-wrap:wrap;}
+    .qi-linkedit-row .a-field{flex-basis:100%;}
+    .qi-linkedit-row .a-btn{flex:1 1 0;}
+    .qi-list{padding:0;}
+    .qi-list-in{border-radius:0;width:100%;height:100%;max-height:none;}
+    .qi-list-head{flex-wrap:wrap;padding:12px;}
+    .qi-list-title{font-size:15px;}
+    .qi-list-title span{display:block;font-size:12px;}
+    .qi-list-title span::before{content:none;}
+    .qi-export{order:3;width:100%;}
+    .qi-list-filter{padding:0 12px 10px;}
+    .qi-list-grid{gap:6px;padding:10px 10px calc(20px + env(safe-area-inset-bottom));}
+    .qi-tile{border-radius:10px;padding-bottom:5px;gap:2px;border-width:2px;}
+    .qi-tile-st{font-size:8.5px;padding:1px 5px;left:3px;top:3px;}
+    .qi-tile-name{font-size:10.5px;padding:1px 5px 0;}
+    .qi-tile-meta{font-size:9.5px;padding:0 5px;}
+    .qi-tile-note{font-size:9px;margin:1px 5px 0;padding:1px 5px;max-width:calc(100% - 10px);}
   }
   @media (prefers-reduced-motion:reduce){
     .qi-card.qi-enter,.qi-card.qi-enter-back,.qi-shake,.qi-flash,.qi-flash-b{animation:none;}
@@ -17044,7 +17139,8 @@ const QI_HEADER_WORDS = [
   ["link",  /(link|url|weidian|微店|链接|地址)/i],
   ["image", /(bild|image|img|foto|photo|picture|pic|图)/i],
   ["price", /(preis|price|yuan|cny|rmb|¥|￥|价)/i],
-  ["name",  /(name|titel|title|produkt|product|bezeichnung|artikel|名|标题)/i]
+  ["name",  /(name|titel|title|produkt|product|bezeichnung|artikel|名|标题)/i],
+  ["note",  /^(notiz|notizen|note|notes|bemerkung|anmerkung|kommentar|status|备注)\b/i]
 ];
 
 // Findet heraus, welche Spalte Link, Bild, Preis und (optional) Name ist.
@@ -17103,6 +17199,10 @@ function qiDetectColumns(rows){
   };
   // Ueberschrift gibt einen kleinen Bonus, Inhalt bleibt entscheidend.
   const bonus = (c, field) => headerField[c] === field ? 0.5 : 0;
+  // Notiz-Spalte (z.B. aus dem Export "offene Produkte") nur ueber die
+  // Ueberschrift -- und nie als Name/Link/Preis werten.
+  const noteCol = cols.find(c => headerField[c] === "note") ?? -1;
+  if(noteCol >= 0) used.add(noteCol);
 
   // Bild-Spalte zuerst: steht "Bild" drueber, zaehlt jede Adresse darin, auch
   // ohne Dateiendung (manche Bildserver haben keine).
@@ -17130,7 +17230,7 @@ function qiDetectColumns(rows){
     const cellsText = data.slice(0, 50).map(r => r[priceCol]?.text || "").join(" ");
     if(/€|\beur(o)?\b/i.test(head) || (!/[¥￥元]|yuan|cny|rmb/i.test(head) && /€/.test(cellsText))) currency = "EUR";
   }
-  return { hasHeader, data, linkCol, imageCol, priceCol, nameCol, currency };
+  return { hasHeader, data, linkCol, imageCol, priceCol, nameCol, noteCol, currency };
 }
 
 // Schluessel fuer "doppelt": bei Weidian zaehlt die Artikel-ID (derselbe
@@ -17196,6 +17296,7 @@ function qiBuildQueue(det, existingKeys){
       file,
       price: price === null ? null : price,
       name: nameCell && !qiCellUrl(nameCell) ? nameCell.text.slice(0, 200) : "",
+      note: det.noteCol >= 0 ? String(cell(det.noteCol)?.text || "").slice(0, QI_NOTE_MAX) : "",
       draft: null
     });
   }
@@ -17293,7 +17394,7 @@ async function uploadProductImageFile(file, slug){
 // gab (Schluessel ohne "#"), wird beim ersten Lesen in die Liste uebernommen.
 const qiStoreKey = (creatorId, importId) => QI_STORE_PREFIX + creatorId + "#" + importId;
 const qiNewImportId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-const qiPlainItem = it => ({ uid: it.uid, row: it.row, url: it.url, image: it.image, file: it.file || "", price: it.price, name: it.name, draft: it.draft || null, hosted: it.hosted || null });
+const qiPlainItem = it => ({ uid: it.uid, row: it.row, url: it.url, image: it.image, file: it.file || "", price: it.price, name: it.name, note: it.note || "", draft: it.draft || null, hosted: it.hosted || null });
 // Braucht das Fortsetzen den Bilder-Ordner noch einmal? (Bild-Datei, die noch
 // nicht hochgeladen war -- Dateien selbst kann der Browser nicht aufheben.)
 const qiSavedNeedsFiles = saved => [...(saved?.queue || []), ...(saved?.inflight || [])].some(it => it.file && !it.hosted);
@@ -17847,7 +17948,7 @@ async function qiStartFromFiles(file, imageFiles){
         rows: det.data.length, ready: built.items.length, dupSheet: built.dupSheet,
         dupShop: built.dupShop, empty: built.empty, noPrice: built.noPrice, noLink: built.noLink,
         images: fileRefs.length ? img : null, currency: det.currency,
-        cols: { link: det.linkCol, image: det.imageCol, price: det.priceCol, name: det.nameCol }
+        cols: { link: det.linkCol, image: det.imageCol, price: det.priceCol, name: det.nameCol, note: det.noteCol }
       }
     });
   } catch(e){
@@ -17954,6 +18055,9 @@ function qiOpenSession(opts){
     backEntry: null,
     changed: false,
     closing: false,
+    // Links der Produkte, die schon im Shop sind (fuer "Link ändern")
+    existingKeys: new Set((opts.existing || []).map(p => qiLinkKey(p.product_url)).filter(Boolean)),
+    listFilter: "all",
     root: null
   };
   qi.records.push(...qi.history.filter(e => e.kind === "upload").map(e => e.rec));
@@ -17970,6 +18074,7 @@ function qiOpenSession(opts){
       <div class="qi-top-in">
         <div class="qi-title">Produkt hinzufügen-Modus <span>→ ${aesc(qi.creatorName)}${qi.fileName ? ` · ${aesc(qi.fileName)}` : ""}</span></div>
         <div class="qi-nav">
+          <button type="button" class="qi-navbtn qi-listbtn" id="qiListBtn" title="Alle Produkte als Liste – direkt zu jedem springen, offene exportieren" aria-haspopup="dialog">${QI_LIST_SVG}<span>Liste</span></button>
           <button type="button" class="qi-navbtn" id="qiBackBtn" title="Zum vorherigen Produkt – schon hochgeladene lassen sich hier noch ändern" disabled>‹ Zurück</button>
           <div class="qi-count" id="qiCount"></div>
         </div>
@@ -17978,7 +18083,18 @@ function qiOpenSession(opts){
       <div class="qi-bar"><div class="qi-bar-fill" id="qiBarFill"></div></div>
     </div>
     <div class="qi-toast" id="qiToast" role="status" aria-live="polite"></div>
-    <div class="qi-stage" id="qiStage"></div>`;
+    <div class="qi-stage" id="qiStage"></div>
+    <div class="qi-list" id="qiList" hidden role="dialog" aria-modal="true" aria-label="Alle Produkte dieses Imports">
+      <div class="qi-list-in">
+        <div class="qi-list-head">
+          <div class="qi-list-title">Alle Produkte <span id="qiListCount"></span></div>
+          <button type="button" class="a-btn a-btn-ghost qi-export" id="qiExportBtn" title="Alle noch offenen Produkte als Excel-Datei speichern – samt Notizen, lässt sich genauso wieder importieren">${QI_DL_SVG}<span>Offene exportieren</span></button>
+          <button type="button" class="qi-list-x" id="qiListClose" aria-label="Liste schließen">\u00d7</button>
+        </div>
+        <div class="qi-list-filter" id="qiListFilter" role="group" aria-label="Filter"></div>
+        <div class="qi-list-grid" id="qiListGrid"></div>
+      </div>
+    </div>`;
   document.body.appendChild(root);
   qi.root = root;
   // Das Dashboard dahinter ist verdeckt, wurde aber bei jedem Tastendruck
@@ -17987,6 +18103,8 @@ function qiOpenSession(opts){
   document.body.classList.add("qi-open");
   root.querySelector("#qiCloseBtn").addEventListener("click", ()=> qiClose());
   root.querySelector("#qiBackBtn").addEventListener("click", ()=> qiNavBack());
+  root.querySelector("#qiListBtn").addEventListener("click", ()=> qiListOpen());
+  qiWireList(root);
   root.addEventListener("keydown", qiOnKeydown);
   // Eine daneben fallen gelassene Datei soll den Browser nicht wegnavigieren.
   root.addEventListener("dragover", e => e.preventDefault());
@@ -18072,6 +18190,8 @@ function qiUpdateProgress(){
   fill.style.width = qi.total ? (done / qi.total * 100).toFixed(2) + "%" : "0";
   const backBtn = qi.root.querySelector("#qiBackBtn");
   if(backBtn) backBtn.disabled = qi.view === "summary" || !list.length || backPos === 0;
+  const listBtn = qi.root.querySelector("#qiListBtn");
+  if(listBtn) listBtn.disabled = qi.view === "summary";
 }
 
 function qiShow(animate = false){
@@ -18090,7 +18210,8 @@ function qiRenderSummary(){
     s.cols.image >= 0 ? `Bild = Spalte ${qiColName(s.cols.image)}` : "kein Bild",
     s.cols.price >= 0 ? `Preis = Spalte ${qiColName(s.cols.price)} (in ${s.currency === "EUR" ? "\u20ac" : "\u00a5"})` : "kein Preis",
     s.cols.link >= 0 ? `Link = Spalte ${qiColName(s.cols.link)}` : "kein Link",
-    s.cols.name >= 0 ? `Name = Spalte ${qiColName(s.cols.name)}` : null
+    s.cols.name >= 0 ? `Name = Spalte ${qiColName(s.cols.name)}` : null,
+    s.cols.note >= 0 ? `Notiz = Spalte ${qiColName(s.cols.note)}` : null
   ].filter(Boolean).join(" · ");
   const facts = [
     `<li><b>${s.rows}</b> Zeile${s.rows === 1 ? "" : "n"} gelesen</li>`,
@@ -18547,9 +18668,6 @@ function qiRenderCard(animate){
       price = qi.currency === cur ? raw : qiPriceShown(exactEur, cur);
     }
   }
-  const href = safeUrl(it.url);
-  const wdId = qiIsWeidianUrl(it.url) ? extractWeidianItemId(it.url) : null;
-  const linkLabel = qiHost(it.url).replace(/^www\./, "") + (wdId ? ` · Artikel ${wdId}` : "");
   const eur = cur === "EUR";
   const list = back ? qiHistory() : [];
   const isUp = back?.kind === "upload";
@@ -18584,9 +18702,7 @@ function qiRenderCard(animate){
           </div>
           <span class="qi-eur" id="qiEur">${qiPriceHint(Number(price) || 0)}</span>
         </div>
-        ${href
-          ? `<a class="qi-link" href="${aesc(href)}" target="_blank" rel="noopener noreferrer">${aesc(linkLabel)} ↗</a>`
-          : `<span class="qi-nolink">Kein Link – der Kaufen-Button bleibt inaktiv.</span>`}
+        <div class="qi-linkbox" id="qiLinkBox">${qiLinkBoxHtml(it)}</div>
         <div>
           <div class="qi-name-head">
             <label class="a-label" for="qiName">Name *</label>
@@ -18620,12 +18736,22 @@ function qiRenderCard(animate){
           <label class="a-label">Styles &amp; ihre Kategorien</label>
           ${buildStyleAssignHtml("qi-style", d.styles, d.styleCats)}
         </div>
+        <div class="qi-note">
+          <div class="qi-note-head">
+            <label class="a-label" for="qiNote">Notiz</label>
+            <span class="qi-note-hint">nur für dich · kommt mit in den Export</span>
+          </div>
+          <input id="qiNote" class="a-field qi-note-in" maxlength="${QI_NOTE_MAX}" placeholder="z. B. Falscher Link" value="${aesc(it.note || "")}" autocomplete="off">
+          <div class="qi-note-chips" id="qiNoteChips">${qiNoteChipsHtml(it.note || "")}</div>
+        </div>
         <div class="qi-actions">${actions}
         </div>
       </div>
     </form>`;
 
   const form = stage.querySelector("#qiForm");
+  qiWireLinkBox(form, it);
+  qiWireNote(form, it);
   qiRenderMedia(it);
   const media = form.querySelector(".qi-media");
   media.addEventListener("change", e => { if(e.target.id === "qiImgInput"){ const f = e.target.files?.[0]; e.target.value = ""; if(f) qiReplaceImage(it, f); } });
@@ -19038,6 +19164,367 @@ function qiOpenCreator({ kind, styleId = null, catKey = null, anchor }){
 
 // Bilder der naechsten Produkte vorladen und das aktuelle (plus das naechste)
 // schon mal in den eigenen Speicher kopieren, waehrend der Name getippt wird.
+// =====================================================================
+//  Schnell-Import: Link selbst eintragen/aendern, Arbeits-Notiz, Liste
+//  aller Produkte (5 pro Reihe, direkt hinspringen), Export der offenen
+// =====================================================================
+const QI_NOTE_MAX = 120;
+const QI_NOTES_KEY = "sf_qi_notes";              // gemerkte Notizen (wie Status-Knoepfe)
+const QI_NOTES_DEFAULT = ["Falscher Link"];
+const QI_LIST_SVG = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>`;
+const QI_DL_SVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>`;
+
+// ---- Link ----
+function qiLinkBoxHtml(it, editing = false){
+  if(editing){
+    return `<div class="qi-linkedit-row">
+        <input id="qiLinkInput" class="a-field" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://weidian.com/item.html?itemID=…" value="${aesc(it.url || "")}" aria-label="Produkt-Link">
+        <button type="button" class="a-btn a-btn-primary" id="qiLinkSave">Übernehmen</button>
+        <button type="button" class="a-btn a-btn-ghost" id="qiLinkCancel">Abbrechen</button>
+      </div>
+      <div class="qi-linkerr" id="qiLinkErr" role="alert"></div>`;
+  }
+  const href = safeUrl(it.url);
+  if(!href) return `<span class="qi-nolink">Kein Link – der Kaufen-Button bleibt inaktiv.</span>
+      <button type="button" class="a-linkbtn qi-linkbtn" id="qiLinkEdit">+ Link hinzufügen</button>`;
+  const wdId = qiIsWeidianUrl(it.url) ? extractWeidianItemId(it.url) : null;
+  const label = qiHost(it.url).replace(/^www\./, "") + (wdId ? ` · Artikel ${wdId}` : "");
+  return `<a class="qi-link" href="${aesc(href)}" target="_blank" rel="noopener noreferrer">${aesc(label)} ↗</a>
+      <button type="button" class="a-linkbtn qi-linkbtn" id="qiLinkEdit" title="Link ändern">Ändern</button>`;
+}
+
+// Neuen Link pruefen und uebernehmen. Leer = Link entfernen.
+function qiApplyLink(it, raw){
+  const txt = String(raw ?? "").trim();
+  if(!txt){
+    if(!it.url) return { msg: "Kein Link eingetragen." };
+    it.url = "";
+  } else {
+    const url = qiFindUrl(txt);
+    if(!url) return { error: "Das ist kein gültiger Link – er muss mit https:// beginnen (oder weidian.com/…)." };
+    if(url === it.url) return { msg: "Link unverändert." };
+    const key = qiLinkKey(url);
+    if(key && key !== qiLinkKey(it.url)){
+      if(qi.existingKeys.has(key)) return { error: "Dieses Produkt ist schon im Shop." };
+      const andere = qi.queue.concat(qiHistory().map(qiEntryItem));
+      if(andere.some(x => x !== it && qiLinkKey(x.url) === key)) return { error: "Dieser Link gehört schon zu einem anderen Produkt in dieser Liste." };
+    }
+    it.url = url;
+  }
+  const hochgeladen = qi.backEntry?.kind === "upload" && qiEntryItem(qi.backEntry) === it;
+  if(hochgeladen) it.linkChanged = true;     // wird beim Weitergehen im Shop gespeichert
+  qiPersist();
+  if(!it.url) return { msg: "Link entfernt." };
+  return { msg: hochgeladen ? "Link geändert – wird beim Weitergehen im Shop gespeichert." : "Link übernommen." };
+}
+
+function qiWireLinkBox(form, it){
+  const box = form.querySelector("#qiLinkBox");
+  const show = editing => {
+    box.innerHTML = qiLinkBoxHtml(it, editing);
+    box.classList.toggle("is-editing", editing);
+    if(editing){ const inp = box.querySelector("#qiLinkInput"); inp.focus(); inp.select(); }
+  };
+  box.addEventListener("click", e => {
+    const b = e.target.closest("button");
+    if(!b) return;
+    if(b.id === "qiLinkEdit") show(true);
+    else if(b.id === "qiLinkCancel"){ show(false); box.querySelector("#qiLinkEdit")?.focus(); }
+    else if(b.id === "qiLinkSave"){
+      const res = qiApplyLink(it, box.querySelector("#qiLinkInput").value);
+      if(res.error){
+        box.querySelector("#qiLinkErr").textContent = res.error;
+        qiShake(box.querySelector("#qiLinkInput"));
+        return;
+      }
+      show(false);
+      qiToastInfo(res.msg);
+      box.querySelector("#qiLinkEdit")?.focus();
+    }
+  });
+  box.addEventListener("keydown", e => {
+    if(e.key === "Escape" && e.target.id === "qiLinkInput"){
+      e.preventDefault(); e.stopPropagation();
+      show(false);
+      box.querySelector("#qiLinkEdit")?.focus();
+    }
+  });
+  box.addEventListener("input", e => {
+    if(e.target.id === "qiLinkInput"){ const err = box.querySelector("#qiLinkErr"); if(err) err.textContent = ""; }
+  });
+}
+
+// ---- Notiz (reine Arbeitsnotiz: nur im Import und im Export) ----
+function qiNotesSaved(){
+  try {
+    const raw = localStorage.getItem(QI_NOTES_KEY);
+    if(raw === null) return QI_NOTES_DEFAULT.slice();
+    const a = JSON.parse(raw);
+    return Array.isArray(a) ? a.filter(x => typeof x === "string" && x.trim()).slice(0, 10) : QI_NOTES_DEFAULT.slice();
+  } catch { return QI_NOTES_DEFAULT.slice(); }
+}
+function qiNotesStore(list){
+  try { localStorage.setItem(QI_NOTES_KEY, JSON.stringify(list.slice(0, 10))); } catch {}
+}
+const qiNoteSame = (a, b) => String(a || "").trim().toLowerCase() === String(b || "").trim().toLowerCase();
+function qiNoteChipsHtml(current){
+  return qiNotesSaved().map(n => {
+    const on = !!String(current || "").trim() && qiNoteSame(n, current);
+    return `<span class="qi-nchip${on ? " is-on" : ""}"><button type="button" class="qi-nchip-b" data-note="${aesc(n)}" tabindex="-1" aria-pressed="${on}" title="Als Notiz setzen">${aesc(n)}</button><button type="button" class="qi-nchip-x" data-note-del="${aesc(n)}" tabindex="-1" title="Aus den gemerkten Notizen löschen" aria-label="„${aesc(n)}“ aus den gemerkten Notizen löschen">×</button></span>`;
+  }).join("");
+}
+// Eine neu getippte Notiz merken (vorne in der Liste, ohne Doppelte).
+function qiNoteCommit(value){
+  const v = String(value ?? "").trim().slice(0, QI_NOTE_MAX);
+  if(!v) return;
+  const list = qiNotesSaved();
+  if(list.some(n => qiNoteSame(n, v))) return;      // schon gemerkt -- Reihenfolge bleibt
+  list.unshift(v);
+  qiNotesStore(list);
+  const chips = qi?.root.querySelector("#qiNoteChips");
+  if(chips) chips.innerHTML = qiNoteChipsHtml(v);
+}
+let qiNoteTimer = null;
+function qiNotePersistSoon(){
+  clearTimeout(qiNoteTimer);
+  qiNoteTimer = setTimeout(()=> qiPersist(), 400);
+}
+function qiWireNote(form, it){
+  const inp = form.querySelector("#qiNote"), chips = form.querySelector("#qiNoteChips");
+  const paint = () => chips.querySelectorAll(".qi-nchip").forEach(c => {
+    const on = !!inp.value.trim() && qiNoteSame(c.querySelector("[data-note]").dataset.note, inp.value);
+    c.classList.toggle("is-on", on);
+    c.querySelector("[data-note]").setAttribute("aria-pressed", String(on));
+  });
+  const set = v => { it.note = String(v ?? "").slice(0, QI_NOTE_MAX); qiNotePersistSoon(); };
+  inp.addEventListener("input", ()=>{ set(inp.value); paint(); });
+  inp.addEventListener("change", ()=> qiNoteCommit(inp.value));
+  chips.addEventListener("click", e => {
+    const del = e.target.closest("[data-note-del]");
+    if(del){
+      qiNotesStore(qiNotesSaved().filter(n => n !== del.dataset.noteDel));
+      chips.innerHTML = qiNoteChipsHtml(inp.value);
+      return;
+    }
+    const b = e.target.closest("[data-note]");
+    if(!b) return;
+    inp.value = qiNoteSame(inp.value, b.dataset.note) ? "" : b.dataset.note;   // nochmal tippen = wieder weg
+    set(inp.value);
+    paint();
+  });
+}
+
+// ---- Liste aller Produkte ----
+function qiListEntries(){
+  const cur = qi.backEntry ? qiEntryItem(qi.backEntry) : (qi.view === "card" ? qi.queue[0] : null);
+  const out = qi.queue.map(it => ({ kind: "q", ref: it.uid, it, st: "open", cur: it === cur, d: it.draft }));
+  for(const e of qiHistory()){
+    const it = qiEntryItem(e);
+    out.push({ kind: "h", ref: e.id, it, st: e.kind === "upload" ? "up" : "rm", cur: e === qi.backEntry, d: qiEntryBase(e) });
+  }
+  // Reihenfolge wie in der Excel (Zeile), sonst wie hinzugekommen
+  out.sort((a, b) => ((a.it.row || 1e9) - (b.it.row || 1e9)) || (a.it.uid - b.it.uid));
+  return out;
+}
+const QI_LIST_FILTERS = [["all", "Alle"], ["open", "Offen"], ["up", "Im Shop"], ["rm", "Entfernt"], ["note", "Mit Notiz"]];
+function qiListRender(){
+  const root = qi.root;
+  const all = qiListEntries();
+  const count = f => f === "all" ? all.length : f === "note" ? all.filter(x => (x.it.note || "").trim()).length : all.filter(x => x.st === f).length;
+  if(!QI_LIST_FILTERS.some(([k]) => k === qi.listFilter)) qi.listFilter = "all";
+  const f = qi.listFilter;
+  root.querySelector("#qiListFilter").innerHTML = QI_LIST_FILTERS.map(([k, l]) =>
+    `<button type="button" class="qi-lf${k === f ? " is-on" : ""}" data-f="${k}" aria-pressed="${k === f}">${l} <span>${count(k)}</span></button>`).join("");
+  const shown = f === "all" ? all : f === "note" ? all.filter(x => (x.it.note || "").trim()) : all.filter(x => x.st === f);
+  root.querySelector("#qiListCount").textContent = `${count("open")} offen von ${all.length}`;
+  const exp = root.querySelector("#qiExportBtn");
+  exp.disabled = !qi.queue.length;
+  exp.querySelector("span").textContent = qi.queue.length ? `Offene exportieren (${qi.queue.length})` : "Keine offenen";
+  const cur = qi.inputCurrency;
+  const ST = { open: "Offen", up: "✓ Im Shop", rm: "Entfernt" };
+  root.querySelector("#qiListGrid").innerHTML = shown.length ? shown.map(x => {
+    const it = x.it, d = x.d;
+    const name = String((d && d.name != null && d.name !== "" ? d.name : it.name) || "").trim();
+    const eur = d && d.priceEur != null ? d.priceEur : (it.price == null || it.price === "" ? null : qiPriceToEur(it.price, qi.currency));
+    const pr = qiPriceShown(eur, cur);
+    const src = qiItemImageSrc(it);
+    const note = String(it.note || "").trim();
+    return `<button type="button" class="qi-tile st-${x.st}${x.cur ? " is-cur" : ""}" data-kind="${x.kind}" data-ref="${x.ref}" title="${aesc(name || "Ohne Name")}">
+        <span class="qi-tile-img">${src ? `<img src="${aesc(src)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">` : `<span class="qi-tile-noimg" aria-hidden="true">?</span>`}
+          <span class="qi-tile-st">${x.cur ? "Aktuell" : ST[x.st]}</span></span>
+        <span class="qi-tile-name">${aesc(name || "Ohne Name")}</span>
+        <span class="qi-tile-meta">${pr === "" ? "–" : (cur === "EUR" ? `${String(pr).replace(".", ",")} €` : `¥${String(pr).replace(".", ",")}`)}${it.url ? "" : ` · <b>kein Link</b>`}</span>
+        ${note ? `<span class="qi-tile-note">${aesc(note)}</span>` : ""}
+      </button>`;
+  }).join("") : `<p class="qi-list-empty">Hier ist gerade nichts.</p>`;
+}
+function qiListOpen(){
+  if(!qi || qi.closing || qi.view === "summary") return;
+  qiCaptureCurrent();          // was am aktuellen Produkt schon getippt ist, zeigt die Liste mit
+  qiListRender();
+  const l = qi.root.querySelector("#qiList");
+  l.hidden = false;
+  document.body.classList.add("qi-list-open");
+  l.querySelector(".qi-list-grid").scrollTop = 0;
+  const cur = l.querySelector(".qi-tile.is-cur");
+  if(cur) cur.scrollIntoView({ block: "center" });
+  l.querySelector("#qiListClose").focus();
+}
+function qiListClose(){
+  const l = qi?.root.querySelector("#qiList");
+  if(!l || l.hidden) return;
+  l.hidden = true;
+  document.body.classList.remove("qi-list-open");
+  qi.root.querySelector("#qiListBtn")?.focus();
+}
+function qiWireList(root){
+  const l = root.querySelector("#qiList");
+  root.querySelector("#qiListClose").addEventListener("click", qiListClose);
+  root.querySelector("#qiExportBtn").addEventListener("click", ()=> qiExportOpen());
+  root.querySelector("#qiListFilter").addEventListener("click", e => {
+    const b = e.target.closest("[data-f]");
+    if(!b) return;
+    qi.listFilter = b.dataset.f;
+    qiListRender();
+  });
+  root.querySelector("#qiListGrid").addEventListener("click", e => {
+    const t = e.target.closest(".qi-tile");
+    if(t) qiJumpTo(t.dataset.kind, Number(t.dataset.ref));
+  });
+  l.addEventListener("keydown", e => {
+    if(e.key === "Escape"){ e.preventDefault(); e.stopPropagation(); qiListClose(); }
+  });
+  l.addEventListener("click", e => { if(e.target === l) qiListClose(); });   // daneben tippen
+}
+// Direkt zu einem Produkt springen: offenes wird das aktuelle (das bisherige
+// bleibt gleich dahinter), erledigtes oeffnet sich wie bei "‹ Zurück".
+function qiJumpTo(kind, ref){
+  if(!qi || qi.closing || qi.backEntry?.busy) return;
+  if(qi.backEntry){
+    if(!qiLeaveBack()){ qiListClose(); return; }    // z.B. Name fehlt -- erst das klaeren
+  } else if(qi.queue.length && qi.view === "card"){
+    qiCaptureCurrent();
+    qiSaveNow();
+  }
+  if(kind === "q"){
+    const i = qi.queue.findIndex(x => x.uid === ref);
+    if(i < 0) return;
+    if(i > 0) qi.queue.unshift(qi.queue.splice(i, 1)[0]);
+    qi.backEntry = null;
+  } else {
+    const e = qiHistory().find(x => x.id === ref);
+    if(!e) return;
+    qi.backEntry = e;
+    e.edit = null;
+  }
+  qiPersist();
+  qiHideToast();
+  const l = qi.root.querySelector("#qiList");
+  l.hidden = true;
+  document.body.classList.remove("qi-list-open");
+  qiShow(true);
+  qi.root.scrollTop = 0;
+}
+
+// ---- Export: offene Produkte als Excel (laesst sich genauso wieder importieren) ----
+function qiExportOpen(){
+  if(!qi) return;
+  qiCaptureCurrent();
+  const items = qi.queue.slice();
+  if(!items.length){ qiToastInfo("Keine offenen Produkte zum Exportieren."); return; }
+  const sym = qi.currency === "EUR" ? "€" : "¥";
+  const rows = [["Link", "Name", `Preis (${sym})`, "Bild", "Notiz"]];
+  let ordner = 0;
+  for(const it of items){
+    const d = it.draft;
+    const name = String((d && d.name != null ? d.name : it.name) || "").trim();
+    let price = it.price;
+    if(d && d.priceEur != null) price = qiPriceShown(d.priceEur, qi.currency);
+    const num = price === null || price === undefined || price === "" ? null : Number(price);
+    const bild = it.hosted || it.image || it.file || "";
+    if(!it.hosted && !it.image && it.file) ordner++;
+    rows.push([it.url || "", name, Number.isFinite(num) ? num : "", bild, String(it.note || "").trim()]);
+  }
+  const base = String(qi.fileName || "Import").replace(/\.(xlsx|csv)$/i, "").replace(/[\\/:*?"<>|]+/g, "_").trim() || "Import";
+  qiDownload(qiXlsxBlob(rows, "Offene Produkte", [48, 42, 12, 48, 30]), `${base} - offen (${items.length}).xlsx`);
+  qiToastInfo(`${items.length} offene${items.length === 1 ? "s Produkt" : " Produkte"} exportiert${ordner ? " – beim Wieder-Import den Bilder-Ordner mit hineinziehen" : ""}.`);
+}
+function qiDownload(blob, name){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  a.rel = "noopener";
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=> URL.revokeObjectURL(url), 60000);
+}
+
+// Schlichte .xlsx-Datei (ein Blatt, fette Kopfzeile, fixiert) -- ohne Bibliothek.
+function qiXlsxBlob(rows, sheetName, widths = []){
+  const esc = v => String(v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "")
+    .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const col = i => { let s = ""; for(let n = i + 1; n; n = Math.floor((n - 1) / 26)) s = String.fromCharCode(65 + (n - 1) % 26) + s; return s; };
+  const body = rows.map((r, ri) => `<row r="${ri + 1}">` + r.map((v, ci) => {
+    const ref = col(ci) + (ri + 1), st = ri === 0 ? ' s="1"' : "";
+    if(typeof v === "number" && Number.isFinite(v)) return `<c r="${ref}"${st}><v>${v}</v></c>`;
+    if(v === null || v === undefined || v === "") return "";
+    return `<c r="${ref}" t="inlineStr"${st}><is><t xml:space="preserve">${esc(v)}</t></is></c>`;
+  }).join("") + `</row>`).join("");
+  const head = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+  const R = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+  const files = {
+    "[Content_Types].xml": head + `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`,
+    "_rels/.rels": head + `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${R}/officeDocument" Target="xl/workbook.xml"/></Relationships>`,
+    "xl/workbook.xml": head + `<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="${R}"><sheets><sheet name="${esc(sheetName).slice(0, 31)}" sheetId="1" r:id="rId1"/></sheets></workbook>`,
+    "xl/_rels/workbook.xml.rels": head + `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${R}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${R}/styles" Target="styles.xml"/></Relationships>`,
+    "xl/styles.xml": head + `<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`,
+    "xl/worksheets/sheet1.xml": head + `<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>${widths.length ? `<cols>${widths.map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`).join("")}</cols>` : ""}<sheetData>${body}</sheetData></worksheet>`
+  };
+  return new Blob([qiZipStore(files)], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+}
+const QI_CRC_TABLE = (()=>{
+  const t = new Uint32Array(256);
+  for(let n = 0; n < 256; n++){ let c = n; for(let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; }
+  return t;
+})();
+function qiCrc32(u8){
+  let c = 0xFFFFFFFF;
+  for(let i = 0; i < u8.length; i++) c = QI_CRC_TABLE[(c ^ u8[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+// ZIP ohne Kompression (Excel liest das problemlos; die Dateien sind klein).
+function qiZipStore(files){
+  const enc = new TextEncoder(), parts = [], central = [];
+  const now = new Date();
+  const dosTime = (now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1);
+  const dosDate = (Math.max(0, now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
+  let offset = 0, n = 0;
+  for(const [name, content] of Object.entries(files)){
+    const nb = enc.encode(name), data = enc.encode(content), crc = qiCrc32(data);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(8, 0, true);
+    lh.setUint16(10, dosTime, true); lh.setUint16(12, dosDate, true); lh.setUint32(14, crc, true);
+    lh.setUint32(18, data.length, true); lh.setUint32(22, data.length, true); lh.setUint16(26, nb.length, true); lh.setUint16(28, 0, true);
+    parts.push(new Uint8Array(lh.buffer), nb, data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true); ch.setUint16(10, 0, true);
+    ch.setUint16(12, dosTime, true); ch.setUint16(14, dosDate, true); ch.setUint32(16, crc, true);
+    ch.setUint32(20, data.length, true); ch.setUint32(24, data.length, true); ch.setUint16(28, nb.length, true);
+    ch.setUint32(42, offset, true);
+    central.push(new Uint8Array(ch.buffer), nb);
+    offset += 30 + nb.length + data.length;
+    n++;
+  }
+  const cdSize = central.reduce((a, b) => a + b.length, 0);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, n, true); end.setUint16(10, n, true);
+  end.setUint32(12, cdSize, true); end.setUint32(16, offset, true);
+  return new Blob([...parts, ...central, new Uint8Array(end.buffer)]);
+}
+
 function qiPrepareAhead(){
   qi.queue.slice(1, 4).forEach(it => {
     if(qiLocalFileOf(qi, it)) return;
@@ -19280,7 +19767,8 @@ function qiLeaveBack({ silent = false } = {}){
 function qiUpdateUploaded(e, d, { silent = false } = {}){
   const session = qi, rec = e.rec, it = rec.item;
   const imgNeu = !!it.imageChanged;
-  if(qiDraftKey(d) === qiDraftKey(rec.draft) && !imgNeu){ e.edit = null; return true; }
+  const linkNeu = !!it.linkChanged;
+  if(qiDraftKey(d) === qiDraftKey(rec.draft) && !imgNeu && !linkNeu){ e.edit = null; return true; }
   const t = qiCheckReady(it, d, { silent });
   if(!t) return false;
   let sort_order = rec.sort_order;
@@ -19295,6 +19783,7 @@ function qiUpdateUploaded(e, d, { silent = false } = {}){
   rec.draft = d;
   rec.sort_order = sort_order;
   it.imageChanged = false;
+  it.linkChanged = false;
   e.edit = null;
   session.changed = true;
   // Laeuft hinter einem evtl. noch laufenden Hochladen -- das nimmt dann
@@ -19575,6 +20064,10 @@ function qiOnKeydown(e){
   if(qi.view !== "card" || !t.closest("#qiForm")) return;
   e.preventDefault();
   if(e.repeat) return;    // gedrueckt gehaltenes Enter laedt nicht reihenweise hoch
+  // Enter im Link-Feld uebernimmt den Link, im Notiz-Feld merkt es die Notiz --
+  // beides laedt NICHT hoch.
+  if(t.id === "qiLinkInput"){ qi.root.querySelector("#qiLinkSave")?.click(); return; }
+  if(t.id === "qiNote"){ qiNoteCommit(t.value); t.blur(); return; }
   qiSubmit();
 }
 
