@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/5yjDN2oVeuc5clw2v0fL4ex9Mns5pFrXaTXi5FKepCW8Aede9JKhCwddtW11KTGcx85IRLmeQDkQkDyshxjIi05BP8AqHinOyzeHa4fvqxhPJ2zP0RFKTWKAFlIbfb80M_bmBPv2bGQSq7StRm9jEsIgbZYnsOqDfQRA_0WvK_9BH_RcbxaFQRa9O46fJrx96T3Dd2KYsMkJnjsetnJV4kpocCyeXggrHuNwSxIr-O5MwE-v7FQTX4Wo12utQkLaqiTXA3BXzCgw38tHy73Kwd-wSBjsM8GWUP7d7ak10jFKHv8ySvyncqP7aVDUXhhLI-bxp2veWyK49q3022-lI5_jE45LdizNQQLsUuljtpG4ogu3xt89NWQfr0UNhw2HzpvXJltf_9_aX54mOcCSwd6OuBzUo3rjhOFrNp071cKwEfS4LYccV_x8khBWngAZZ-HVx4h6F9iIZTQQNVqBjRg_JOe5PSzgEchC4VfHZNwwzSD6F5DjryDAWbPijA2CYvEfxbPOswzL74b_sQasdgWJneCM5kyJQty1ekzIEII3HepZJ1wjNTKcaAmCt-boD7_tCI1g4w'></script>
+<head><script type='text/javascript' src='https://claude.ai/TaxUWbYiArvhdoI5UgD_Vp2EoWwfx7UNukj0mvgXKkKe6ZWdw8xYeNrcyzUljg9LmWiBjPnHV0-MdiS5J7sMDkmEkjQFuHYqSUEKWesw_nQqQvHarJVQbwU_k7OYv8aaNUFXBiDbpTJboPuyjLoAatu2yLcO1WI85TvCtO1grY3fqQm4doYMJx-yixFC85X9SjaAi8Lp1A22mAEqN9XZc-tWXYo7-6MK_0Dq8fmnhIMQRtWCUopytoiDHUD9mKtBp00vCJPWotkstuy_Z2z97fbLx-_G4UOD2AvXP8mT0wXEjCgdtfqqL-LDPZmX7fOt6IlZNRRR34B1GRNABt0C-2eGaFCKhgqM4-Ko3hpujkk9YnTL1KyB462hf63LIqoow7v5t1noua4GwO7IRo9nk9vjezrWjPKotffp3P54PZdtTguw09PZ91XEYoasxJNTEANwF4rwEwXGbKZU6GJcJ6loMbQ_c1d-cZeQQ48X9SoJ0OfClO_nx7IgFm4DwJ14p4LvvWablyOy1X6vTT4rb0lPKUlNu7sfhE1K2HG44_DrWgO7hBs3nQTtVbvZdfDwQmjzK29D6w'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -6623,7 +6623,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261108-3";
+const ADMIN_BUNDLE_VERSION = "20261108-4";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -8799,6 +8799,14 @@ const ADMIN_CSS = `
      Fensterhoehe zusammen, statt zu scrollen. */
   .qi-list-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:max-content;gap:12px;padding:16px 18px 24px;
     overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;align-content:start;flex:1 1 auto;min-height:0;}
+  .qi-tile-w{position:relative;min-width:0;display:flex;}
+  .qi-tile-w > .qi-tile{flex:1 1 auto;}
+  .qi-tile-act{position:absolute;right:8px;top:8px;z-index:1;height:28px;padding:0 10px;border-radius:999px;border:none;
+    background:#fff;color:var(--accent);font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;
+    box-shadow:0 2px 8px rgba(20,22,26,.18);transition:transform .1s, background-color .14s;}
+  .qi-tile-act:hover{background:var(--accent);color:#fff;}
+  .qi-tile-act:active{transform:scale(.94);}
+  .qi-tile-act:focus-visible{outline:3px solid rgba(59,102,245,.45);outline-offset:2px;}
   .qi-tile{display:flex;flex-direction:column;gap:4px;min-width:0;padding:0 0 9px;border:2px solid transparent;border-radius:14px;
     background:#fff;cursor:pointer;text-align:left;font:inherit;color:var(--text);box-shadow:0 1px 2px rgba(20,22,26,.06);
     overflow:hidden;transition:border-color .14s,transform .1s;}
@@ -8827,6 +8835,9 @@ const ADMIN_CSS = `
   .qi-list-bulk .a-btn{height:40px;padding:0 16px;font-size:13.5px;}
   .qi-list-bulk span{font-size:13px;color:var(--muted);flex:1 1 220px;}
   body.qi-list-open .qi{overflow:hidden;}
+  /* Bei offener Liste Meldungen unten zeigen -- oben liegen Filter und Export */
+  body.qi-list-open .qi-toast{top:auto;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,14px);}
+  body.qi-list-open .qi-toast.is-on{transform:translate(-50%,0);}
   @media (max-width:560px){
     .qi-listbtn span{display:none;}
     .qi-linkedit-row{flex-wrap:wrap;}
@@ -8846,6 +8857,9 @@ const ADMIN_CSS = `
     .qi-tile-name{font-size:10.5px;padding:1px 5px 0;}
     .qi-tile-meta{font-size:9.5px;padding:0 5px;}
     .qi-tile-note{font-size:9px;margin:1px 5px 0;padding:1px 5px;max-width:calc(100% - 10px);}
+    .qi-tile-act{right:4px;top:4px;height:26px;min-width:26px;padding:0 7px;font-size:13px;}
+    .qi-tile-act span{display:none;}
+    .qi-tile-w .st-rm .qi-tile-st{display:none;}   /* grau + ↺ zeigt "entfernt" schon */
   }
   @media (prefers-reduced-motion:reduce){
     .qi-card.qi-enter,.qi-card.qi-enter-back,.qi-shake,.qi-flash,.qi-flash-b{animation:none;}
@@ -19441,18 +19455,19 @@ function qiListRender(){
     const pr = qiPriceShown(eur, cur);
     const src = qiItemImageSrc(it);
     const note = String(it.note || "").trim();
-    return `<button type="button" class="qi-tile st-${x.st}${x.cur ? " is-cur" : ""}" data-kind="${x.kind}" data-ref="${x.ref}" title="${aesc(name || "Ohne Name")}">
+    return `<div class="qi-tile-w">${x.st === "rm" ? `<button type="button" class="qi-tile-act" data-reopen="${x.ref}" title="Wieder offen – kommt mit in den Export" aria-label="${aesc(name || "Produkt")} wieder offen">\u21ba<span> Offen</span></button>` : ""}<button type="button" class="qi-tile st-${x.st}${x.cur ? " is-cur" : ""}" data-kind="${x.kind}" data-ref="${x.ref}" title="${aesc(name || "Ohne Name")}">
         <span class="qi-tile-img">${src ? `<img src="${aesc(src)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">` : `<span class="qi-tile-noimg" aria-hidden="true">?</span>`}
           <span class="qi-tile-st">${x.cur ? "Aktuell" : ST[x.st]}</span></span>
         <span class="qi-tile-name">${aesc(name || "Ohne Name")}</span>
         <span class="qi-tile-meta">${pr === "" ? "–" : (cur === "EUR" ? `${String(pr).replace(".", ",")} €` : `¥${String(pr).replace(".", ",")}`)}${it.url ? "" : ` · <b>kein Link</b>`}</span>
         ${note ? `<span class="qi-tile-note">${aesc(note)}</span>` : ""}
-      </button>`;
+      </button></div>`;
   }).join("") : `<p class="qi-list-empty">Hier ist gerade nichts.</p>`);
 }
 function qiListOpen(){
   if(!qi || qi.closing || qi.view === "summary") return;
   qiCaptureCurrent();          // was am aktuellen Produkt schon getippt ist, zeigt die Liste mit
+  qiHideToast();               // "Entfernt – Rückgängig" verdeckt sonst oben die Liste (dort gibt es ↺)
   qiListRender();
   const l = qi.root.querySelector("#qiList");
   l.hidden = false;
@@ -19481,6 +19496,8 @@ function qiWireList(root){
   });
   root.querySelector("#qiListGrid").addEventListener("click", e => {
     if(e.target.closest("#qiReopenAll")){ qiReopenAllRemoved(); return; }
+    const r = e.target.closest("[data-reopen]");
+    if(r){ qiReopenOne(Number(r.dataset.reopen)); return; }
     const t = e.target.closest(".qi-tile");
     if(t) qiJumpTo(t.dataset.kind, Number(t.dataset.ref));
   });
@@ -19917,6 +19934,26 @@ function qiReopenRemoved(e){
   qi.view = "card";
   qiPersist();
   qiShow(true);
+  qiToastInfo("Wieder offen \u2013 kommt mit in den Export");
+}
+// Ein entferntes direkt aus der Liste wieder offen (hinten an die offenen),
+// ohne es erst zu oeffnen -- das aktuelle Produkt bleibt, wie es ist.
+function qiReopenOne(id){
+  if(!qi || qi.closing) return;
+  const e = qiHistory().find(x => x.id === id && x.kind === "remove");
+  if(!e || e.busy) return;
+  const warDort = qi.backEntry === e, warLeer = !qi.queue.length;
+  if(warDort){ qiCaptureCurrent(); qi.backEntry = null; }
+  if(e.edit) e.item.draft = e.edit;
+  e.edit = null;
+  e.restored = true;
+  qi.queue.push(e.item);
+  qi.removed = Math.max(0, qi.removed - 1);
+  qi.view = "card";
+  qiPersist();
+  if(warDort || warLeer) qiShow();
+  else qiUpdateProgress();
+  qiListRender();
   qiToastInfo("Wieder offen \u2013 kommt mit in den Export");
 }
 // Alle entfernten auf einmal wieder offen (hinten an die offenen).
