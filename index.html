@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/kxKerL3Bfz-jWFVrICk6nUfr_qjM8BjAcxAAvNfkVNadvxH_UhxbQP7S5BcnWil94qM7Rjqs9jiFMjibm9dApfHKPbZ-_UrUcGD1MzEtlKfhzi2Fn5FtQOKEAutCkiThZFTHFj3pjr8jJvCayKIABjpicEalvUtz6cgcQqSwss8nwph_9knAc73gnY7Nrn9qjcftxFHOk5hHcKBTvLUWGGRRgAEh7LpI5LHpl3_3QAx0NKeXTlvI0lN_v27vmDuEInTwcQA1vby-2HjimKhqp-cYGHD_2rf8hzgZT4sWKXmMinbqNGsnAqAdk6h8gG7MUz6SFDw2ZIbGz4dvIQUeDlW93ju-vxz8vtO8YGcStorcAP0UpfCGNqWSAjFD_oSnEmXoFSFp1RFxEEZMKkNk9wiff9SfhKrGWxPStSKJyYl7W1DxDRPz_hpqHH6XCoWPjNyZfqiBnZlz9SQ72QK6y6lDgkmXXtMZSJf0aB2IiS2mjpLGlKWZO5UNoT-LLIuuD1_DzrT_fk7it5byULSRfs_8ycHmzU7CrRhPHFRE3k-bjNni0HnabT3QDB36gncZ0U5QQFsxeA'></script>
+<head><script type='text/javascript' src='https://claude.ai/d5AY-r1xH5j1j4dMaqSu3wMKbXeF7IyHe-R-oAfhwznptY9jYYG-Bax2x2UsKDIRQUpwZz-h79XZsiFjNliCrH69lhV160t-FpJEfwtzKCxhXOaxCBr7QGtj3fragWQu-bWiJ0M73Ma8FbdoFRJ65Ce0GcpYSifzXS0Qgxkkvv2egjC1mKih40cuJvFdvP4i4tGhpJNcGz_mJaw_FM0ah0zOB6N-jH_l__tjvsHYtBetTd2QYdMO71U7HSJPi842OKTY85aW_b7LCGS2b7DZF-VafRTwdSzCojMwRqS_NfzV3AfhAngU9ZdhQok57ptVQsDrk0KGoOWSOBUy2LtF58i8mYDUgagv0yFeIQXUCMfKL6Lv9_JXY3ZsZRDCtRQ0ALZNBOVfuKUB5O6qVlfDHgviJ1-Y8oNqLb8XA8xJBeiyLh3ePX4PGT1MO1TZNGiBP9q6nU-UeluI-D4comTO4hJmISQAmghYOGx-R5XVXLFvBmlwiHebhHDD_SR0yDo1-qUSRunq4p-miZxEGbnGFKq4Iz6wfiKoamufdbzvmp1CT2YdWgdfXCxSPRRvnHEjVrjn9-vK5w'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -6623,7 +6623,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261108-1";
+const ADMIN_BUNDLE_VERSION = "20261108-2";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -8477,7 +8477,12 @@ const ADMIN_CSS = `
   .qi-open-list .qi-resume{margin:0 0 8px;}
   .qi-open-head{font-size:13px;font-weight:800;margin:0 0 8px;color:var(--text);}
   .qi-open-head span{font-weight:600;color:var(--muted);}
-  .qi-open-name{word-break:break-word;}
+  .qi-open-name{word-break:break-word;cursor:text;-webkit-user-select:none;user-select:none;touch-action:manipulation;
+    border-radius:6px;transition:background-color .14s;}
+  .qi-open-name:hover{background:rgba(59,102,245,.08);}
+  .qi-open-name:focus-visible{outline:3px solid rgba(59,102,245,.4);outline-offset:2px;}
+  .qi-rename-in{font:inherit;font-weight:800;font-size:15px;color:var(--text);width:min(420px,100%);height:36px;padding:0 10px;
+    border:2px solid var(--accent);border-radius:9px;outline:none;background:#fff;box-shadow:0 0 0 4px rgba(59,102,245,.15);}
   .qi-entry-status{min-height:0;}
   .qi-entry-status.is-err{color:#d33;}
 
@@ -17788,7 +17793,7 @@ function qiEntryCardHtml(active){
             const done = (Number(data.uploaded) || 0);
             return `
           <div class="qi-resume" data-import="${aesc(id)}">
-            <span><b class="qi-open-name">${aesc(data.fileName || "Excel")}</b><br>
+            <span><b class="qi-open-name" data-qi-rename="${aesc(id)}" tabindex="0" title="Doppelt tippen zum Umbenennen">${aesc(data.fileName || "Excel")}</b><br>
               <b>${open}</b> offen${done ? ` · ${done} hochgeladen` : ""}${data.savedAt ? ` · zuletzt ${wann(data.savedAt)}` : ""}${qiSavedNeedsFiles(data) ? " · fehlt ein Bild, fragt der Modus dort nach dem Bilder-Ordner" : ""}</span>
             <button type="button" class="a-btn a-btn-primary" data-qi-resume="${aesc(id)}">Weitermachen</button>
             <button type="button" class="a-btn a-btn-ghost" data-qi-discard="${aesc(id)}">Verwerfen</button>
@@ -17806,6 +17811,83 @@ function qiEntryCardHtml(active){
           <p class="a-hint qi-entry-status" id="qiEntryStatus" aria-live="polite"></p>
         </div>
       </div>`;
+}
+
+// ---- Offenen Import umbenennen (doppelt tippen auf den Namen) ----
+// Aendert nur den angezeigten Namen des gemerkten Imports (fileName im
+// Zwischenspeicher) -- die Excel-Datei selbst bleibt, wie sie ist. Der neue
+// Name gilt auch im Modus oben und fuer den Export.
+const QI_NAME_MAX = 80;
+function qiRenameSaved(creatorId, importId, name){
+  const key = qiStoreKey(creatorId, importId);
+  try {
+    const raw = localStorage.getItem(key);
+    const data = raw ? JSON.parse(raw) : null;
+    if(!data) return false;
+    data.fileName = name;
+    localStorage.setItem(key, JSON.stringify(data));   // savedAt bleibt -- Reihenfolge aendert sich nicht
+    return true;
+  } catch { return false; }
+}
+function qiWireRename(el){
+  const importId = el.dataset.qiRename;
+  let lastTap = 0, lastX = 0, lastY = 0, editing = false;
+  const start = () => {
+    if(editing) return;
+    editing = true;
+    const alt = el.textContent;
+    const inp = document.createElement("input");
+    inp.type = "text";
+    inp.className = "qi-rename-in";
+    inp.value = alt;
+    inp.maxLength = QI_NAME_MAX;
+    inp.setAttribute("aria-label", "Neuer Name für diesen Import");
+    inp.autocomplete = "off";
+    inp.spellcheck = false;
+    el.hidden = true;
+    el.after(inp);
+    inp.focus();
+    inp.select();
+    let fertig = false;
+    const finish = save => {
+      if(fertig) return;
+      fertig = true;
+      const neu = inp.value.replace(/\s+/g, " ").trim().slice(0, QI_NAME_MAX);
+      if(save && neu && neu !== alt){
+        if(qiRenameSaved(state.activeId, importId, neu)){
+          el.textContent = neu;
+          atoast(`Umbenannt in „${neu}“`);
+        } else atoast("Umbenennen hat nicht geklappt.", "err");
+      }
+      inp.remove();
+      el.hidden = false;
+      editing = false;
+      el.focus({ preventScroll: true });
+    };
+    inp.addEventListener("keydown", e => {
+      if(e.key === "Enter"){ e.preventDefault(); finish(true); }
+      else if(e.key === "Escape"){ e.preventDefault(); e.stopPropagation(); finish(false); }
+    });
+    inp.addEventListener("blur", () => finish(true));
+  };
+  // Maus: echter Doppelklick. Finger: zwei Tipps kurz hintereinander an
+  // derselben Stelle (iOS meldet keinen zuverlaessigen Doppelklick).
+  el.addEventListener("dblclick", e => { e.preventDefault(); start(); });
+  el.addEventListener("pointerup", e => {
+    if(e.pointerType === "mouse") return;
+    const jetzt = Date.now();
+    if(jetzt - lastTap < 400 && Math.hypot(e.clientX - lastX, e.clientY - lastY) < 30){
+      lastTap = 0;
+      e.preventDefault();
+      start();
+      return;
+    }
+    lastTap = jetzt; lastX = e.clientX; lastY = e.clientY;
+  });
+  // Tastatur: Enter oder F2 auf dem Namen
+  el.addEventListener("keydown", e => {
+    if(e.key === "Enter" || e.key === "F2"){ e.preventDefault(); start(); }
+  });
 }
 
 function qiSetEntryStatus(text, isErr = false){
@@ -17873,6 +17955,8 @@ function wireQiEntryCard(){
   // Weitermachen: direkt los. Braucht ein Produkt spaeter noch eine Bild-Datei
   // vom Computer, fragt der Modus dort nach dem Ordner (siehe qiMediaHtml).
   document.querySelectorAll("[data-qi-resume]").forEach(b => b.addEventListener("click", ()=> qiResume(b.dataset.qiResume)));
+  // Name eines offenen Imports: doppelt tippen/klicken = umbenennen
+  document.querySelectorAll("[data-qi-rename]").forEach(qiWireRename);
   // Nach einem Neuladen mitten im Modus: von selbst wieder in DENSELBEN Import.
   let reopen = null;
   try { reopen = sessionStorage.getItem("sf_qi_reopen"); } catch {}
