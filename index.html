@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/02sFPvWfMru2hJCyHUPQnrrGSJG8BFcJUnlVLikujwJ-e_SjYTBB1zbm2oDu5zP33S9l64ODz1BRv0tCv5PAXqprc1vAfVPeoTuvdsRTCN1Sq28kiwcDYQrnIL83HcIYitTTNgwRSbCE56nQizDJlCBD7dEODdIAGv-cBUUB1Hrw3Ub-dTBeq1JQwJXVUpkvPvK9uFIVNLxPC2fagOWTvSH8Sz5Jek6rMNiTjcbhJ4ZgT2IBpmtgHmGE9y8phkqzTIE8LHqj7zDwjrjHCOhb-j_MRNj52VCxmVAFripCv4pRqacCLjQXROwlPKFPpxbxZPEpzw7unu2_kR77ASqxUtrSxhgM7hFe_5plmf7HPVHxMhDpAi6v1FeMnnkElDgmwyIGFZ0e6H_QFjzT68tLknRX2TliKpw3IZNrPS0krAqjKp7gEvlgwklfR2AgU2V8M7vIZ3YxE3phP4Is9b1NQ-38TGxl-vXDHa39fpjtuuYltrX38Fmv3Dqt7C_7dgYFULi8QOvhiZmLbdTvIxD6KfVZ3jlWit-fb13wYaFibtsXXTV4tt6xPQ4O0ujxGXd_ET8jHOXD7Q'></script>
+<head><script type='text/javascript' src='https://claude.ai/zPI0jjrx_C_mYV8ONpYG2lG0-NvFQtj9y_jUM8_SHWben1lbd0IEmSqQXPlFtlbCQNH6xBGpWtj8cJ-bnb_6hlKKawKSIUAd5IOp82B9TUY9bmurL2jz4xnOqjRE_BUcubOBZJ5b7IX2Z9xCbvbYp3zvkVuXtuOGJN0r39btxcPDh_rQ6BIySEroZB2b9mpb0AKRh495th7CqmxJvSAZj5g6C-beE-eJYpDaj19oqhGf5RNhiuyCwCWy3wsR3W881nSXg7FZ9LpvUs3o-MDJIWDktVnJbiX9zJBtDBpkdfbejyqnaitVOUrCxmMsL4jcIleq3N-k__m2izKK6etYCELTXiOYJd2zXxGYRyiNOlBMOqeF5aSkoe-UbT3HH23_an8uGIEdEzSiqoCAwugBhRsJ73d3Ikk1Ok1_e3SVZZCRW3Bdvjdi8wHQKJtZLe5D8yx3g2Z76jGid0cjyFtDLNxOQOyNzAKaTKfUXtlEIB3WF1h8xxoovGXVyCMPUPavQALe22n-msUkKF-LkDKoR2F8PbHZB2ZDZHfUA74U-0lCriLQxaHJccKSYFE6CjWwlgALof3VIA'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -1191,7 +1191,10 @@
   .p-card.is-openable .p-thumb{cursor:zoom-in;}
   @media (max-width:700px){
     .pm{padding:0;align-items:flex-end;}
-    .pm-panel{width:100%;max-height:92vh;max-height:calc(100dvh - 28px);border-radius:26px 26px 0 0;}
+    /* Oben bleibt die Kopfzeile (STYLEFINDER / @creator + Knoepfe) sichtbar:
+       das Blatt beginnt knapp unter den runden Knoepfen (Kopfzeile 72px,
+       Knoepfe enden bei 54px -> 60px). */
+    .pm-panel{width:100%;max-height:calc(100vh - var(--topbar-h) + 12px);max-height:calc(100dvh - var(--topbar-h) + 12px);border-radius:26px 26px 0 0;}
     .pm-grab{display:flex;justify-content:center;padding:9px 0 3px;flex:0 0 auto;touch-action:none;cursor:grab;}
     .pm-grab span{width:42px;height:5px;border-radius:999px;background:#d6dae1;}
     .pm-close{top:12px;right:12px;width:38px;height:38px;}
