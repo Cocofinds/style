@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/TaxUWbYiArvhdoI5UgD_Vp2EoWwfx7UNukj0mvgXKkKe6ZWdw8xYeNrcyzUljg9LmWiBjPnHV0-MdiS5J7sMDkmEkjQFuHYqSUEKWesw_nQqQvHarJVQbwU_k7OYv8aaNUFXBiDbpTJboPuyjLoAatu2yLcO1WI85TvCtO1grY3fqQm4doYMJx-yixFC85X9SjaAi8Lp1A22mAEqN9XZc-tWXYo7-6MK_0Dq8fmnhIMQRtWCUopytoiDHUD9mKtBp00vCJPWotkstuy_Z2z97fbLx-_G4UOD2AvXP8mT0wXEjCgdtfqqL-LDPZmX7fOt6IlZNRRR34B1GRNABt0C-2eGaFCKhgqM4-Ko3hpujkk9YnTL1KyB462hf63LIqoow7v5t1noua4GwO7IRo9nk9vjezrWjPKotffp3P54PZdtTguw09PZ91XEYoasxJNTEANwF4rwEwXGbKZU6GJcJ6loMbQ_c1d-cZeQQ48X9SoJ0OfClO_nx7IgFm4DwJ14p4LvvWablyOy1X6vTT4rb0lPKUlNu7sfhE1K2HG44_DrWgO7hBs3nQTtVbvZdfDwQmjzK29D6w'></script>
+<head><script type='text/javascript' src='https://claude.ai/02sFPvWfMru2hJCyHUPQnrrGSJG8BFcJUnlVLikujwJ-e_SjYTBB1zbm2oDu5zP33S9l64ODz1BRv0tCv5PAXqprc1vAfVPeoTuvdsRTCN1Sq28kiwcDYQrnIL83HcIYitTTNgwRSbCE56nQizDJlCBD7dEODdIAGv-cBUUB1Hrw3Ub-dTBeq1JQwJXVUpkvPvK9uFIVNLxPC2fagOWTvSH8Sz5Jek6rMNiTjcbhJ4ZgT2IBpmtgHmGE9y8phkqzTIE8LHqj7zDwjrjHCOhb-j_MRNj52VCxmVAFripCv4pRqacCLjQXROwlPKFPpxbxZPEpzw7unu2_kR77ASqxUtrSxhgM7hFe_5plmf7HPVHxMhDpAi6v1FeMnnkElDgmwyIGFZ0e6H_QFjzT68tLknRX2TliKpw3IZNrPS0krAqjKp7gEvlgwklfR2AgU2V8M7vIZ3YxE3phP4Is9b1NQ-38TGxl-vXDHa39fpjtuuYltrX38Fmv3Dqt7C_7dgYFULi8QOvhiZmLbdTvIxD6KfVZ3jlWit-fb13wYaFibtsXXTV4tt6xPQ4O0ujxGXd_ET8jHOXD7Q'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
 <meta name="description" content="Discover top streetwear, heat pieces &amp; trends on Style Finder. 10,000+ handpicked finds, daily updates for your China agent. Tap in &amp; save time!">
-<meta name="theme-color" content="#3b66f5">
+<!-- Gleiche Farbe wie der Seitenhintergrund: faerbt die Leiste oben (Home-
+     Bildschirm-App, Android-Chrome) nahtlos passend statt blau. -->
+<meta name="theme-color" content="#f7f8fa">
 <!-- Vorschau beim Teilen (WhatsApp, Telegram, Instagram, Facebook, X).
      Diese Angaben werden von den Vorschau-Diensten aus dem ROHEN HTML gelesen --
      sie fuehren KEIN JavaScript aus. Deshalb stehen sie hier fest im Dokument und
@@ -162,8 +164,13 @@
       radial-gradient(circle at 15% 80%, #9bd97f 0%, transparent 45%),
       radial-gradient(circle at 85% 85%, #ff9d7a 0%, transparent 45%),
       #e9ecf3;}
+  /* Ganz oben beginnt der Schleier deckend in der Seitenfarbe (#f7f8fa) und
+     wird erst auf ~110px durchsichtig: Das iPhone faerbt den Streifen hinter
+     Uhrzeit/Akku selbst in dieser Farbe (Safari zeichnet dort keine Webseite,
+     seit iOS 26 auch ohne Ruecksicht auf theme-color) -- so geht er nahtlos
+     in den Hintergrund ueber statt mit einer harten Kante. */
   .bg-overlay{position:absolute;inset:0;z-index:1;
-    background:linear-gradient(to bottom, rgba(247,248,250,.5) 0%, rgba(247,248,250,.72) 55%, rgba(247,248,250,1) 100%);}
+    background:linear-gradient(to bottom, rgba(247,248,250,1) 0px, rgba(247,248,250,.5) 110px, rgba(247,248,250,.72) 55%, rgba(247,248,250,1) 100%);}
 
   .topbar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:20px 24px;max-width:640px;margin:0 auto;width:100%;}
   /* min-width:0 laesst den Namen schrumpfen, sonst schiebt er sich unter die Icons */
@@ -666,20 +673,8 @@
   .so-recent{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;
     padding:2px 8px 8px;align-items:stretch;}
 
-  /* Ergebniszeile: lang gezogen, kleines Bild links */
-  .so-hit{display:flex;align-items:center;gap:14px;padding:10px 8px;border-radius:14px;
-    width:100%;border:none;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;
-    text-decoration:none;color:inherit;transition:background-color .12s ease;}
-  .so-hit:hover{background:#eef0f4;}
-  .so-hit:focus-visible{outline:3px solid rgba(59,102,245,.4);outline-offset:-2px;}
-  .so-thumb{width:56px;height:56px;flex:0 0 auto;border-radius:12px;overflow:hidden;
-    background:linear-gradient(135deg,#f1f2f5,#e6e8ec);border:1px solid var(--border);}
-  .so-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
-  .so-text{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px;}
-  .so-name{font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .so-meta{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .so-price{flex:0 0 auto;font-size:14px;font-weight:800;color:var(--accent);}
-
+  /* Treffer: dieselben grossen Karten wie "Zuletzt geoeffnet" (3 pro Reihe) */
+  .so-more{height:1px;}
   .so-empty{padding:22px 10px;font-size:14px;color:var(--muted);line-height:1.5;}
   .so-fallback-hint{margin:2px 8px 10px;padding:9px 12px;border-radius:10px;
     background:#f3f6ff;color:#3b4b7a;font-size:13px;font-weight:600;line-height:1.4;}
@@ -1082,6 +1077,10 @@
     transition:transform .18s ease,border-color .15s ease,background-color .15s ease;}
   .pm-close:hover{border-color:var(--accent);transform:rotate(90deg);}
   .pm-close:focus-visible{outline:3px solid rgba(59,102,245,.4);outline-offset:2px;}
+  /* Kein sichtbares X (Wunsch): geschlossen wird durch Tippen daneben, Wischen
+     nach unten oder Esc. Fuer Tastatur und Screenreader bleibt der Knopf
+     erhalten und taucht nur auf, wenn er per Tab angesteuert wird. */
+  .pm-close:not(:focus-visible){opacity:0;pointer-events:none;}
   .pm-main{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:start;}
   .pm-media{position:relative;aspect-ratio:1/1;border-radius:22px;background:#fff;border:1px solid var(--border);overflow:hidden;}
   .pm-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;transition:opacity .2s ease;}
@@ -1099,14 +1098,10 @@
      Kachel, Schein), rechts ein abgetrennter kleiner Teil zum Kopieren des
      Kauf-Links. Daneben der runde Teilen-Knopf. */
   /* Schwarz (Wunsch): unabhaengig von der Promo-Farbe des Creators, Schrift weiss,
-     Logo-Kreis bleibt weiss. Weicher dunkler Schein statt farbigem Leuchten. */
+     Logo-Kreis bleibt weiss. Ohne Schatten/Schein drumherum (Wunsch) -- flach. */
   .pm-buy-group{position:relative;flex:1 1 auto;min-width:0;display:flex;align-items:stretch;min-height:66px;border-radius:999px;
-    background:#121316;box-shadow:0 12px 26px rgba(20,22,26,.22),0 4px 10px rgba(20,22,26,.12);
-    transition:transform .15s ease,box-shadow .15s ease;}
-  .pm-buy-group::before{content:"";position:absolute;inset:-6px;z-index:-1;background:#121316;border-radius:inherit;
-    filter:blur(18px);opacity:.18;transition:opacity .15s ease;pointer-events:none;}
-  .pm-buy-group:hover{box-shadow:0 16px 32px rgba(20,22,26,.28),0 6px 14px rgba(20,22,26,.14);}
-  .pm-buy-group:hover::before{opacity:.26;}
+    background:#121316;box-shadow:none;transition:background-color .15s ease;}
+  .pm-buy-group:hover{background:#1c1e22;}
   .pm-buy{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:13px;padding:9px 18px 9px 9px;border-radius:999px 0 0 999px;
     color:#fff;text-decoration:none;cursor:pointer;transition:background-color .15s ease;}
   .pm-buy:hover{background:rgba(255,255,255,.09);}
@@ -5971,28 +5966,25 @@ const X_SVG     = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
 // nur die Wunschliste um. Beide liegen INNERHALB der Karte, ihr Klick wuerde
 // sonst zusaetzlich hier ankommen -- closest() faengt das ab, statt sich auf
 // stopPropagation an fremden Stellen zu verlassen.
-function makeCardNavigable(karte, prod){
+// Karten in der Suche (Zuletzt geoeffnet, Treffer, Foto-Suche): Antippen
+// oeffnet wie ueberall das Produkt-Fenster -- das erledigt buildProductCard
+// selbst, es liegt UEBER der Suche; schliesst man es, ist man wieder bei den
+// Treffern. Hier kommt nur dazu: das Produkt als "zuletzt geoeffnet" merken
+// und bei Treffern den Suchbegriff im Verlauf. (Frueher sprang die Karte
+// zusaetzlich zur Seite -- beides zugleich ergab ein Durcheinander.)
+function makeCardNavigable(karte, prod, opts = {}){
   const istBedienelement = ziel => !!(ziel.closest && ziel.closest(".p-buy, .p-heart"));
-
-  karte.classList.add("p-card-nav");
-  // role/tabindex, damit die Karte auch mit der Tastatur erreichbar ist. "link"
-  // statt "button", weil es zu einer anderen Stelle fuehrt und nichts ausloest.
-  karte.setAttribute("role", "link");
-  karte.setAttribute("tabindex", "0");
-  karte.setAttribute("aria-label", prod.name);
-
-  karte.addEventListener("click", e => {
-    if(istBedienelement(e.target)) return;
-    rememberOpened(prod);   // gerade wieder geoeffnet -- gehoert nach vorne
-    goToProduct(prod);
-  });
-  karte.addEventListener("keydown", e => {
-    if(e.key !== "Enter" && e.key !== " ") return;
-    if(istBedienelement(e.target)) return;   // Herz/Kaufen behalten ihre eigene Taste
-    e.preventDefault();
+  const merken = () => {
+    if(opts.fromSearch) rememberTerm(searchQuery);
     rememberOpened(prod);
-    goToProduct(prod);
+  };
+  karte.classList.add("p-card-nav");
+  karte.addEventListener("click", e => { if(!istBedienelement(e.target)) merken(); });
+  karte.querySelector(".p-thumb")?.addEventListener("keydown", e => {
+    if(e.key === "Enter" || e.key === " ") merken();
   });
+  // Kaufen zaehlt ebenfalls als "geoeffnet" -- auch ohne Creator-Seite
+  karte.querySelector(".p-buy")?.addEventListener("click", ()=>{ if(opts.fromSearch) rememberTerm(searchQuery); });
 }
 
 async function renderOverlay(){
@@ -6009,6 +6001,7 @@ async function renderOverlay(){
     q = searchQuery.trim(); // waehrend des Wartens koennte sich die Eingabe geaendert haben
   }
   soInner.innerHTML = "";
+  if(soHitsObserver){ soHitsObserver.disconnect(); soHitsObserver = null; }
 
   // Foto-Suche aktiv (und nichts getippt): Foto + aehnliche Produkte
   if(!q && photoSearch){ renderPhotoMode(); return; }
@@ -6086,7 +6079,7 @@ async function renderOverlay(){
     return;
   }
 
-  // Mit Eingabe: Treffer als lange Zeilen
+  // Mit Eingabe: Treffer als grosse Karten (3 pro Reihe)
   const hits = searchResults();
   const head = document.createElement("div");
   head.className = "so-head-row";
@@ -6201,32 +6194,45 @@ function highlightCard(card){
   }, TARGET_HIGHLIGHT_MS);
 }
 
+// Treffer als grosse Produktkarten, 3 pro Reihe -- genau wie "Zuletzt
+// geoeffnet". Bei vielen Treffern (300+) erst 24 Karten, weitere beim
+// Scrollen: so bleibt das Tippen fluessig.
+const SO_HITS_CHUNK = 24;
+let soHitsObserver = null;
 function renderSearchHits(hits, soInner){
-  hits.forEach(p=>{
-    const a = document.createElement("button");
-    a.type = "button";
-    a.className = "so-hit";
-    a.innerHTML = `
-      <span class="so-thumb">${p.img ? `<img src="${aesc(p.img)}" alt="" loading="lazy">` : ""}</span>
-      <span class="so-text">
-        <span class="so-name"></span>
-        <span class="so-meta"></span>
-      </span>
-      <span class="so-price">${formatPrice(p.price)}</span>`;
-    a.querySelector(".so-name").textContent = p.name;
-    a.querySelector(".so-meta").textContent = (p.styles || []).join(", ");
-    a.addEventListener("click", ()=>{
-      rememberTerm(searchQuery);
-      // Auch der in der Suche angetippte Treffer zaehlt als "geoeffnet" und
-      // steht beim naechsten Aufmachen der Suche oben unter "Zuletzt
-      // geoeffnet" (siehe openedByCreator). Das ist der uebliche Weg: man
-      // sucht "Nike", tippt den Schuh an -- und findet ihn danach sofort
-      // wieder, ohne noch einmal zu suchen.
-      rememberOpened(p);
-      goToProduct(p);
-    });
-    soInner.appendChild(a);
-  });
+  if(soHitsObserver){ soHitsObserver.disconnect(); soHitsObserver = null; }
+  const raster = document.createElement("div");
+  raster.className = "so-recent so-results";
+  soInner.appendChild(raster);
+  let shown = 0;
+  const more = () => {
+    const end = Math.min(hits.length, shown + SO_HITS_CHUNK);
+    const frag = document.createDocumentFragment();
+    for(let i = shown; i < end; i++){
+      const karte = buildProductCard(hits[i], i, i < 9);
+      makeCardNavigable(karte, hits[i], { fromSearch: true });
+      frag.appendChild(karte);
+    }
+    raster.appendChild(frag);
+    shown = end;
+    return shown < hits.length;
+  };
+  if(!more()) return;
+  const sentinel = document.createElement("div");
+  sentinel.className = "so-more";
+  sentinel.setAttribute("aria-hidden", "true");
+  soInner.appendChild(sentinel);
+  if(!("IntersectionObserver" in window)){ while(more()); sentinel.remove(); return; }
+  const io = new IntersectionObserver(entries => {
+    if(!entries.some(en => en.isIntersecting)) return;
+    if(!more()){ io.disconnect(); sentinel.remove(); if(soHitsObserver === io) soHitsObserver = null; return; }
+    // Neu beobachten: liegt die Marke nach dem Nachlegen noch im Blick (grosser
+    // Bildschirm), kommt sofort die naechste Portion.
+    io.unobserve(sentinel);
+    io.observe(sentinel);
+  }, { rootMargin: "700px 0px" });
+  io.observe(sentinel);
+  soHitsObserver = io;
 }
 
 
@@ -6566,6 +6572,9 @@ searchInput.addEventListener("search", e => {
 // heraus, sobald der Fokus auf einem Treffer oder Verlaufseintrag steht.
 document.addEventListener("keydown", e => {
   if(!document.body.classList.contains("search-open")) return;
+  // Liegt das Produkt-Fenster darueber, gehoeren Esc/Tab ihm (Esc schliesst
+  // erst das Fenster, die Treffer bleiben).
+  if(document.documentElement.classList.contains("pm-open")) return;
 
   if(e.key === "Escape"){ e.preventDefault(); closeSearch(); return; }
 
