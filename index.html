@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/zPI0jjrx_C_mYV8ONpYG2lG0-NvFQtj9y_jUM8_SHWben1lbd0IEmSqQXPlFtlbCQNH6xBGpWtj8cJ-bnb_6hlKKawKSIUAd5IOp82B9TUY9bmurL2jz4xnOqjRE_BUcubOBZJ5b7IX2Z9xCbvbYp3zvkVuXtuOGJN0r39btxcPDh_rQ6BIySEroZB2b9mpb0AKRh495th7CqmxJvSAZj5g6C-beE-eJYpDaj19oqhGf5RNhiuyCwCWy3wsR3W881nSXg7FZ9LpvUs3o-MDJIWDktVnJbiX9zJBtDBpkdfbejyqnaitVOUrCxmMsL4jcIleq3N-k__m2izKK6etYCELTXiOYJd2zXxGYRyiNOlBMOqeF5aSkoe-UbT3HH23_an8uGIEdEzSiqoCAwugBhRsJ73d3Ikk1Ok1_e3SVZZCRW3Bdvjdi8wHQKJtZLe5D8yx3g2Z76jGid0cjyFtDLNxOQOyNzAKaTKfUXtlEIB3WF1h8xxoovGXVyCMPUPavQALe22n-msUkKF-LkDKoR2F8PbHZB2ZDZHfUA74U-0lCriLQxaHJccKSYFE6CjWwlgALof3VIA'></script>
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -6635,7 +6635,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261108-4";
+const ADMIN_BUNDLE_VERSION = "20261111-1";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -8569,6 +8569,52 @@ const ADMIN_CSS = `
     color:#b42318;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 2px 8px rgba(20,22,26,.18);}
   .qcm-d-del:hover{background:#b42318;color:#fff;}
   .qcm-d-tip{font-size:12.5px;color:var(--muted);margin:12px 0 0;}
+  /* ---------- QC-Import aus Ordner/ZIP ---------- */
+  .qcm-import-btn{height:40px;margin-left:auto;}
+  .qci-panel{width:min(980px,100%);}
+  .qci-drop{padding:34px 20px;}
+  .qci-actions{display:flex;gap:10px;flex-wrap:wrap;}
+  .qci-err{background:#fff3f1;color:#9b2c22;border-radius:12px;padding:10px 14px;font-size:13.5px;font-weight:600;margin:0 0 12px;}
+  .qci-prog{padding:8px 0 14px;}
+  .qci-bar{height:8px;border-radius:999px;background:#e7eaf0;overflow:hidden;}
+  .qci-bar-fill{height:100%;width:0;background:var(--accent);border-radius:999px;transition:width .25s ease;}
+  .qci-prog-txt{font-size:13.5px;color:var(--muted);margin:8px 0 0;font-weight:600;}
+  .qci-sum{font-size:14px;margin:0 0 8px;}
+  .qci-tools{display:flex;gap:14px;margin:0 0 10px;font-size:13px;}
+  .qci-list{display:flex;flex-direction:column;gap:8px;}
+  .qci-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:8px 12px;padding:10px 12px;
+    border:1px solid var(--border);border-radius:14px;background:#fff;transition:border-color .14s,background-color .14s;}
+  .qci-row.is-on{border-color:#b7c8f8;background:#f7f9ff;}
+  .qci-row.is-done{border-color:#bfe6d3;background:#f3fbf7;}
+  .qci-row.is-error{border-color:#f2c6c6;background:#fff7f6;}
+  .qci-chk input{width:18px;height:18px;accent-color:var(--accent);}
+  .qci-src,.qci-dst{display:flex;align-items:center;gap:10px;min-width:0;}
+  .qci-img{flex:0 0 56px;width:56px;height:56px;border-radius:10px;overflow:hidden;background:#eef0f4;border:1px solid var(--border);display:grid;place-items:center;}
+  .qci-img img{width:100%;height:100%;object-fit:cover;display:block;}
+  .qci-noimg{color:#a0a6b1;font-weight:800;}
+  .qci-txt{display:flex;flex-direction:column;min-width:0;}
+  .qci-txt b{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .qci-txt small{font-size:12px;color:var(--muted);}
+  .qci-arrow{color:var(--muted);font-weight:800;}
+  .qci-sim{font-weight:700;}
+  .qci-sim.is-sure{color:#15803d;}
+  .qci-sim.is-unsure{color:#b45309;}
+  .qci-alts{grid-column:2 / -1;display:flex;gap:6px;flex-wrap:wrap;}
+  .qci-alt{width:40px;height:40px;padding:0;border-radius:9px;overflow:hidden;border:2px solid transparent;background:#eef0f4;cursor:pointer;display:grid;place-items:center;}
+  .qci-alt img{width:100%;height:100%;object-fit:cover;display:block;}
+  .qci-alt.is-on{border-color:var(--accent);}
+  .qci-none{font-weight:800;color:#9b2c22;font-size:14px;}
+  .qci-st{grid-column:2 / -1;font-size:12.5px;font-weight:700;color:var(--muted);}
+  .qci-st.is-ok{color:#15803d;}
+  .qci-st.is-err{color:#b42318;}
+  .qci-foot{position:sticky;bottom:-20px;background:#fff;padding:14px 0 4px;margin-top:10px;display:flex;justify-content:flex-end;}
+  @media (max-width:640px){
+    .qcm-import-btn{margin-left:0;}
+    .qci-row{grid-template-columns:auto minmax(0,1fr);}
+    .qci-arrow{display:none;}
+    .qci-dst{grid-column:2;}
+    .qci-foot .a-btn{width:100%;}
+  }
   @media (max-width:640px){
     .qcm-top-in,.qcm-stage{padding-left:14px;padding-right:14px;}
     .qcm-search{max-width:none;order:3;flex-basis:100%;margin-left:0;}
@@ -17538,6 +17584,7 @@ function qcmOpen(){
           <button type="button" data-f="none">Ohne QC</button>
           <button type="button" data-f="some">Mit QC</button>
         </div>
+        <button type="button" class="a-btn a-btn-ghost qcm-import-btn" id="qcmImportBtn" title="Viele Produkte auf einmal: ZIP oder Ordner mit einem Unterordner je Produkt (Vorschaubild + QC-Fotos)">\u{1F4E6} Ordner/ZIP importieren</button>
         <button type="button" class="a-btn a-btn-primary qcm-done" id="qcmDone">Fertig</button>
       </div>
     </div>
@@ -17546,11 +17593,13 @@ function qcmOpen(){
       <div class="qcm-grid" id="qcmGrid"></div>
       <p class="qcm-empty" id="qcmEmpty" hidden>Kein Produkt passt zur Suche.</p>
     </div>
-    <div class="qcm-detail" id="qcmDetail" hidden></div>`;
+    <div class="qcm-detail" id="qcmDetail" hidden></div>
+    <div class="qcm-detail qci" id="qcmImport" hidden></div>`;
   document.body.appendChild(root);
   document.body.classList.add("qi-open");     // Dashboard dahinter abschalten (wie im Produkt hinzufügen-Modus)
   qcm = { root, creator, slug: creator?.slug || "qc", filter: "all", query: "", list: [], shown: 0, observer: null, busy: new Map(), detailId: null };
   root.querySelector("#qcmDone").addEventListener("click", ()=> qcmClose());
+  root.querySelector("#qcmImportBtn").addEventListener("click", ()=> qciOpen());
   const search = root.querySelector("#qcmSearch");
   let t = null;
   search.addEventListener("input", ()=>{ clearTimeout(t); t = setTimeout(()=>{ qcm.query = search.value; qcmRenderGrid(); }, 120); });
@@ -17569,6 +17618,7 @@ function qcmOpen(){
   qcm_esc = e => {
     if(e.key !== "Escape" || !qcm) return;
     e.preventDefault();
+    if(!root.querySelector("#qcmImport").hidden){ qciClose(); return; }
     if(!root.querySelector("#qcmDetail").hidden) qcmDetailClose(); else qcmClose();
   };
   document.addEventListener("keydown", qcm_esc);
@@ -17578,6 +17628,7 @@ function qcmOpen(){
 
 async function qcmClose(){
   if(!qcm) return;
+  if(qci?.running) return atoast("Der Import läuft noch – bitte kurz warten.", "err");
   const offen = [...qcm.busy.values()].filter(Boolean);
   if(offen.length){
     const btn = qcm.root.querySelector("#qcmDone");
@@ -17714,6 +17765,372 @@ function qcmAddFiles(p, files){
   job.promise = lauf();
   qcm.busy.set(p.id, job);
   qcmRefreshTile(p);
+}
+
+// =====================================================================
+//  QC-Import aus Ordner oder ZIP (z.B. von doppel.fit): je Unterordner ein
+//  Produkt -- Vorschaubild + QC-Fotos. Das Vorschaubild wird per Bild-
+//  vergleich (dieselben Bild-Fingerabdruecke wie die Foto-Suche) dem
+//  passenden Produkt zugeordnet, der Ordnername zaehlt mit. Hochgeladen wird
+//  erst, wenn man die Liste kontrolliert und bestaetigt hat.
+// =====================================================================
+const QCI_PREVIEW_RE = /^(vorschau|preview|cover|main|thumb(nail)?)\.(jpe?g|png|webp|gif|avif)$/i;
+const QCI_HASH_KEY = "sf_qc_import_hashes";   // schon importierte Fotos je Produkt (Inhalts-Fingerabdruck)
+// Ab dieser Bild-Aehnlichkeit (und mit klarem Vorsprung) gilt ein Treffer als
+// sicher. Gemessen an den echten Produkten: verschiedene Produkte liegen oft
+// bei 0,95-0,98 (fast alle Fotos auf weissem Grund) -- sicher ist also nur
+// ein praktisch identisches Bild.
+const QCI_SURE = 0.985;
+const QCI_MARGIN = 0.008;
+const QCI_MIME = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif", avif: "image/avif", heic: "image/heic", heif: "image/heif", bmp: "image/bmp" };
+let qci = null;
+
+// ZIP stueckweise lesen (Blob.slice) -- auch grosse Archive, ohne alles auf
+// einmal in den Speicher zu holen.
+async function qciZipEntries(file){
+  const tailLen = Math.min(file.size, 65557);
+  const tail = new Uint8Array(await file.slice(file.size - tailLen).arrayBuffer());
+  const tdv = new DataView(tail.buffer);
+  let eocd = -1;
+  for(let i = tail.length - 22; i >= 0; i--){ if(tdv.getUint32(i, true) === 0x06054b50){ eocd = i; break; } }
+  if(eocd < 0) throw new Error("Das ist keine gültige ZIP-Datei.");
+  const count = tdv.getUint16(eocd + 10, true), cdSize = tdv.getUint32(eocd + 12, true), cdOff = tdv.getUint32(eocd + 16, true);
+  if(count === 0xFFFF || cdOff === 0xFFFFFFFF) throw new Error("Die ZIP-Datei ist zu groß (über 4 GB) – bitte entpacken und den Ordner reinziehen.");
+  const cd = new Uint8Array(await file.slice(cdOff, cdOff + cdSize).arrayBuffer());
+  const dv = new DataView(cd.buffer);
+  const dec = new TextDecoder();
+  const out = [];
+  let p = 0;
+  for(let n = 0; n < count; n++){
+    if(p + 46 > cd.length || dv.getUint32(p, true) !== 0x02014b50) throw new Error("Die ZIP-Datei ist beschädigt.");
+    const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true), usize = dv.getUint32(p + 24, true);
+    const nameLen = dv.getUint16(p + 28, true), extraLen = dv.getUint16(p + 30, true), commLen = dv.getUint16(p + 32, true);
+    const local = dv.getUint32(p + 42, true);
+    const path = dec.decode(cd.subarray(p + 46, p + 46 + nameLen)).replace(/\\/g, "/").replace(/^\/+/, "");
+    p += 46 + nameLen + extraLen + commLen;
+    if(!path || path.endsWith("/")) continue;
+    out.push({ path, size: usize, async blob(){
+      const lh = new DataView(await file.slice(local, local + 30).arrayBuffer());
+      if(lh.getUint32(0, true) !== 0x04034b50) throw new Error("Die ZIP-Datei ist beschädigt.");
+      const start = local + 30 + lh.getUint16(26, true) + lh.getUint16(28, true);
+      const data = file.slice(start, start + csize);
+      if(method === 0) return data;
+      if(method !== 8) throw new Error("Unbekanntes Packformat in der ZIP-Datei.");
+      if(typeof DecompressionStream === "undefined") throw new Error("Dieser Browser kann keine ZIP-Dateien entpacken – bitte entpacken und den Ordner reinziehen.");
+      return await new Response(data.stream().pipeThrough(new DecompressionStream("deflate-raw"))).blob();
+    }});
+  }
+  return out;
+}
+
+// Eintrag -> echtes File (mit Bildtyp), einmal erzeugt und gemerkt
+async function qciFile(f){
+  if(f.fileObj) return f.fileObj;
+  const ext = (f.name.split(".").pop() || "").toLowerCase();
+  const raw = f.file ? f.file : await f.blob();
+  f.fileObj = raw instanceof File && raw.type ? raw : new File([raw], f.name, { type: QCI_MIME[ext] || raw.type || "image/jpeg" });
+  return f.fileObj;
+}
+
+// Ordner -> Produkte: je Unterordner eins; Vorschaubild = "vorschau.jpg" (o.ae.),
+// sonst dient das erste Foto zum Vergleich und bleibt selbst QC-Foto.
+function qciGroups(entries){
+  const dirs = new Map();
+  for(const e of entries){
+    const parts = e.path.split("/").filter(Boolean);
+    if(parts.some(x => x.startsWith(".") || x === "__MACOSX")) continue;
+    const name = parts[parts.length - 1];
+    const dir = parts.slice(0, -1).join("/");
+    if(!dirs.has(dir)) dirs.set(dir, []);
+    dirs.get(dir).push({ ...e, name });
+  }
+  const groups = [];
+  for(const [dir, files] of dirs){
+    const bilder = files.filter(f => QI_IMG_EXT.test(f.name)).sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+    if(!bilder.length) continue;
+    const vorschau = bilder.find(f => QCI_PREVIEW_RE.test(f.name));
+    const qc = vorschau ? bilder.filter(f => f !== vorschau) : bilder;
+    if(!qc.length) continue;
+    const folder = dir.split("/").pop() || "Ohne Ordner";
+    groups.push({ id: groups.length, folder, name: folder.replace(/^\s*\d+[\s._-]*/, "").trim() || folder,
+      preview: vorschau || bilder[0], qc, link: files.find(f => /^link\.txt$/i.test(f.name)) || null,
+      cands: [], pick: "", sure: false, on: false, state: "", note: "" });
+  }
+  return groups.sort((a, b) => a.folder.localeCompare(b.folder, undefined, { numeric: true }));
+}
+
+const QCI_STOP = new Set(["the", "and", "mit", "und", "der", "die", "das", "for", "new", "set"]);
+function qciTokens(t){
+  return [...new Set(String(t || "").toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").split(/[^a-z0-9]+/).filter(w => w.length >= 3 && !QCI_STOP.has(w)))];
+}
+
+async function qciMatch(g){
+  const vec = await describeImageFile(await qciFile(g.preview));
+  const { data, error } = await sb.rpc("search_products_by_image", { p_creator: qci.creatorId, p_embedding: "[" + vec.join(",") + "]", p_limit: 8 });
+  if(error) throw error;
+  const toks = qciTokens(g.name);
+  const nameHits = p => toks.length ? qciTokens(p.title).filter(t => toks.includes(t)).length : 0;
+  const cands = (data || []).map(r => {
+    const p = state.products.find(x => x.id === r.id);
+    if(!p) return null;
+    const sim = Number(r.similarity) || 0;
+    return { id: p.id, sim, score: sim + Math.min(0.06, nameHits(p) * 0.02) };
+  }).filter(Boolean);
+  // Dazu Produkte, deren Name zum Ordnernamen passt (das Bild allein trennt
+  // aehnliche Fotos schlecht) -- als Vorschlag, ohne Bildwert.
+  if(toks.length){
+    const noetig = Math.min(2, toks.length);
+    state.products.map(p => ({ p, n: nameHits(p) })).filter(x => x.n >= noetig && !cands.some(c => c.id === x.p.id))
+      .sort((a, b) => b.n - a.n).slice(0, 2)
+      .forEach(x => cands.push({ id: x.p.id, sim: null, score: 0.9 + Math.min(0.06, x.n * 0.02) }));
+  }
+  g.cands = cands.sort((a, b) => b.score - a.score).slice(0, 6);
+  const top = g.cands[0];
+  g.pick = top ? top.id : "";
+  g.sure = !!top && top.sim !== null && top.sim >= QCI_SURE && (g.cands.length < 2 || top.score - g.cands[1].score >= QCI_MARGIN);
+  const p = state.products.find(x => x.id === g.pick);
+  g.on = !!p && g.sure && !(p.qc_images || []).length;
+}
+
+function qciHashes(){
+  try { return JSON.parse(localStorage.getItem(QCI_HASH_KEY) || "{}") || {}; } catch { return {}; }
+}
+async function qciSha(file){
+  const h = new Uint8Array(await crypto.subtle.digest("SHA-256", await file.arrayBuffer()));
+  return Array.from(h.slice(0, 10), b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function qciOpen(){
+  if(!qcm) return;
+  qci = { creatorId: state.activeId, slug: qcm.slug, groups: [], view: "drop", running: false, stop: false, done: 0, total: 0, urls: [] };
+  const box = qcm.root.querySelector("#qcmImport");
+  box.hidden = false;
+  qciRender();
+}
+function qciClose(){
+  if(!qci || !qcm) return;
+  if(qci.running){ qci.stop = true; atoast("Wird nach dem aktuellen Produkt angehalten …"); return; }
+  qci.urls.forEach(u => URL.revokeObjectURL(u));
+  qcm.root.querySelector("#qcmImport").hidden = true;
+  qcm.root.querySelector("#qcmImport").innerHTML = "";
+  qci = null;
+  qcmRenderGrid();
+}
+function qciThumb(f){
+  if(!f.fileObj) return "";
+  if(!f.thumbUrl){ f.thumbUrl = URL.createObjectURL(f.fileObj); qci.urls.push(f.thumbUrl); }
+  return f.thumbUrl;
+}
+
+async function qciTake(entries){
+  qci.view = "match";
+  qci.groups = qciGroups(entries);
+  if(!qci.groups.length){
+    qci.view = "drop";
+    qci.error = "Keine Produkte gefunden. Erwartet: je Produkt ein Unterordner mit Vorschaubild (vorschau.jpg) und QC-Fotos.";
+    return qciRender();
+  }
+  const { data: anzahl, error } = await sb.rpc("image_search_count", { p_creator: qci.creatorId });
+  if(error || !Number(anzahl)){
+    qci.view = "drop";
+    qci.error = "Für die automatische Zuordnung fehlen die Bild-Fingerabdrücke der Produkte. Bitte im Dashboard zuerst „Foto-Suche vorbereiten“.";
+    return qciRender();
+  }
+  qci.running = true; qci.done = 0; qci.total = qci.groups.length;
+  qciRender();
+  for(const g of qci.groups){
+    if(!qci || qci.stop) break;
+    try { await qciMatch(g); } catch(e){ console.warn("QC-Import: Vergleich fehlgeschlagen:", g.folder, e); g.note = "Vorschaubild nicht lesbar"; }
+    qci.done++;
+    if(qci.done % 3 === 0 || qci.done === qci.total) qciRenderProgress();
+  }
+  if(!qci) return;
+  qci.running = false; qci.stop = false;
+  qci.view = "review";
+  qciRender();
+}
+
+function qciProdThumb(p){
+  return p && p.image_url ? `<img src="${aesc(p.image_url)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span class="qci-noimg">?</span>`;
+}
+function qciRowHtml(g){
+  const p = state.products.find(x => x.id === g.pick);
+  const top = g.cands.find(c => c.id === g.pick);
+  const hat = p ? (p.qc_images || []).length : 0;
+  const zust = g.state === "done" ? `<span class="qci-st is-ok">✓ ${aesc(g.note)}</span>` : g.state === "error" ? `<span class="qci-st is-err">${aesc(g.note)}</span>` : g.state === "busy" ? `<span class="qci-st">${aesc(g.note || "Lädt …")}</span>` : "";
+  return `
+      <div class="qci-row${g.on ? " is-on" : ""}${g.state ? " is-" + g.state : ""}" data-g="${g.id}">
+        <label class="qci-chk"><input type="checkbox" ${g.on ? "checked" : ""} ${!p || g.state ? "disabled" : ""} aria-label="${aesc(g.folder)} importieren"></label>
+        <div class="qci-src"><span class="qci-img">${qciThumb(g.preview) ? `<img src="${aesc(qciThumb(g.preview))}" alt="">` : `<span class="qci-noimg">?</span>`}</span>
+          <span class="qci-txt"><b>${aesc(g.name)}</b><small>${g.qc.length} QC-Foto${g.qc.length === 1 ? "" : "s"}${g.note && !g.state ? " · " + aesc(g.note) : ""}</small></span></div>
+        <span class="qci-arrow" aria-hidden="true">→</span>
+        <div class="qci-dst">${p ? `<span class="qci-img">${qciProdThumb(p)}</span>
+          <span class="qci-txt"><b>${aesc(p.title)}</b><small>${top ? `<span class="qci-sim ${g.sure ? "is-sure" : "is-unsure"}">${top.sim === null ? "Name passt" : `${(top.sim * 100).toFixed(1).replace(".", ",")} % ähnlich`}${g.sure ? "" : " – bitte prüfen"}</span>` : ""}${hat ? ` · hat schon ${hat} QC` : ""}</small></span>`
+          : `<span class="qci-txt"><b>Kein passendes Produkt</b><small>wird übersprungen</small></span>`}</div>
+        ${g.cands.length > 1 && !g.state ? `<div class="qci-alts" role="group" aria-label="Andere Treffer">${g.cands.map(c => { const q = state.products.find(x => x.id === c.id); return `<button type="button" class="qci-alt${c.id === g.pick ? " is-on" : ""}" data-pick="${c.id}" title="${aesc(q.title)} (${c.sim === null ? "Name passt" : (c.sim * 100).toFixed(1).replace(".", ",") + " %"})">${qciProdThumb(q)}</button>`; }).join("")}<button type="button" class="qci-alt qci-none${!g.pick ? " is-on" : ""}" data-pick="" title="Keins davon – überspringen">✕</button></div>` : ""}
+        ${zust}
+      </div>`;
+}
+
+function qciRenderProgress(){
+  const el = qcm?.root.querySelector("#qciProg");
+  if(!el || !qci) return;
+  const pct = qci.total ? Math.round(qci.done / qci.total * 100) : 0;
+  el.querySelector(".qci-bar-fill").style.width = pct + "%";
+  el.querySelector(".qci-prog-txt").textContent = qci.view === "match" ? `Vergleiche Vorschaubilder … ${qci.done} / ${qci.total}` : `Lade QC-Fotos hoch … ${qci.done} / ${qci.total} Produkte`;
+}
+
+function qciRender(){
+  if(!qci || !qcm) return;
+  const box = qcm.root.querySelector("#qcmImport");
+  const head = `<div class="qcm-d-head"><div class="qcm-d-title"><b>QC-Fotos aus Ordner/ZIP importieren</b><span>Je Produkt ein Unterordner: Vorschaubild <code>vorschau.jpg</code> + QC-Fotos</span></div>
+      <button type="button" class="a-btn a-btn-ghost" id="qciClose">${qci.running ? "Anhalten" : "Schließen"}</button></div>`;
+  let body = "";
+  if(qci.view === "drop"){
+    body = `${qci.error ? `<p class="qci-err" role="alert">${aesc(qci.error)}</p>` : ""}
+      <label class="qcm-drop qci-drop" id="qciDrop">
+        <b>ZIP-Datei oder Ordner hierher ziehen</b>
+        <span>oder klicken, um eine ZIP-Datei zu wählen</span>
+        <input type="file" id="qciZipIn" accept=".zip,application/zip" hidden>
+      </label>
+      <div class="qci-actions"><label class="a-btn a-btn-ghost" for="qciDirIn">Ordner wählen</label><input type="file" id="qciDirIn" webkitdirectory multiple hidden></div>
+      <p class="qcm-d-tip">Danach ordnet StyleFinder jedes Produkt über das Vorschaubild zu (Bildvergleich + Ordnername). Du kontrollierst die Liste, erst dann wird hochgeladen. Schon importierte Fotos werden nicht doppelt hinzugefügt.</p>`;
+  } else if(qci.view === "match" || (qci.view === "import" && qci.running)){
+    body = `<div class="qci-prog" id="qciProg"><div class="qci-bar"><div class="qci-bar-fill"></div></div><p class="qci-prog-txt"></p></div>`
+      + (qci.view === "import" ? `<div class="qci-list">${qci.groups.filter(g => g.state).map(qciRowHtml).join("")}</div>` : "");
+  } else {
+    const an = qci.groups.filter(g => g.on && g.pick);
+    const fotos = an.reduce((s, g) => s + g.qc.length, 0);
+    const sicher = qci.groups.filter(g => g.sure).length, ohne = qci.groups.filter(g => !g.pick).length;
+    const fertig = qci.view === "done";
+    body = `<div class="qci-sum">${fertig
+        ? `<b>Fertig:</b> ${qci.groups.filter(g => g.state === "done").length} Produkte mit QC-Fotos versorgt${qci.groups.some(g => g.state === "error") ? ` · ${qci.groups.filter(g => g.state === "error").length} mit Fehler` : ""}.`
+        : `<b>${qci.groups.length}</b> Produkte gefunden · <b>${sicher}</b> sicher zugeordnet · ${qci.groups.length - sicher - ohne} bitte prüfen${ohne ? ` · ${ohne} ohne Treffer` : ""}. Produkte, die schon QC-Fotos haben, sind nicht angehakt.`}</div>
+      ${fertig ? "" : `<div class="qci-tools"><button type="button" class="a-linkbtn" data-all="sure">Alle sicheren anhaken</button><button type="button" class="a-linkbtn" data-all="none">Keine</button></div>`}
+      <div class="qci-list" id="qciList">${qci.groups.map(qciRowHtml).join("")}</div>
+      <div class="qci-foot">${fertig
+        ? `<button type="button" class="a-btn a-btn-primary" id="qciFinish">Fertig</button>`
+        : `<button type="button" class="a-btn a-btn-primary" id="qciGo" ${an.length ? "" : "disabled"}>${an.length} Produkt${an.length === 1 ? "" : "e"} importieren (${fotos} Fotos)</button>`}</div>`;
+  }
+  box.innerHTML = `<div class="qcm-d-scrim"></div><div class="qcm-d-panel qci-panel">${head}${body}</div>`;
+  box.querySelector(".qcm-d-scrim").addEventListener("click", ()=>{ if(!qci?.running) qciClose(); });
+  box.querySelector("#qciClose").addEventListener("click", ()=> qciClose());
+  if(qci.view === "drop") qciWireDrop(box);
+  if(qci.view === "match" || qci.view === "import") qciRenderProgress();
+  box.querySelector("#qciFinish")?.addEventListener("click", ()=> qciClose());
+  box.querySelector("#qciGo")?.addEventListener("click", ()=> qciImport());
+  box.querySelectorAll("[data-all]").forEach(b => b.addEventListener("click", ()=>{
+    for(const g of qci.groups) g.on = b.dataset.all === "sure" ? (g.sure && !!g.pick) : false;
+    qciRender();
+  }));
+  const list = box.querySelector("#qciList");
+  if(list && qci.view === "review"){
+    list.addEventListener("change", e => {
+      const row = e.target.closest(".qci-row"); if(!row) return;
+      const g = qci.groups[Number(row.dataset.g)];
+      g.on = e.target.checked && !!g.pick;
+      qciRefreshFoot();
+      row.classList.toggle("is-on", g.on);
+    });
+    list.addEventListener("click", e => {
+      const b = e.target.closest("[data-pick]"); if(!b) return;
+      const row = b.closest(".qci-row"); const g = qci.groups[Number(row.dataset.g)];
+      g.pick = b.dataset.pick;
+      g.on = !!g.pick;           // von Hand gewaehlt = gewollt
+      g.sure = g.sure || !!g.pick;
+      row.outerHTML = qciRowHtml(g);
+      qciRefreshFoot();
+    });
+  }
+}
+function qciRefreshFoot(){
+  const btn = qcm?.root.querySelector("#qciGo"); if(!btn) return;
+  const an = qci.groups.filter(g => g.on && g.pick);
+  btn.disabled = !an.length;
+  btn.textContent = `${an.length} Produkt${an.length === 1 ? "" : "e"} importieren (${an.reduce((s, g) => s + g.qc.length, 0)} Fotos)`;
+}
+
+function qciWireDrop(box){
+  const zone = box.querySelector("#qciDrop");
+  const go = async (getEntries) => {
+    qci.error = "";
+    let entries;
+    try { entries = await getEntries(); }
+    catch(e){ qci.view = "drop"; qci.error = e?.message || "Konnte die Dateien nicht lesen."; return qciRender(); }
+    await qciTake(entries);
+  };
+  zone.addEventListener("dragover", e => { e.preventDefault(); zone.classList.add("is-over"); });
+  zone.addEventListener("dragleave", () => zone.classList.remove("is-over"));
+  zone.addEventListener("drop", e => {
+    e.preventDefault();
+    zone.classList.remove("is-over");
+    const dt = e.dataTransfer;
+    go(async () => {
+      const list = await qiFilesFromDrop(dt);
+      const zip = list.length === 1 && /\.zip$/i.test(list[0].file.name) ? list[0].file : null;
+      if(zip) return qciZipEntries(zip);
+      return list.map(x => ({ path: x.path, size: x.file.size, file: x.file }));
+    });
+  });
+  box.querySelector("#qciZipIn").addEventListener("change", e => { const f = e.target.files?.[0]; e.target.value = ""; if(f) go(() => qciZipEntries(f)); });
+  box.querySelector("#qciDirIn").addEventListener("change", e => {
+    const files = Array.from(e.target.files || []); e.target.value = "";
+    if(files.length) go(async () => files.map(f => ({ path: f.webkitRelativePath || f.name, size: f.size, file: f })));
+  });
+}
+
+async function qciImport(){
+  if(!qci || qci.running) return;
+  const todo = qci.groups.filter(g => g.on && g.pick);
+  if(!todo.length) return;
+  qci.view = "import"; qci.running = true; qci.stop = false; qci.done = 0; qci.total = todo.length;
+  qciRender();
+  const hashes = qciHashes();
+  for(const g of todo){
+    if(!qci || qci.stop) break;
+    const p = state.products.find(x => x.id === g.pick);
+    g.state = "busy"; g.note = "Lädt …";
+    qciRender();
+    const neu = [], neueHashes = [];
+    let doppelt = 0, heic = 0, fehler = 0;
+    const schon = new Set(hashes[p.id] || []);
+    for(let i = 0; i < g.qc.length; i++){
+      try {
+        const f = await qciFile(g.qc[i]);
+        const h = await qciSha(f);
+        if(schon.has(h) || neueHashes.includes(h)){ doppelt++; continue; }
+        if(!(await qiCanDecode(f))){ heic++; continue; }
+        neu.push(await uploadProductImageFile(f, `${qci.slug}/qc`));
+        neueHashes.push(h);
+      } catch(e){ console.error("QC-Import: Foto fehlgeschlagen:", g.folder, e); fehler++; }
+      g.qc[i].fileObj = null;            // Speicher freigeben
+    }
+    try {
+      if(neu.length){
+        // frisch lesen: koennte inzwischen woanders ergaenzt worden sein
+        const { data: row, error: e1 } = await sb.from("products").select("qc_images").eq("id", p.id).maybeSingle();
+        if(e1) throw e1;
+        const alle = [...((row && row.qc_images) || p.qc_images || []), ...neu];
+        const { error: e2 } = await sb.from("products").update({ qc_images: alle }).eq("id", p.id);
+        if(e2) throw e2;
+        p.qc_images = alle;
+        hashes[p.id] = [...schon, ...neueHashes];
+        try { localStorage.setItem(QCI_HASH_KEY, JSON.stringify(hashes)); } catch {}
+      }
+      g.state = fehler && !neu.length ? "error" : "done";
+      g.note = [neu.length ? `${neu.length} Foto${neu.length === 1 ? "" : "s"} hinzugefügt` : "", doppelt ? `${doppelt} schon vorhanden` : "", heic ? `${heic} HEIC übersprungen` : "", fehler ? `${fehler} Fehler` : ""].filter(Boolean).join(" · ") || "nichts Neues";
+    } catch(e){
+      console.error("QC-Import: Speichern fehlgeschlagen:", g.folder, e);
+      g.state = "error"; g.note = "Speichern fehlgeschlagen: " + (e?.message || e);
+    }
+    qci.done++;
+    qciRender();
+  }
+  if(!qci) return;
+  qci.running = false; qci.stop = false;
+  qci.view = "done";
+  qciRender();
+  if(qcm) qcmRenderGrid();
 }
 
 // ---------- Ein Produkt: Fotos ansehen, hinzufuegen, loeschen, sortieren ----------
