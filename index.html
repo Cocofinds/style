@@ -1102,7 +1102,7 @@
   .pm-buy-group{position:relative;flex:1 1 auto;min-width:0;display:flex;align-items:stretch;min-height:66px;border-radius:999px;
     background:#121316;box-shadow:none;transition:background-color .15s ease;}
   .pm-buy-group:hover{background:#1c1e22;}
-  .pm-buy{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:13px;padding:9px 18px 9px 9px;border-radius:999px 0 0 999px;
+  .pm-buy{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:12px;padding:9px 14px 9px 9px;border-radius:999px 0 0 999px;
     color:#fff;text-decoration:none;cursor:pointer;transition:background-color .15s ease;}
   .pm-buy:hover{background:rgba(255,255,255,.09);}
   .pm-buy:active{background:rgba(255,255,255,.04);}
@@ -1112,8 +1112,14 @@
     display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px rgba(20,22,26,.06);}
   .pm-buy-tile img{width:100%;height:100%;object-fit:cover;display:block;}
   .pm-buy-tile img.fit-contain{object-fit:contain;padding:6px;}
-  .pm-buy-text{flex:1 1 auto;min-width:0;font-weight:800;font-size:16px;letter-spacing:.01em;line-height:1.2;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  /* Text darf bei wenig Platz in eine zweite Zeile umbrechen ("Auf Lovegobuy / kaufen"),
+     damit das Rabatt-Schild daneben Platz hat -- nie mehr als zwei Zeilen. */
+  .pm-buy-text{flex:0 1 auto;min-width:0;font-weight:800;font-size:16px;letter-spacing:.01em;line-height:1.16;
+    overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow-wrap:normal;}
+  /* Rabatt-Schild (Wunsch): weisse Pille direkt hinter dem Text, fest "-50%" */
+  .pm-buy-deal{flex:0 0 auto;margin-left:-3px;padding:5px 10px;border-radius:999px;background:#fff;color:#121316;
+    font-weight:800;font-size:13.5px;line-height:1.15;letter-spacing:.01em;white-space:nowrap;}
+  .pm-buy-deal[hidden]{display:none;}
   .pm-buy-copy{flex:0 0 64px;position:relative;display:flex;align-items:center;justify-content:center;padding:0;border:none;
     border-radius:0 999px 999px 0;background:none;color:#fff;cursor:pointer;transition:background-color .15s ease;}
   .pm-buy-copy::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:1px;background:rgba(255,255,255,.26);}
@@ -1205,10 +1211,11 @@
     .pm-title{font-size:23px;padding-right:0;}
     .pm-price{font-size:24px;}
     .pm-buy-group{min-height:58px;}
-    .pm-buy{gap:11px;padding:7px 12px 7px 7px;}
-    .pm-buy-tile{width:44px;height:44px;}
-    .pm-buy-text{font-size:15px;}
-    .pm-buy-copy{flex-basis:54px;}
+    .pm-buy{gap:9px;padding:7px 8px 7px 7px;}
+    .pm-buy-tile{width:42px;height:42px;}
+    .pm-buy-text{font-size:14.5px;}
+    .pm-buy-deal{font-size:12px;padding:4px 7px;margin-left:-2px;}
+    .pm-buy-copy{flex-basis:46px;}
     .pm-buy-copy::before{top:12px;bottom:12px;}
     .pm-share{width:56px;height:56px;}
     .pm-heart{width:44px;height:44px;right:12px;bottom:12px;font-size:19px;}
@@ -1227,12 +1234,13 @@
     .pm-body{padding-left:12px;padding-right:12px;}
     .pm-title{font-size:21px;}
     .pm-buy-group{min-height:54px;}
-    .pm-buy{gap:9px;padding-right:10px;}
-    .pm-buy-tile{width:40px;height:40px;}
-    .pm-buy-text{font-size:13.5px;}
-    .pm-buy-copy{flex-basis:48px;}
-    .pm-share{width:52px;height:52px;}
-    .pm-actions{gap:10px;}
+    .pm-buy{gap:7px;padding:6px 6px 6px 6px;}
+    .pm-buy-tile{width:38px;height:38px;}
+    .pm-buy-text{font-size:12.5px;-webkit-line-clamp:3;}   /* sehr schmale Handys: notfalls 3 Zeilen statt "…" */
+    .pm-buy-deal{font-size:11px;padding:3px 6px;margin-left:-1px;}
+    .pm-buy-copy{flex-basis:40px;}
+    .pm-share{width:48px;height:48px;}
+    .pm-actions{gap:8px;}
   }
   @media (prefers-reduced-motion:reduce){
     .pm-buy,.pm-buy-group,.pm-close,.pm-qc-thumb,.pm-toast{transition:none;}
@@ -4019,8 +4027,10 @@ function buildProductCard(p, indexInGrid = 0, allowEager = true){
 //  aehnlichen Produkten. Schliessen: Klick daneben, Esc, X, Zurueck-Taste
 //  bzw. -Wischgeste, auf dem Handy auch nach unten wischen.
 // =====================================================================
+// Rabatt-Schild auf dem Kauf-Knopf im Produkt-Fenster (Wunsch: fest, fuer alle Creator gleich)
+const PM_BUY_DEAL = "-50%";
 const PM_TEXT = {
-  de: { buy:"Jetzt kaufen", buyAt:"Kaufen bei {a}", qc:"QC-Fotos", similar:"Ähnliche Produkte", close:"Schließen", prev:"Vorheriges Bild", next:"Nächstes Bild", zoom:"Bild groß anzeigen", open:"Details ansehen",
+  de: { buy:"Jetzt kaufen", buyAt:"Auf {a} kaufen", qc:"QC-Fotos", similar:"Ähnliche Produkte", close:"Schließen", prev:"Vorheriges Bild", next:"Nächstes Bild", zoom:"Bild groß anzeigen", open:"Details ansehen",
         copyBuy:"Kauf-Link kopieren", copiedBuy:"Kauf-Link kopiert", share:"Teilen", shareEyebrow:"Teilen", copy:"Link kopieren", copied:"Link kopiert", cancel:"Abbrechen", more:"Mehr", email:"E-Mail",
         discordHint:"Link kopiert – jetzt in Discord einfügen", shareText:"Schau mal: {n}", qcSoon:"QC coming soon", qcSoonSub:"Die QC-Fotos für dieses Produkt folgen bald.", copyFail:"Kopieren ging nicht – Link bitte im Feld markieren." },
   en: { buy:"Buy now", buyAt:"Buy on {a}", qc:"QC Photos", similar:"Similar products", close:"Close", prev:"Previous image", next:"Next image", zoom:"Show large image", open:"View details",
@@ -4068,7 +4078,7 @@ function pmEnsure(){
               <div class="pm-actions">
                 <div class="pm-buy-group">
                   <a class="pm-buy" rel="noopener noreferrer sponsored">
-                    <span class="pm-buy-tile"></span><span class="pm-buy-text"></span>
+                    <span class="pm-buy-tile"></span><span class="pm-buy-text"></span><span class="pm-buy-deal" hidden></span>
                   </a>
                   <button type="button" class="pm-buy-copy">${PM_ICON_COPY}</button>
                 </div>
@@ -4093,7 +4103,7 @@ function pmEnsure(){
   pm = {
     root, scrim: $(".pm-scrim"), panel: $(".pm-panel"), scroll: $(".pm-scroll"), body: $(".pm-body"),
     main: $(".pm-main"), media: $(".pm-media"), img: $(".pm-img"), badge: $(".pm-badge"), crumbs: $(".pm-crumbs"),
-    title: $(".pm-title"), price: $(".pm-price"), buy: $(".pm-buy"), buyTile: $(".pm-buy-tile"), buyText: $(".pm-buy-text"),
+    title: $(".pm-title"), price: $(".pm-price"), buy: $(".pm-buy"), buyTile: $(".pm-buy-tile"), buyText: $(".pm-buy-text"), buyDeal: $(".pm-buy-deal"),
     heart: $(".pm-heart"), qc: $(".pm-qc"), qcRow: $(".pm-qc-row"), qcH: $(".pm-qc-h"), qcN: $(".pm-qc-n"),
     buyCopy: $(".pm-buy-copy"), share: $(".pm-share"), simTimer: 0, copyTimer: 0, urlMode: null,
     similar: $(".pm-similar"), simH: $(".pm-sim-h"), simGrid: $(".pm-similar .product-grid"),
@@ -4171,7 +4181,9 @@ function pmFill(p){
   else { pm.buy.removeAttribute("href"); pm.buy.removeAttribute("target"); pm.buy.setAttribute("aria-disabled", "true"); }
   const agent = creatorAffiliate && AFFILIATE_AGENTS[creatorAffiliate.agentId];
   pm.buyText.textContent = agent ? t.buyAt.replace("{a}", agent.displayName) : t.buy;
-  pm.buy.setAttribute("aria-label", `${pm.buyText.textContent}: ${p.name}, ${formatPrice(p.price)}`);
+  pm.buyDeal.textContent = PM_BUY_DEAL;
+  pm.buyDeal.hidden = !ziel || !PM_BUY_DEAL;
+  pm.buy.setAttribute("aria-label", `${pm.buyText.textContent}${pm.buyDeal.hidden ? "" : " " + PM_BUY_DEAL}: ${p.name}, ${formatPrice(p.price)}`);
   paintLogo(pm.buyTile, PROMO_LOGO);
   pm.buyCopy.hidden = !ziel;
   pm.buyCopy.setAttribute("aria-label", t.copyBuy);
