@@ -6635,7 +6635,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261111-1";
+const ADMIN_BUNDLE_VERSION = "20261111-3";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -8514,6 +8514,12 @@ const ADMIN_CSS = `
   .qcm-filter button{border:none;background:none;font:inherit;font-size:13px;font-weight:700;color:var(--muted);padding:6px 11px;border-radius:8px;cursor:pointer;}
   .qcm-filter button.is-on{background:#fff;color:var(--text);box-shadow:0 1px 3px rgba(20,22,26,.12);}
   .qcm-done{height:40px;}
+  .qcm-facets{padding-top:0;gap:8px;}
+  .qcm-sel{flex:1 1 170px;max-width:250px;width:auto;height:38px;font-size:13.5px;border-radius:10px;}
+  .qcm-sel.is-set{border-color:var(--accent);background-color:#f5f7ff;font-weight:700;}
+  .qcm-sel:disabled{opacity:.55;cursor:default;}
+  .qcm-reset{border:none;background:none;font:inherit;font-size:13px;font-weight:700;color:var(--accent);cursor:pointer;padding:6px 4px;}
+  .qcm-reset:hover{text-decoration:underline;}
   .qcm-stage{max-width:1240px;margin:0 auto;padding:18px 24px 60px;}
   .qcm-hint{font-size:13.5px;color:var(--muted);margin:0 0 16px;}
   .qcm-hint b{color:var(--text);}
@@ -8605,6 +8611,11 @@ const ADMIN_CSS = `
   .qci-alt.is-on{border-color:var(--accent);}
   .qci-none{font-weight:800;color:#9b2c22;font-size:14px;}
   .qci-st{grid-column:2 / -1;font-size:12.5px;font-weight:700;color:var(--muted);}
+  .qci-view{grid-column:2 / -1;justify-self:start;font-size:12.5px;}
+  .qci-qcs{grid-column:2 / -1;display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px;}
+  .qci-qcs a,.qci-qcs .qci-noimg{aspect-ratio:1/1;border-radius:9px;overflow:hidden;background:#eef0f4;border:1px solid var(--border);display:grid;place-items:center;}
+  .qci-qcs img{width:100%;height:100%;object-fit:cover;display:block;}
+  .qci-txt small a{color:var(--accent);font-weight:700;text-decoration:none;}
   .qci-st.is-ok{color:#15803d;}
   .qci-st.is-err{color:#b42318;}
   .qci-foot{position:sticky;bottom:-20px;background:#fff;padding:14px 0 4px;margin-top:10px;display:flex;justify-content:flex-end;}
@@ -8615,9 +8626,16 @@ const ADMIN_CSS = `
     .qci-dst{grid-column:2;}
     .qci-foot .a-btn{width:100%;}
   }
+  @media (max-width:360px){
+    .qcm-sel{flex-basis:100% !important;}
+  }
   @media (max-width:640px){
     .qcm-top-in,.qcm-stage{padding-left:14px;padding-right:14px;}
     .qcm-search{max-width:none;order:3;flex-basis:100%;margin-left:0;}
+    .qcm-top{position:relative;}   /* mit Filtern waere die feste Kopfzeile am Handy zu hoch -- scrollt mit */
+    .qcm-sel{flex:1 1 calc(50% - 4px);max-width:none;min-width:0;font-size:13px;padding-left:11px;padding-right:30px;background-position:right 9px center;}
+    #qcmStyle{flex:1 1 150px;}
+    .qcm-reset{flex:0 0 auto;}
     .qcm-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
     .qcm-detail{padding:0;align-items:flex-end;}
     .qcm-d-panel{border-radius:22px 22px 0 0;max-height:90vh;}
@@ -17587,18 +17605,39 @@ function qcmOpen(){
         <button type="button" class="a-btn a-btn-ghost qcm-import-btn" id="qcmImportBtn" title="Viele Produkte auf einmal: ZIP oder Ordner mit einem Unterordner je Produkt (Vorschaubild + QC-Fotos)">\u{1F4E6} Ordner/ZIP importieren</button>
         <button type="button" class="a-btn a-btn-primary qcm-done" id="qcmDone">Fertig</button>
       </div>
+      <div class="qcm-top-in qcm-facets" role="group" aria-label="Nach Kategorie und Style filtern">
+        <select class="a-field qcm-sel" id="qcmCat" aria-label="Kategorie"></select>
+        <select class="a-field qcm-sel" id="qcmSub" aria-label="Unterkategorie"></select>
+        <select class="a-field qcm-sel" id="qcmStyle" aria-label="Style"></select>
+        <button type="button" class="qcm-reset" id="qcmReset" hidden>Filter zurücksetzen</button>
+      </div>
     </div>
     <div class="qcm-stage">
       <p class="qcm-hint">Bilder vom Computer <b>auf ein Produkt ziehen</b> (auch mehrere auf einmal) – oder ein Produkt anklicken, um Fotos zu wählen, anzusehen oder zu löschen. <span id="qcmCount"></span></p>
       <div class="qcm-grid" id="qcmGrid"></div>
-      <p class="qcm-empty" id="qcmEmpty" hidden>Kein Produkt passt zur Suche.</p>
+      <p class="qcm-empty" id="qcmEmpty" hidden>Kein Produkt passt zu Suche und Filter.</p>
     </div>
     <div class="qcm-detail" id="qcmDetail" hidden></div>
     <div class="qcm-detail qci" id="qcmImport" hidden></div>`;
   document.body.appendChild(root);
   document.body.classList.add("qi-open");     // Dashboard dahinter abschalten (wie im Produkt hinzufügen-Modus)
-  qcm = { root, creator, slug: creator?.slug || "qc", filter: "all", query: "", list: [], shown: 0, observer: null, busy: new Map(), detailId: null };
+  qcm = { root, creator, slug: creator?.slug || "qc", filter: "all", query: "", list: [], shown: 0, observer: null, busy: new Map(), detailId: null,
+          ...qcmMemoGueltig() };
   root.querySelector("#qcmDone").addEventListener("click", ()=> qcmClose());
+  const setze = (feld, wert) => {
+    qcm[feld] = wert;
+    if(feld === "cat") qcm.sub = "all";   // Unterkategorien gehoeren zu genau einer Kategorie
+    qcmMemo = { cat: qcm.cat, sub: qcm.sub, style: qcm.style };
+    qcmRenderGrid();
+  };
+  root.querySelector("#qcmCat").addEventListener("change", e => setze("cat", e.target.value));
+  root.querySelector("#qcmSub").addEventListener("change", e => setze("sub", e.target.value));
+  root.querySelector("#qcmStyle").addEventListener("change", e => setze("style", e.target.value));
+  root.querySelector("#qcmReset").addEventListener("click", ()=>{
+    qcm.cat = qcm.sub = qcm.style = "all";
+    qcmMemo = { cat: "all", sub: "all", style: "all" };
+    qcmRenderGrid();
+  });
   root.querySelector("#qcmImportBtn").addEventListener("click", ()=> qciOpen());
   const search = root.querySelector("#qcmSearch");
   let t = null;
@@ -17643,14 +17682,80 @@ async function qcmClose(){
   render();
 }
 
-function qcmFiltered(){
+// Kategorie-/Unterkategorie-/Style-Filter bleiben beim erneuten Oeffnen
+// erhalten (bis zum Neuladen der Seite). Was es nicht mehr gibt, faellt auf "alle".
+let qcmMemo = { cat: "all", sub: "all", style: "all" };
+function qcmMemoGueltig(){
+  const cat = state.categories.some(c => c.key === qcmMemo.cat) ? qcmMemo.cat : "all";
+  const sub = cat !== "all" && state.subcategories.some(s => s.category_key === cat && s.key === qcmMemo.sub) ? qcmMemo.sub : "all";
+  const style = state.styles.some(s => s.label === qcmMemo.style) ? qcmMemo.style : "all";
+  return { cat, sub, style };
+}
+
+// ohne: diesen Filter beim Zaehlen weglassen ("cat" laesst auch die
+// Unterkategorie weg) -- so zeigt jede Auswahlliste, wie viele Produkte
+// es mit den uebrigen Filtern dort jeweils gaebe.
+function qcmPasst(p, ohne){
+  const n = (p.qc_images || []).length;
+  if(qcm.filter === "none" && n) return false;
+  if(qcm.filter === "some" && !n) return false;
+  if(ohne !== "cat" && qcm.cat !== "all" && p.category !== qcm.cat) return false;
+  if(ohne !== "cat" && ohne !== "sub" && qcm.sub !== "all" && (p.subcategory || "") !== qcm.sub) return false;
+  if(ohne !== "style" && qcm.style !== "all" && !(p.style_tags || []).includes(qcm.style)) return false;
   const q = qcm.query.trim().toLowerCase();
-  return state.products.filter(p => {
-    const n = (p.qc_images || []).length;
-    if(qcm.filter === "none" && n) return false;
-    if(qcm.filter === "some" && !n) return false;
-    return !q || String(p.title || "").toLowerCase().includes(q);
-  });
+  return !q || String(p.title || "").toLowerCase().includes(q);
+}
+function qcmFiltered(){
+  return state.products.filter(p => qcmPasst(p, null));
+}
+function qcmZaehlen(ohne, schluessel){
+  const m = new Map();
+  let gesamt = 0;
+  for(const p of state.products){
+    if(!qcmPasst(p, ohne)) continue;
+    gesamt++;
+    for(const k of new Set(schluessel(p))) m.set(k, (m.get(k) || 0) + 1);
+  }
+  return { m, gesamt };
+}
+function qcmOption(wert, text, n, gewaehlt){
+  return `<option value="${aesc(wert)}"${gewaehlt ? " selected" : ""}${!n && !gewaehlt ? " disabled" : ""}>${aesc(text)} (${n})</option>`;
+}
+function qcmRenderFacets(){
+  const r = qcm.root;
+  const cat = r.querySelector("#qcmCat"), sub = r.querySelector("#qcmSub"), sty = r.querySelector("#qcmStyle");
+  const k = qcmZaehlen("cat", p => [p.category]);
+  cat.innerHTML = `<option value="all">Alle Kategorien</option>`
+    + state.categories.filter(c => c.key !== "all")   // System-Kategorie "Alle" ist kein eigener Filter
+        .map(c => qcmOption(c.key, c.label, k.m.get(c.key) || 0, qcm.cat === c.key)).join("");
+  cat.value = qcm.cat;
+  if(qcm.cat === "all"){
+    sub.innerHTML = `<option value="all">Alle Unterkategorien</option>`;
+    sub.disabled = true;
+    sub.title = "Erst eine Kategorie wählen";
+  } else {
+    const u = qcmZaehlen("sub", p => [p.subcategory || ""]);
+    sub.innerHTML = `<option value="all">Alle Unterkategorien</option>`
+      + state.subcategories.filter(s => s.category_key === qcm.cat)
+          .map(s => qcmOption(s.key, s.label, u.m.get(s.key) || 0, qcm.sub === s.key)).join("");
+    sub.disabled = false;
+    sub.title = "";
+  }
+  sub.value = qcm.sub;
+  const s = qcmZaehlen("style", p => p.style_tags || []);
+  sty.innerHTML = `<option value="all">Alle Styles</option>`
+    + state.styles.map(x => qcmOption(x.label, x.label, s.m.get(x.label) || 0, qcm.style === x.label)).join("");
+  sty.value = qcm.style;
+  cat.classList.toggle("is-set", qcm.cat !== "all");
+  sub.classList.toggle("is-set", qcm.sub !== "all");
+  sty.classList.toggle("is-set", qcm.style !== "all");
+  r.querySelector("#qcmReset").hidden = qcm.cat === "all" && qcm.style === "all";
+}
+function qcmCountText(){
+  const mit = state.products.filter(p => (p.qc_images || []).length).length;
+  const gefiltert = qcm.list.length !== state.products.length;
+  return (gefiltert ? `${qcm.list.length} Produkt${qcm.list.length === 1 ? "" : "e"} angezeigt · ` : "")
+    + `${mit} von ${state.products.length} Produkten haben QC-Fotos.`;
 }
 
 function qcmRenderGrid(){
@@ -17661,8 +17766,8 @@ function qcmRenderGrid(){
   qcm.observer?.disconnect();
   grid.innerHTML = "";
   qcm.root.querySelector("#qcmEmpty").hidden = qcm.list.length > 0;
-  const mit = state.products.filter(p => (p.qc_images || []).length).length;
-  qcm.root.querySelector("#qcmCount").textContent = `${mit} von ${state.products.length} Produkten haben QC-Fotos.`;
+  qcmRenderFacets();
+  qcm.root.querySelector("#qcmCount").textContent = qcmCountText();
   qcmMore();
 }
 function qcmMore(){
@@ -17723,8 +17828,7 @@ function qcmRefreshTile(p){
   if(!qcm) return;
   const el = qcm.root.querySelector(`.qcm-tile[data-id="${CSS.escape(p.id)}"]`);
   if(el) el.innerHTML = qcmTileInner(p);
-  const mit = state.products.filter(x => (x.qc_images || []).length).length;
-  qcm.root.querySelector("#qcmCount").textContent = `${mit} von ${state.products.length} Produkten haben QC-Fotos.`;
+  qcm.root.querySelector("#qcmCount").textContent = qcmCountText();
   if(qcm.detailId === p.id) qcmDetailRender(p);
 }
 
@@ -17853,8 +17957,8 @@ function qciGroups(entries){
     if(!qc.length) continue;
     const folder = dir.split("/").pop() || "Ohne Ordner";
     groups.push({ id: groups.length, folder, name: folder.replace(/^\s*\d+[\s._-]*/, "").trim() || folder,
-      preview: vorschau || bilder[0], qc, link: files.find(f => /^link\.txt$/i.test(f.name)) || null,
-      cands: [], pick: "", sure: false, on: false, state: "", note: "" });
+      preview: vorschau || bilder[0], qc, info: files.find(f => /^(info|link|links)\.txt$/i.test(f.name)) || null,
+      ids: [], links: [], how: "", cands: [], pick: "", sure: false, on: false, state: "", note: "", open: false });
   }
   return groups.sort((a, b) => a.folder.localeCompare(b.folder, undefined, { numeric: true }));
 }
@@ -17864,7 +17968,55 @@ function qciTokens(t){
   return [...new Set(String(t || "").toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").split(/[^a-z0-9]+/).filter(w => w.length >= 3 && !QCI_STOP.has(w)))];
 }
 
+// Weidian-Artikelnummer aus einem Link -- auch aus Agent-Links (Lovegobuy,
+// Kakobuy, CNFans, Mulebuy, ...), die den Weidian-Link verpackt enthalten
+// ("url=https%3A%2F%2Fweidian.com..." oder "shop_type=weidian&id=...").
+function qciWeidianId(raw){
+  let s = String(raw || "");
+  for(let i = 0; i < 3; i++){ try { const d = decodeURIComponent(s); if(d === s) break; s = d; } catch { break; } }
+  const direkt = s.match(/item[_-]?id=(\d{6,13})/i);
+  if(direkt && /weidian|vdian|koudai|youshop/i.test(s)) return direkt[1];
+  if(/weidian|vdian/i.test(s)){
+    const m = s.match(/[?&](?:id|itemid|item_id|goodsid|goods_id)=(\d{6,13})/i);
+    if(m) return m[1];
+  }
+  return null;
+}
+async function qciReadInfo(g){
+  if(!g.info) return;
+  try {
+    const raw = g.info.file ? g.info.file : await g.info.blob();
+    const text = (await raw.text()).slice(0, 20000);
+    g.links = [...new Set(text.match(/https?:\/\/[^\s"'<>]+/gi) || [])].slice(0, 20);
+    const ids = new Set(g.links.map(qciWeidianId).filter(Boolean));
+    (text.match(/itemID=(\d{6,13})/gi) || []).forEach(x => ids.add(x.replace(/\D/g, "")));
+    g.ids = [...ids];
+    g.doppel = g.links.find(u => /doppel\.fit/i.test(u)) || "";
+  } catch(e){ console.warn("QC-Import: info.txt nicht lesbar:", g.folder, e); }
+}
+
 async function qciMatch(g){
+  await qciReadInfo(g);
+  // Vorschaubild immer laden -- auch bei Link-Treffern soll man es zum
+  // Kontrollieren neben dem Produkt sehen.
+  try { await qciFile(g.preview); } catch(e){ g.note = "Vorschaubild nicht lesbar"; }
+  // 1) Exakt ueber die Weidian-Artikelnummer -- das ist sicher.
+  if(g.ids.length){
+    const treffer = state.products.filter(p => { const id = qciWeidianId(p.product_url); return id && g.ids.includes(id); });
+    if(treffer.length){
+      g.how = "link";
+      g.cands = treffer.slice(0, 6).map(p => ({ id: p.id, sim: null, score: 2, link: true }));
+      g.pick = treffer[0].id;
+      g.sure = treffer.length === 1;
+      g.on = g.sure && !(treffer[0].qc_images || []).length;
+      if(treffer.length > 1) g.note = "mehrere Produkte mit diesem Link";
+      return;
+    }
+    // Link da, aber das Produkt gibt es im Shop nicht: NICHT raten -- QC-Fotos
+    // eines anderen Artikels gehoeren nicht zu einem aehnlich aussehenden.
+    g.how = "fremd";
+  }
+  // 2) Kein Link: Bildvergleich + Ordnername (nur Vorschlag zum Pruefen).
   const vec = await describeImageFile(await qciFile(g.preview));
   const { data, error } = await sb.rpc("search_products_by_image", { p_creator: qci.creatorId, p_embedding: "[" + vec.join(",") + "]", p_limit: 8 });
   if(error) throw error;
@@ -17886,6 +18038,13 @@ async function qciMatch(g){
   }
   g.cands = cands.sort((a, b) => b.score - a.score).slice(0, 6);
   const top = g.cands[0];
+  if(g.how === "fremd"){
+    g.pick = "";            // Vorschlaege bleiben waehlbar, aber nichts vorausgewaehlt
+    g.sure = false; g.on = false;
+    g.note = `Weidian ${g.ids[0]} ist nicht in deinem Shop`;
+    return;
+  }
+  g.how = "bild";
   g.pick = top ? top.id : "";
   g.sure = !!top && top.sim !== null && top.sim >= QCI_SURE && (g.cands.length < 2 || top.score - g.cands[1].score >= QCI_MARGIN);
   const p = state.products.find(x => x.id === g.pick);
@@ -17957,17 +18116,22 @@ function qciRowHtml(g){
   const p = state.products.find(x => x.id === g.pick);
   const top = g.cands.find(c => c.id === g.pick);
   const hat = p ? (p.qc_images || []).length : 0;
+  const art = g.how === "link"
+    ? `<span class="qci-sim is-sure">\u2713 Link passt${g.ids[0] ? ` (Weidian ${aesc(g.ids[0])})` : ""}${g.sure ? "" : " – bitte wählen"}</span>`
+    : g.how === "fremd" && !g.pick ? `<span class="qci-sim is-unsure">${aesc(g.note)} – nichts zugeordnet</span>` : "";
   const zust = g.state === "done" ? `<span class="qci-st is-ok">✓ ${aesc(g.note)}</span>` : g.state === "error" ? `<span class="qci-st is-err">${aesc(g.note)}</span>` : g.state === "busy" ? `<span class="qci-st">${aesc(g.note || "Lädt …")}</span>` : "";
   return `
       <div class="qci-row${g.on ? " is-on" : ""}${g.state ? " is-" + g.state : ""}" data-g="${g.id}">
         <label class="qci-chk"><input type="checkbox" ${g.on ? "checked" : ""} ${!p || g.state ? "disabled" : ""} aria-label="${aesc(g.folder)} importieren"></label>
         <div class="qci-src"><span class="qci-img">${qciThumb(g.preview) ? `<img src="${aesc(qciThumb(g.preview))}" alt="">` : `<span class="qci-noimg">?</span>`}</span>
-          <span class="qci-txt"><b>${aesc(g.name)}</b><small>${g.qc.length} QC-Foto${g.qc.length === 1 ? "" : "s"}${g.note && !g.state ? " · " + aesc(g.note) : ""}</small></span></div>
+          <span class="qci-txt"><b>${aesc(g.name)}</b><small>${g.qc.length} QC-Foto${g.qc.length === 1 ? "" : "s"}${g.doppel ? ` · <a href="${aesc(safeUrl(g.doppel))}" target="_blank" rel="noopener noreferrer">doppel ↗</a>` : ""}${g.note && !g.state && g.how !== "fremd" ? " · " + aesc(g.note) : ""}</small></span></div>
         <span class="qci-arrow" aria-hidden="true">→</span>
         <div class="qci-dst">${p ? `<span class="qci-img">${qciProdThumb(p)}</span>
-          <span class="qci-txt"><b>${aesc(p.title)}</b><small>${top ? `<span class="qci-sim ${g.sure ? "is-sure" : "is-unsure"}">${top.sim === null ? "Name passt" : `${(top.sim * 100).toFixed(1).replace(".", ",")} % ähnlich`}${g.sure ? "" : " – bitte prüfen"}</span>` : ""}${hat ? ` · hat schon ${hat} QC` : ""}</small></span>`
-          : `<span class="qci-txt"><b>Kein passendes Produkt</b><small>wird übersprungen</small></span>`}</div>
-        ${g.cands.length > 1 && !g.state ? `<div class="qci-alts" role="group" aria-label="Andere Treffer">${g.cands.map(c => { const q = state.products.find(x => x.id === c.id); return `<button type="button" class="qci-alt${c.id === g.pick ? " is-on" : ""}" data-pick="${c.id}" title="${aesc(q.title)} (${c.sim === null ? "Name passt" : (c.sim * 100).toFixed(1).replace(".", ",") + " %"})">${qciProdThumb(q)}</button>`; }).join("")}<button type="button" class="qci-alt qci-none${!g.pick ? " is-on" : ""}" data-pick="" title="Keins davon – überspringen">✕</button></div>` : ""}
+          <span class="qci-txt"><b>${aesc(p.title)}</b><small>${g.how === "link" ? art : top ? `<span class="qci-sim ${g.sure ? "is-sure" : "is-unsure"}">${top.sim === null ? "Name passt" : `${(top.sim * 100).toFixed(1).replace(".", ",")} % ähnlich`}${g.sure ? "" : " – bitte prüfen"}</span>` : ""}${hat ? ` · hat schon ${hat} QC` : ""}</small></span>`
+          : `<span class="qci-txt"><b>Kein passendes Produkt</b><small>${art || "wird übersprungen"}</small></span>`}</div>
+        ${!g.state ? `<button type="button" class="a-linkbtn qci-view" data-view="${g.id}" aria-expanded="${g.open}">${g.open ? "QC-Fotos ausblenden \u25b4" : "QC-Fotos ansehen \u25be"}</button>` : ""}
+        ${g.open && !g.state ? `<div class="qci-qcs">${g.qc.map(f => f.viewUrl ? `<a href="${aesc(f.viewUrl)}" target="_blank" rel="noopener"><img src="${aesc(f.viewUrl)}" alt=""></a>` : `<span class="qci-noimg">…</span>`).join("")}</div>` : ""}
+        ${g.cands.length > 1 && !g.state ? `<div class="qci-alts" role="group" aria-label="Andere Treffer">${g.cands.map(c => { const q = state.products.find(x => x.id === c.id); return `<button type="button" class="qci-alt${c.id === g.pick ? " is-on" : ""}" data-pick="${c.id}" title="${aesc(q.title)} (${c.link ? "Link passt" : c.sim === null ? "Name passt" : (c.sim * 100).toFixed(1).replace(".", ",") + " %"})">${qciProdThumb(q)}</button>`; }).join("")}<button type="button" class="qci-alt qci-none${!g.pick ? " is-on" : ""}" data-pick="" title="Keins davon – überspringen">✕</button></div>` : ""}
         ${zust}
       </div>`;
 }
@@ -18005,7 +18169,7 @@ function qciRender(){
     const fertig = qci.view === "done";
     body = `<div class="qci-sum">${fertig
         ? `<b>Fertig:</b> ${qci.groups.filter(g => g.state === "done").length} Produkte mit QC-Fotos versorgt${qci.groups.some(g => g.state === "error") ? ` · ${qci.groups.filter(g => g.state === "error").length} mit Fehler` : ""}.`
-        : `<b>${qci.groups.length}</b> Produkte gefunden · <b>${sicher}</b> sicher zugeordnet · ${qci.groups.length - sicher - ohne} bitte prüfen${ohne ? ` · ${ohne} ohne Treffer` : ""}. Produkte, die schon QC-Fotos haben, sind nicht angehakt.`}</div>
+        : `<b>${qci.groups.length}</b> Produkte gefunden · <b>${sicher}</b> sicher zugeordnet${qci.groups.some(g => g.how === "link") ? ` (davon <b>${qci.groups.filter(g => g.how === "link" && g.sure).length}</b> exakt über den Link)` : ""} · ${qci.groups.length - sicher - ohne} bitte prüfen${ohne ? ` · ${ohne} ohne Treffer` : ""}. Produkte, die schon QC-Fotos haben, sind nicht angehakt.`}</div>
       ${fertig ? "" : `<div class="qci-tools"><button type="button" class="a-linkbtn" data-all="sure">Alle sicheren anhaken</button><button type="button" class="a-linkbtn" data-all="none">Keine</button></div>`}
       <div class="qci-list" id="qciList">${qci.groups.map(qciRowHtml).join("")}</div>
       <div class="qci-foot">${fertig
@@ -18032,7 +18196,24 @@ function qciRender(){
       qciRefreshFoot();
       row.classList.toggle("is-on", g.on);
     });
-    list.addEventListener("click", e => {
+    list.addEventListener("click", async e => {
+      const v = e.target.closest("[data-view]");
+      if(v){
+        const row = v.closest(".qci-row"); const g = qci.groups[Number(row.dataset.g)];
+        g.open = !g.open;
+        if(g.open){
+          row.outerHTML = qciRowHtml(g);
+          for(const f of g.qc){
+            if(!qci || !g.open) return;
+            try { const file = await qciFile(f); f.viewUrl = URL.createObjectURL(file); qci.urls.push(f.viewUrl); } catch {}
+          }
+        } else {
+          g.qc.forEach(f => { if(f.viewUrl){ URL.revokeObjectURL(f.viewUrl); f.viewUrl = ""; } if(f !== g.preview) f.fileObj = null; });
+        }
+        const cur = qcm?.root.querySelector(`.qci-row[data-g="${g.id}"]`);
+        if(cur) cur.outerHTML = qciRowHtml(g);
+        return;
+      }
       const b = e.target.closest("[data-pick]"); if(!b) return;
       const row = b.closest(".qci-row"); const g = qci.groups[Number(row.dataset.g)];
       g.pick = b.dataset.pick;
