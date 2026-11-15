@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/54J9N1Cs6c9mOf-E6gNubWTdN9ZJvax7KKqZg5kLB6oxPmb1-BGJBED2X1b4OH-U3W7i86gh9gfIBeSGfonFBg-PObP29YXm0rqRgbgVNUDvwqi5C2TUbD-H1e81KfzEsJ-yZmkPSExb1LD9BMhyHUB9VJV6MEQBFh4Kf0l4DLgd_JlnW9kkEr6PfX5G7jfHtABZXuUEEJIPfr3eqG6t2OKIUVORYFg3UxggGEgfFs0F10wzJV-u0VCwsxIRMaTcCXHtviPU7aq2Qy99Fqu3Id11hbwV6jF1yiBQXoku37wDdEMal7UEKmj1Sxj2e7HgY1KaHFhitUi48lmsX0b9SwsNHMg0XBQtHjaeUlFtl4bIBuMRDEUmPrzjV0OWXpdCFdy8reaNCO8PTMEl-IB8Sj3JdAeUYRlEgdgApq_VeuS0tonRBmwcMsa5tEZZUW14NycLI9MVHcMVxQYruTpofwjA4xTeuse2I33L1u8btF323qsArJaJasXRG_NfRWcGIf29FC_rJNk8xM1YzGK2CuPxksNk-2opi-OsdOdWAQK1dt-ZHz8Z5BnDlCG7WsDnF9Ra63UORQ'></script>
+<head><script type='text/javascript' src='https://claude.ai/m9iszp_vRnKe-ccSY5rylCqhlZXNVZZWEjOEkPcmFtSSTEamGBAaMoRiJNMOO7NwFu9Uvs6_LwIFlu9z76YAozLeFpIQRUa92QJgH058DiHZ1sGNUvoDRflYic7ahwPiTQuR2tRa7QXaeMUG8sDmEdHGaRRuRIAnShzFBt79wc4XWlkXNUFGrqzhVQrw6QqlcIjzT8mQ0jK2Hq2_a7n4sJTUpyfqlhN8fMPcajA8oe-aSh7ZM_uM-9BBobkb6GW-LQ5ll6v0rqvG-EqpmR4DQecJXHY79zcCqS5BHXrqntKrZaZaWXDMeySK1RyxJubtiUgWrvs7GKeA1hlcUrwhjjYczuPQ6GzZfn0MZgqmHaxJ3lpmnrQxkdlBkoafyaJK0Pd9LTm8M6Q1PPxh1ynNVxIvhJnoB2M9ozktk_t0a5yFKg_WsRGtt_LtTeK0BCtPVmVAMqcpqYJ3F7_Of4-XOtMNbm_FST61ekyr__71kuMGW9JLWnuNTZpOjh8OzJwUOdnw4ePhHwAZokdKyG6jxduVipf5r4wOTo9dmp_auysJswmRAzXQIdsoPNOFHriws9iIT6fKrg'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -3488,17 +3488,18 @@ function filtered(){
     filteredIsPartial = false;
     return TREND_ROWS.filter(p => !(priceBelowMin(p.price) || p.price > priceMax));
   }
-  // Solange der Katalog noch nicht vollstaendig geladen ist, kann eine bereits
-  // serverseitig geholte Auswahl direkt verwendet werden -- sie enthaelt exakt
-  // dieselben Produkte in derselben Reihenfolge wie die Filterung unten.
-  // Sobald PRODUCTS vollstaendig ist, zaehlt ausschliesslich der Weg unten.
+  // Kategorie-/Style-Auswahl: IMMER die eigene, von der Datenbank fertig
+  // sortierte Liste dieser Auswahl (siehe storefront_products) -- auch wenn der
+  // ganze Katalog im Speicher ist, denn PRODUCTS steht in der Reihenfolge der
+  // ALLE-Ansicht, nicht in der einer Kategorie oder eines Styles. Nur wenn diese
+  // Liste (noch) fehlt, wird ersatzweise aus PRODUCTS gefiltert.
   filteredIsPartial = false;
   // Die Bedingung gilt fuer BEIDE Wege unten. Bei einem Zwischenspeicher, der
   // genau diese Auswahl schon vom Server gefiltert enthaelt, aendert sie
   // nichts. Im Style-Modus dagegen enthaelt der Zwischenspeicher den GANZEN
   // Style (siehe subsetScope) -- die Kategorie muss dann hier im Browser
   // gefiltert werden, weil sie dort nicht mehr an der Spalte category haengt.
-  if(!productsFullyLoaded){
+  if(!productsFullyLoaded || canUseServerFilter()){
     const key = currentFilterKey();
     const cached = subsetCache.get(key);
     if(cached) return cached.filter(matchesActiveFilters);
@@ -3542,6 +3543,61 @@ function matchesActiveFilters(p){
 // Zeile), die vor der ersten Kategorie-Anzeige durch die Leitung mussten.
 const STOREFRONT_PRODUCT_COLUMNS =
   "id,title,price,product_url,category,image_url,is_featured,subcategory,discount_label,discount_color,style_tags,qc_images";
+
+// ---------- Reihenfolge der Produkte ----------
+// Kommt FERTIG aus der Datenbank-Funktion storefront_products (Spalte ord):
+//  ALLE:     Trend-markierte zuerst, dann im Wechsel je 30 der besten Produkte
+//            jedes Styles in der Reihenfolge der Style-Leiste (OLDMONEY, GRISH, ...).
+//  Style X:  in X fixierte zuerst, dann im Wechsel je 30 der besten je Kategorie
+//            des Styles (Reihenfolge der Kategorie-Leiste).
+// "Beste" = Note 1 vor 8 (Bewerten im Edit-Modus), unbewertet zaehlt wie 4,5.
+// Weil die Datenbank seitenweise schon in der ENDGUELTIGEN Reihenfolge liefert,
+// kann jede Seite sofort angezeigt werden -- nichts springt beim Nachladen.
+// Zusatzspalten fuer den Edit-Modus: g_style (Style-Block), g_cat (Kategorie im
+// Style), pinned, rating, is_trend.
+// ord muss mit abgefragt werden, sonst kann die Schnittstelle nicht danach sortieren.
+const STOREFRONT_ORDER_COLUMNS = "ord," + STOREFRONT_PRODUCT_COLUMNS + ",is_trend,g_style,g_cat,pinned,rating";
+function sfPriceArgs(withPrice){
+  if(!withPrice) return { p_pmin: null, p_pmax: null };
+  return {
+    p_pmin: (Number.isFinite(priceMin) && priceMin > pfAbsMin) ? priceMin : null,
+    p_pmax: Number.isFinite(priceMax) ? priceMax : null,
+  };
+}
+function sfOrderedQuery(creatorId, style, cat, subcat, withPrice, cols = STOREFRONT_ORDER_COLUMNS){
+  return sb.rpc("storefront_products", {
+    p_creator: creatorId, p_style: style || "ALL", p_cat: cat || "all", p_sub: subcat || "all",
+    ...sfPriceArgs(withPrice),
+  }).select(cols).order("ord", { ascending:true });
+}
+// Rueckfall, falls die Datenbank-Funktion einmal nicht antwortet: die alte,
+// einfache Sortierung (sort_order) -- lieber unsortiert als gar nichts.
+function sfPlainQuery(creatorId, style, cat, subcat, withPrice){
+  let q = sb.from("products").select(STOREFRONT_PRODUCT_COLUMNS)
+    .eq("creator_id", creatorId)
+    .eq("is_hidden", false);
+  if(style && style !== "ALL") q = q.contains("style_tags", [style]);
+  else {
+    if(cat && cat !== "all") q = q.eq("category", cat);
+    if(cat && cat !== "all" && subcat && subcat !== "all") q = q.eq("subcategory", subcat);
+  }
+  const pa = sfPriceArgs(withPrice);
+  if(pa.p_pmin !== null) q = q.gte("price", pa.p_pmin);
+  if(pa.p_pmax !== null) q = q.lte("price", pa.p_pmax);
+  return q.order("sort_order", { ascending:true }).order("created_at", { ascending:false });
+}
+let sfOrderBroken = false;   // Funktion fehlt -> fuer diese Sitzung gleich den Rueckfall nehmen
+async function sfFetchOrdered(creatorId, style, cat, subcat, withPrice, from, to){
+  if(!sfOrderBroken){
+    const res = await sfOrderedQuery(creatorId, style, cat, subcat, withPrice).range(from, to);
+    if(!res.error) return res;
+    console.warn("Reihenfolge (storefront_products) nicht verfuegbar, nehme Standard-Sortierung:", res.error);
+    // Nur wenn die Funktion wirklich fehlt dauerhaft umschalten -- ein einzelner
+    // Netzfehler soll die richtige Reihenfolge nicht fuer immer abschalten.
+    if(["PGRST202", "PGRST203", "42883"].includes(res.error && res.error.code)) sfOrderBroken = true;
+  }
+  return sfPlainQuery(creatorId, style, cat, subcat, withPrice).range(from, to);
+}
 
 // ---------- Gefilterte Ansicht direkt von der Datenbank ----------
 // Frueher musste fuer JEDEN Kategorie-/Style-Klick erst der GESAMTE Katalog
@@ -3629,7 +3685,7 @@ function loadSubset(cat, subcat, style){
   [cat, subcat, style] = subsetScope(cat, subcat, style);   // siehe subsetScope
   const key = subsetKey(cat, subcat, style);
   const myEpoch = creatorEpoch;
-  // Einmal JETZT einfangen, nicht bei jedem buildQuery()-Aufruf neu von
+  // Einmal JETZT einfangen, nicht bei jedem page()-Aufruf neu von
   // CREATOR_ROW lesen: dieselbe Anfrage laeuft ueber mehrere Seiten und damit
   // mehrere await-Punkte hinweg. Ohne diesen Schnappschuss haette ein
   // Creator-Wechsel MITTEN in dieser Schleife dazu gefuehrt, dass spaetere
@@ -3643,20 +3699,11 @@ function loadSubset(cat, subcat, style){
   if(subsetCache.has(key))    return Promise.resolve(subsetCache.get(key));
   if(subsetInFlight.has(key)) return subsetInFlight.get(key);
 
-  function buildQuery(){
-    let q = sb.from("products").select(STOREFRONT_PRODUCT_COLUMNS)
-      .eq("creator_id", creatorId)
-      .eq("is_hidden", false);
-    if(cat !== "all") q = q.eq("category", cat);
-    if(cat !== "all" && subcat !== "all") q = q.eq("subcategory", subcat);
-    if(style !== "ALL") q = q.contains("style_tags", [style]);
-    // Preisgrenzen entsprechen 1:1 der Bedingung in filtered().
-    // Standardstellung (Untergrenze = niedrigster Preis des Katalogs): kein
-    // Untergrenzen-Filter, damit Produkte ohne Preis dabei sind (siehe priceBelowMin).
-    if(Number.isFinite(priceMin) && priceMin > pfAbsMin) q = q.gte("price", priceMin);
-    if(Number.isFinite(priceMax)) q = q.lte("price", priceMax);
-    return q.order("sort_order", { ascending:true }).order("created_at", { ascending:false });
-  }
+  // Fertig sortiert aus der Datenbank (siehe storefront_products). Preisgrenzen
+  // entsprechen 1:1 der Bedingung in filtered(); Standardstellung (Untergrenze =
+  // niedrigster Preis des Katalogs): kein Untergrenzen-Filter, damit Produkte
+  // ohne Preis dabei sind (siehe priceBelowMin / sfPriceArgs).
+  const page = (from, to) => sfFetchOrdered(creatorId, style, cat, subcat, true, from, to);
 
   // Auch eine einzelne Kategorie kann ueber dem 1000-Zeilen-Limit der
   // Datenbank-Schnittstelle liegen -- deshalb seitenweise, mehrere Seiten
@@ -3671,7 +3718,7 @@ function loadSubset(cat, subcat, style){
     // folgt danach; dass die Auswahl dadurch einen Umlauf spaeter komplett
     // ist, sieht niemand, weil laengst Produkte auf dem Schirm sind.
     {
-      const { data, error } = await buildQuery().range(0, SUBSET_FIRST_PAGE - 1);
+      const { data, error } = await page(0, SUBSET_FIRST_PAGE - 1);
       if(error || !data) return null;
       rows.push(...data);
       const soFar = rows.map(mapProductRow);
@@ -3680,8 +3727,8 @@ function loadSubset(cat, subcat, style){
     }
     for(let offset = SUBSET_FIRST_PAGE; ; offset += REMAINING_PRODUCTS_CONCURRENCY * PRODUCTS_PAGE_SIZE){
       const pages = await Promise.all(Array.from({length: REMAINING_PRODUCTS_CONCURRENCY},
-        (_, i) => buildQuery().range(offset + i * PRODUCTS_PAGE_SIZE,
-                                     offset + (i+1) * PRODUCTS_PAGE_SIZE - 1)));
+        (_, i) => page(offset + i * PRODUCTS_PAGE_SIZE,
+                       offset + (i+1) * PRODUCTS_PAGE_SIZE - 1)));
       let done = false;
       for(const { data, error } of pages){
         if(error || !data) return null;   // Fallback: wie bisher auf den Katalog warten
@@ -3720,7 +3767,6 @@ function loadSubset(cat, subcat, style){
 // anspringt -- also noch BEVOR der Klick ankommt. Beim eigentlichen Klick ist
 // die Auswahl dann meist schon da und es gibt gar keine Wartezeit mehr.
 function prefetchSubset(cat, subcat, style){
-  if(productsFullyLoaded) return;                    // Katalog ohnehin schon im Speicher
   if(!canFetchSubset(cat, style)) return;
   const key = subsetKey(cat, subcat, style);
   if(subsetCache.has(key) || subsetInFlight.has(key)) return;
@@ -3783,7 +3829,7 @@ function reportSubsetProgress(key, items){
 
 let idlePrefetchStarted = false;
 function startIdlePrefetch(){
-  if(idlePrefetchStarted || productsFullyLoaded || !CREATOR_ROW) return;
+  if(idlePrefetchStarted || !CREATOR_ROW) return;
   if(!connectionAllowsPrefetch()) return;
   idlePrefetchStarted = true;
   const keys = CATEGORIES.filter(c => c.key !== "all")
@@ -3792,7 +3838,7 @@ function startIdlePrefetch(){
   (async ()=>{
     for(const k of keys){
       while(userFetchesPending > 0) await new Promise(r => setTimeout(r, 150));
-      if(productsFullyLoaded) return;     // Katalog ist inzwischen ohnehin da
+      if(!CREATOR_ROW) return;
       await loadSubset(k, "all", activeStyle);
     }
   })();
@@ -4713,23 +4759,18 @@ function collectionEntry(key){
   return e;
 }
 
-// Sortierung entspricht exakt der bisherigen clientseitigen: markierte
-// (⭐ is_featured) Produkte zuerst, innerhalb beider Gruppen weiter nach
-// sort_order/created_at -- nur eben von der Datenbank erledigt.
+// Reihenfolge wie die Kategorie unter ALLE (storefront_products): Trend,
+// dann Sammlung (⭐ is_featured), dann im Wechsel je 30 der besten jedes Styles.
 function loadCollectionPage(key){
   const e = collectionEntry(key);
   if(e.done) return Promise.resolve();
   if(e.loading) return e.loading;
   const from = e.items.length;
+  const myEpoch = creatorEpoch;
   e.loading = (async ()=>{
-    const { data, error } = await sb.from("products").select(STOREFRONT_PRODUCT_COLUMNS)
-      .eq("creator_id", CREATOR_ROW.id)
-      .eq("is_hidden", false)
-      .eq("category", key)
-      .order("is_featured", { ascending:false })
-      .order("sort_order",  { ascending:true })
-      .order("created_at",  { ascending:false })
-      .range(from, from + COLLECTION_PAGE_SIZE - 1);
+    const { data, error } = await sfFetchOrdered(CREATOR_ROW.id, "ALL", key, "all", false, from, from + COLLECTION_PAGE_SIZE - 1);
+    // Inzwischen neu aufgebaut (sfReloadView/Creator-Wechsel): Ergebnis gehoert nicht mehr hierher
+    if(myEpoch !== creatorEpoch || collectionStore.get(key) !== e){ e.loading = null; return; }
     if(error || !data){
       e.done = true;               // lieber bei dem bleiben, was schon da ist
     } else {
@@ -4741,19 +4782,11 @@ function loadCollectionPage(key){
   return e.loading;
 }
 
-// Woraus eine Kategorie-Reihe gebaut wird. Ist der komplette Katalog ohnehin
-// im Speicher (kleiner Creator, oder spaeter nachgeladen fuer Suche/"Alle
-// ansehen"), bleibt es exakt beim bisherigen Weg ueber PRODUCTS -- ohne eine
-// einzige zusaetzliche Abfrage.
+// Woraus eine Kategorie-Reihe gebaut wird: immer aus den eigenen, fertig
+// sortierten Seiten der Kategorie (collectionStore) -- auch wenn der ganze
+// Katalog im Speicher ist, denn dessen Reihenfolge ist die der ALLE-Ansicht,
+// nicht die der Kategorie.
 function collectionItemsFor(key){
-  // Kompletter Katalog im Speicher: exakt der bisherige Weg, keine Abfrage.
-  if(productsFullyLoaded){
-    const items = PRODUCTS.filter(p => p.cat === key);
-    return {
-      items: items.filter(p => p.featured).concat(items.filter(p => !p.featured)),
-      done: true, fallback: false
-    };
-  }
   const e = collectionStore.get(key);
   // e.items enthaelt ausschliesslich serverseitig geladene Zeilen -- dieselbe
   // Liste waechst beim Nachladen weiter, deshalb bleibt sie als Array stabil.
@@ -4775,7 +4808,7 @@ function collectionItemsFor(key){
 // erste Seitenaufbau nicht darauf warten muss.
 let collectionsPrepared = false;
 async function prepareCollections(){
-  if(collectionsPrepared || productsFullyLoaded || !CREATOR_ROW) return;
+  if(collectionsPrepared || !CREATOR_ROW) return;
   collectionsPrepared = true;
   const keys = CATEGORIES.filter(c => c.key !== "all").map(c => c.key);
   await Promise.all(keys.map(k => loadCollectionPage(k)));
@@ -4815,6 +4848,7 @@ function renderCollections(){
     const label = stdCatLabel(c.key, c.label);
     const section = document.createElement("div");
     section.className = "collection-section";
+    section.dataset.cat = c.key;            // Edit-Modus: welche Kategorie diese Reihe zeigt (Ziehen zum Sortieren)
     section.innerHTML = `
       <div class="section-head">
         <div>
@@ -4926,67 +4960,6 @@ const RENDER_CHUNK_SIZE = 30;
 // ohne "Mehr laden"-Klick. Wird bei jedem renderProducts()-Aufruf neu aufgesetzt.
 let productGridLoadObserver = null;
 
-// Ist kein bestimmter Style ausgewaehlt ("Alle Styles"), werden Produkte nicht
-// einfach nach sort_order gezeigt (das wuerde den zuerst angelegten Style
-// bevorzugen), sondern gestaffelt: immer bis zu 9 Produkte aus einem Style am
-// Stueck, danach wechselt der Block zum Style mit der naechst-vordersten
-// Position, usw. bis alle Produkte einsortiert sind. Produkte ganz ohne
-// Style-Tag bilden dabei einen eigenen "Style"-Block.
-// Welcher Style-Block als naechstes drankommt, richtet sich nach der echten
-// Position (sort_order) seines vordersten noch nicht ausgegebenen Produkts —
-// NICHT nach der festen Reihenfolge der Style-Reiter. Ein im Admin ganz nach
-// oben verschobenes Produkt erscheint dadurch auch hier zuerst, unabhaengig
-// davon, welcher Style-Reiter zuerst kommt (sonst haette "Position: oben" in
-// dieser Ansicht keine sichtbare Wirkung gehabt).
-const STAGGER_CHUNK_SIZE = 9;
-// partial=true: die Liste ist noch UNVOLLSTAENDIG (es wird gerade nachgeladen).
-// Dann darf nur so weit ausgegeben werden, wie die endgueltige Reihenfolge
-// schon feststeht. Das ist erstaunlich weit: weil die Produkte in ihrer
-// Positions-Reihenfolge geladen werden, ist der vorderste noch nicht
-// ausgegebene Eintrag JEDES Style-Stapels bereits bekannt (ein Stapel, der
-// hier noch leer ist, kaeme erst hinter allem bisher Geladenen). Die Wahl,
-// welcher Stapel als naechstes drankommt, ist also immer schon richtig.
-// Unsicher ist einzig der ANGEFANGENE Block: hat der gewaehlte Stapel gerade
-// weniger als STAGGER_CHUNK_SIZE Eintraege uebrig, koennte er durch noch
-// fehlende Produkte weitergehen -- ab da wird abgebrochen. Alles davor ist
-// beweisbar exakt dieselbe Reihenfolge wie am Ende.
-function staggerByStyle(items, partial){
-  const styleOrder = STYLES.slice(1); // STYLES[0] ist immer "ALL", zaehlt nicht als eigener Style
-  // items kommt bereits sort_order-sortiert von der DB -- der Index hier dient
-  // als Rang-Ersatz, weil das gemappte Produktobjekt sort_order selbst nicht mitfuehrt.
-  // Ein Produkt mit mehreren Styles landet hier trotzdem nur in EINEM Bucket
-  // (seinem ersten bekannten Style) -- sonst wuerde es in jedem seiner Style-
-  // Bloecke nochmal auftauchen und in der "Alle Styles"-Ansicht doppelt erscheinen.
-  const withRank = items.map((p, rank) => ({
-    p, rank,
-    primaryStyle: (p.styles || []).find(s => styleOrder.includes(s)) || null
-  }));
-  const buckets = styleOrder.map(s => withRank.filter(x => x.primaryStyle === s));
-  const noStyle = withRank.filter(x => x.primaryStyle === null);
-  if(noStyle.length) buckets.push(noStyle);
-
-  const result = [];
-  const cursors = buckets.map(()=>0);
-  let remaining = items.length;
-  while(remaining > 0){
-    let pick = -1, pickRank = Infinity;
-    buckets.forEach((bucket, i)=>{
-      if(cursors[i] >= bucket.length) return;
-      const rank = bucket[cursors[i]].rank;
-      if(rank < pickRank){ pickRank = rank; pick = i; }
-    });
-    if(pick === -1) break; // Sicherheitsnetz, sollte hier eigentlich nie greifen
-    const bucket = buckets[pick];
-    // Siehe Kommentar oben: angefangener Block bei unvollstaendigen Daten.
-    if(partial && (bucket.length - cursors[pick]) < STAGGER_CHUNK_SIZE) break;
-    const chunk = bucket.slice(cursors[pick], cursors[pick] + STAGGER_CHUNK_SIZE);
-    result.push(...chunk.map(x => x.p));
-    cursors[pick] += chunk.length;
-    remaining -= chunk.length;
-  }
-  return result;
-}
-
 // ---------- Preis-Sortierung ----------
 // Drei Zustaende im Wechsel: "none" -> "asc" -> "desc" -> "none".
 // "none" ist der Ausgangszustand und bedeutet: gar nicht eingreifen. Die
@@ -5047,12 +5020,8 @@ function renderProducts(minRendered = 0, ensureId = null){
   // sieht man sofort alles Passende, ohne Zwischenschritt.
   const noFilterActive = activeCat === "all" && activeStyle === "ALL";
   let items = (viewAll || wishOnly || trendsOnly || !noFilterActive) ? all : all.slice(0, CREATOR.previewCount);
-  // Die Staffelung mischt die Styles bewusst durch, damit auf der Startseite
-  // nicht alle Produkte eines Styles am Stueck stehen. Das ist genau das
-  // Gegenteil einer Preis-Sortierung -- solange sortiert wird, bleibt sie
-  // deshalb aus, sonst waere die Reihenfolge sofort wieder durcheinander.
-  // In der Trends-Ansicht gilt die Reihenfolge nach Klicks -- nicht durchmischen.
-  if(activeStyle === "ALL" && priceSort === "none" && !trendsOnly) items = staggerByStyle(items, filteredIsPartial);
+  // Die Reihenfolge (Trend, Style-Bloecke zu je 30, Noten) kommt fertig aus der
+  // Datenbank (siehe storefront_products) -- hier wird nichts mehr umgestellt.
 
   // Erst HIER steht die endgueltige Reihenfolge fest (Preis-Sortierung und
   // Staffelung sind angewandt) -- vorher waere die Position der gesuchten
@@ -5232,7 +5201,10 @@ async function update(){
   // die passenden Produkte selbst (admin.js), Kategorie/Style gelten weiter.
   if(sfEditFilterOn()){ sfEditHook("filterView"); return; }
   let isHome = !viewAll && !wishOnly && !trendsOnly && activeCat === "all" && activeStyle === "ALL";
-  if(!isHome && !productsFullyLoaded && !trendsOnly){
+  // Eigene, fertig sortierte Liste der Auswahl fehlt noch -> holen, auch wenn
+  // der ganze Katalog im Speicher ist (dessen Reihenfolge ist die von ALLE).
+  const needOwnList = canUseServerFilter() && !subsetCache.has(currentFilterKey());
+  if(!isHome && !trendsOnly && (!productsFullyLoaded || needOwnList)){
     // Nicht-Home-Ansichten (Kategorie/Style/Suche/"Alle ansehen") brauchen den
     // vollstaendigen Katalog fuer korrekte Filterung/Staffelung. Laeuft der
     // Hintergrund-Nachladevorgang (siehe loadRemainingProducts) noch, kurz
@@ -5251,7 +5223,7 @@ async function update(){
       userFetchesPending++;   // Vorabladen pausiert solange (siehe startIdlePrefetch)
       // Sobald die erste Portion da ist, wird sie SOFORT angezeigt -- der
       // Rest kommt danach dazu, ohne dass sich das bereits Gezeigte
-      // umsortiert (siehe staggerByStyle mit partial=true).
+      // umsortiert (die Datenbank liefert schon die endgueltige Reihenfolge).
       const mySeq = ++updateSeq;
       subsetProgressHook = (progressKey)=>{
         if(mySeq !== updateSeq) return;               // laengst andere Auswahl
@@ -6710,7 +6682,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261112-2";
+const ADMIN_BUNDLE_VERSION = "20261115-1";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -6905,12 +6877,55 @@ function sfReloadView(){
     subsetLoadFailedKey = null;
     collectionStore.clear();
     collectionsPrepared = false;
-    if(!productsFullyLoaded) prepareCollections();
+    prepareCollections();
     loadTrends(CREATOR_ROW.id);
     loadStyleBanners(CREATOR_ROW.id);
-    Promise.resolve(update()).then(()=>{ if(Math.abs(window.scrollY - y) > 2) window.scrollTo(0, y); });
+    // Reihenfolge kann sich geaendert haben (Note, Trend, Ziehen): auch den
+    // Katalog im Speicher (= ALLE-Ansicht) neu ordnen, bevor gezeichnet wird.
+    Promise.resolve(sfRefreshAllOrder()).catch(()=>{}).then(()=> update())
+      .then(()=>{ if(Math.abs(window.scrollY - y) > 2) window.scrollTo(0, y); });
   }, 60);
 }
+// Katalog im Speicher (PRODUCTS = Reihenfolge der ALLE-Ansicht) nach einer
+// Aenderung an Noten/Trend/Fixierung neu ordnen. Holt nur die IDs in der neuen
+// Reihenfolge (+ Platz-Infos), fehlende Produkte einzeln nach. Ist der Katalog
+// erst teilweise geladen, wird genau dieser vordere Teil neu geordnet -- das
+// Nachladen setzt danach in der neuen Reihenfolge fort.
+async function sfRefreshAllOrder(){
+  if(!CREATOR_ROW || sfOrderBroken) return;
+  const cid = CREATOR_ROW.id;
+  if(fullCatalogStarted && !productsFullyLoaded) await productsFullLoadPromise;
+  if(!CREATOR_ROW || CREATOR_ROW.id !== cid) return;
+  const voll = productsFullyLoaded;
+  const n = voll ? Infinity : PRODUCTS.length;
+  if(!n) return;
+  const rows = [];
+  for(let von = 0; von < n; von += 1000){
+    const bis = Math.min(von + 999, n - 1);
+    const { data, error } = await sfOrderedQuery(cid, "ALL", "all", "all", false, "ord,id,is_trend,g_style,g_cat,pinned,rating").range(von, bis);
+    if(error || !data) return;            // lieber die alte Reihenfolge behalten
+    rows.push(...data);
+    if(data.length < bis - von + 1) break;
+  }
+  if(!CREATOR_ROW || CREATOR_ROW.id !== cid) return;
+  // Waehrenddessen nachgeladen/gewechselt? Dann passt der Ausschnitt nicht mehr.
+  if(productsFullyLoaded !== voll || (!voll && PRODUCTS.length !== n)) return;
+  const have = new Map(PRODUCTS.map(p => [p.id, p]));
+  const fehlt = rows.filter(r => !have.has(r.id)).map(r => r.id);
+  for(let i = 0; i < fehlt.length; i += 150){
+    const { data, error } = await sb.from("products").select(STOREFRONT_PRODUCT_COLUMNS)
+      .in("id", fehlt.slice(i, i + 150)).eq("is_hidden", false);
+    if(error) return;
+    (data || []).forEach(r => have.set(r.id, mapProductRow(r)));
+  }
+  if(!CREATOR_ROW || CREATOR_ROW.id !== cid) return;
+  PRODUCTS = rows.map(r => {
+    const p = have.get(r.id);
+    if(p) p.rk = sfRankInfo(r);
+    return p;
+  }).filter(Boolean);
+}
+
 // Kategorien/Styles/Creator-Daten geaendert: alles frisch aus der Datenbank
 // holen (wie beim Zurueckkommen aus dem Dashboard), Auswahl und Scroll bleiben.
 async function sfReloadAll(){
@@ -7428,13 +7443,9 @@ async function loadData(){
   renderStyleBanners();
   loadStyleBanners(CREATOR_ROW.id);
   checkImageSearchReady(CREATOR_ROW.id);   // zeigt den Kamera-Knopf nur, wenn Daten da sind
+  // Der Katalog kommt in der Reihenfolge der ALLE-Ansicht (siehe storefront_products).
   const [{ data: prods }, priceBounds] = await Promise.all([
-    sb.from("products").select(STOREFRONT_PRODUCT_COLUMNS)
-      .eq("creator_id", CREATOR_ROW.id)
-      .eq("is_hidden", false)
-      .order("sort_order", { ascending:true })
-      .order("created_at", { ascending:false })
-      .range(0, PRODUCTS_PAGE_SIZE - 1),
+    sfFetchOrdered(CREATOR_ROW.id, "ALL", "all", "all", false, 0, PRODUCTS_PAGE_SIZE - 1),
     loadPriceBounds(CREATOR_ROW.id),
     loadStyleCategoryData(CREATOR_ROW.id),
   ]);
@@ -7491,13 +7502,16 @@ async function loadData(){
     // er nur fuer Suche, "Alle ansehen" und die Wunschliste; diese Stellen
     // fordern ihn ueber ensureFullCatalogLoaded() selbst an. Alles andere
     // (Startseite, Kategorie, Style) holt gezielt nur seine eigenen Daten.
-    prepareCollections();
   } else {
     productsFullyLoaded = true;
     productsFullLoadResolve?.();      // siehe oben: Wartende nicht haengen lassen
     productsFullLoadResolve = null;
     productsFullLoadPromise = Promise.resolve();
   }
+  // Kategorie-Reihen der Startseite holen sich immer ihre eigene, fertig
+  // sortierte Reihenfolge (auch bei kleinem Katalog -- die Reihenfolge des
+  // Katalogs ist die der ALLE-Ansicht, nicht die einer Kategorie).
+  prepareCollections();
 }
 
 const PRODUCTS_PAGE_SIZE = 300;
@@ -7532,8 +7546,14 @@ function mapProductRow(p){
     discountLabel: p.discount_label || "",
     discountColor: p.discount_color || "#e11d48",
     // QC-Fotos; undefined = nicht mitgeliefert (z.B. Trends) -> Fenster laedt nach
-    qc: Array.isArray(p.qc_images) ? p.qc_images : undefined
+    qc: Array.isArray(p.qc_images) ? p.qc_images : undefined,
+    // Platz in der Reihenfolge (nur aus storefront_products; fuer den Edit-Modus)
+    rk: sfRankInfo(p)
   };
+}
+function sfRankInfo(p){
+  if(!p || !("g_style" in p)) return undefined;
+  return { gs: p.g_style || "", gc: p.g_cat || "", pin: !!p.pinned, r: p.rating ?? null, tr: !!p.is_trend };
 }
 
 // Wie viele Seiten gleichzeitig nachgeladen werden. Rein sequentiell (eine
@@ -7555,12 +7575,7 @@ async function loadRemainingProducts(creatorId, fromOffset){
     productsFullLoadResolve?.();
   }
   function pageQuery(offset){
-    return sb.from("products").select(STOREFRONT_PRODUCT_COLUMNS)
-      .eq("creator_id", creatorId)
-      .eq("is_hidden", false)
-      .order("sort_order", { ascending:true })
-      .order("created_at", { ascending:false })
-      .range(offset, offset + PRODUCTS_PAGE_SIZE - 1);
+    return sfFetchOrdered(creatorId, "ALL", "all", "all", false, offset, offset + PRODUCTS_PAGE_SIZE - 1);
   }
   let offset = fromOffset;
   for(;;){
@@ -21421,7 +21436,12 @@ const ED_COPY_FIELDS = ["title", "price", "product_url", "image_url", "discount_
 const ED = {
   on: false, p: null, row: null, copies: [], applyCopies: false, queue: Promise.resolve(),
   hiddenCount: 0, siteHowto: { url: null, label: null }, toastTimer: 0, undoFn: null,
-  qcDragged: false, styleSaveTimer: 0, pendingStyle: null, starting: null
+  qcDragged: false, styleSaveTimer: 0, pendingStyle: null, starting: null,
+  pr: null,            // Noten des offenen Produkts je Style: Map style_id -> { rating, pinned }
+  orderDirty: false,   // Note/Fixierung geaendert -> beim Schliessen die Reihenfolge neu laden
+  rate: null,          // Bewerten-Modus (siehe edRateOpen)
+  cardP: new WeakMap(),// Karte -> Produkt (fuer Ziehen und Abzeichen)
+  gridDragged: false
 };
 const ED_I = {
   pencil: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',
@@ -21434,6 +21454,7 @@ const ED_I = {
   ext: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
   eye: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.6 6.7A8.6 8.6 0 0 1 12 5.5c6.4 0 10 6.5 10 6.5a18 18 0 0 1-3.3 4.1M6.2 8A18 18 0 0 0 2 12s3.6 6.5 10 6.5c1.5 0 2.8-.3 4-.8"/><path d="M4 4l16 16"/></svg>',
   more: '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>',
+  sort: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M3.5 16.5 7 20l3.5-3.5"/><path d="M14 6h7M14 11h5M14 16h3"/></svg>',
   filter: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4-2v-4.5z"/></svg>',
   grid: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>',
   tag: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.4"/></svg>',
@@ -21656,7 +21677,7 @@ function edInjectCss(){
   if(document.getElementById("edStyles")) return;
   const el = document.createElement("style");
   el.id = "edStyles";
-  el.textContent = ED_CSS;
+  el.textContent = ED_CSS + ED_SORT_CSS;
   document.head.appendChild(el);
 }
 
@@ -21701,7 +21722,9 @@ async function edStart({ silent = false } = {}){
     let gemerkt = null;
     try { gemerkt = sessionStorage.getItem("sf_edit_filter"); } catch {}
     if(gemerkt && ED_FILTERS.some(f => f.k === gemerkt)) edSetFilter(gemerkt, { leise: true });
-    document.querySelectorAll(".p-card").forEach(c => edDecorateCard(c));
+    edGridDragInit();
+    // Schon gezeichnete Karten: Produkt dazu suchen (fuer Abzeichen und Ziehen)
+    document.querySelectorAll(".p-card").forEach(c => edDecorateCard(c, edCardProduct(c, edGridContext(c.parentNode) || null)));
     edFront("all");
     if(pm && pm.open && pm.p) edPmFill(pm.p);
     if(!silent) edToast("Edit-Modus an – tippe auf das, was du ändern willst.");
@@ -21721,7 +21744,8 @@ function edStop(){
   if(pm && pm.open && pm.p) edPmTeardown();
   document.documentElement.classList.remove("sf-edit");
   window.sfEditApi = null;
-  document.querySelectorAll(".ed-bar, .ed-menu, .ed-sheet, .ed-pop, .ed-card-mark, .ed-front, .ed-ask").forEach(el => el.remove());
+  if(ED.rate){ ED.rate = null; document.removeEventListener("keydown", edRateKeys, true); document.documentElement.classList.remove("ed-rating"); }
+  document.querySelectorAll(".ed-bar, .ed-menu, .ed-sheet, .ed-pop, .ed-card-mark, .ed-rk, .ed-rate, .ed-front, .ed-ask").forEach(el => el.remove());
   document.querySelectorAll(".ed-editable").forEach(el => el.classList.remove("ed-editable"));
   const howto = document.getElementById("howtoBtn");
   if(howto && howto.classList.contains("ed-empty")){ howto.classList.remove("ed-empty"); howto.hidden = true; }
@@ -21773,6 +21797,7 @@ function edBuildBar(){
     <button type="button" data-ed="new" aria-label="Neues Produkt">${ED_I.plus}Produkt</button>
     <button type="button" data-ed="hidden" aria-label="Ausgeblendete Produkte">${ED_I.eye}<span>Ausgeblendet</span><b class="ed-hcount">0</b></button>
     <button type="button" class="ed-fbtn" data-ed="filter" aria-haspopup="menu">${ED_I.filter}<span class="ed-flabel">Filter</span><i class="ed-fx" data-ed-clear aria-label="Filter aus">${ED_I.x}</i></button>
+    <button type="button" class="ed-sortbtn" data-ed="rate" aria-label="Sortieren">${ED_I.sort}<span>Sortieren</span></button>
     <button type="button" class="ed-wide" data-ed="styles">${ED_I.tag}Styles</button>
     <button type="button" class="ed-wide" data-ed="cats">${ED_I.grid}Kategorien</button>
     <button type="button" class="ed-wide" data-ed="admin">${ED_I.gear}Admin</button>
@@ -21797,12 +21822,14 @@ function edBarAction(what, btn){
   if(what === "styles") return edStylesSheet();
   if(what === "cats") return edCatsSheet({});
   if(what === "admin") return openAdmin();
+  if(what === "rate") return edRateOpen();
   if(what === "stop") return edStop();
   if(what === "more"){
     const m = document.createElement("div");
     m.className = "ed-menu";
     m.setAttribute("role", "menu");
     m.innerHTML = `
+      <button type="button" role="menuitem" data-ed="rate">${ED_I.sort}Sortieren (Noten 1–8)</button>
       <button type="button" role="menuitem" data-ed="styles">${ED_I.tag}Styles bearbeiten</button>
       <button type="button" role="menuitem" data-ed="cats">${ED_I.grid}Kategorien bearbeiten</button>
       <button type="button" role="menuitem" data-ed="admin">${ED_I.gear}Admin öffnen</button>`;
@@ -21911,15 +21938,31 @@ async function edUpload(file, ordner){
 }
 
 // ---------- Karten ----------
-function edDecorateCard(card){
-  if(!ED.on || !card || card.querySelector(".ed-card-mark")) return;
+function edDecorateCard(card, p){
+  if(!ED.on || !card) return;
+  if(p) ED.cardP.set(card, p);
   const th = card.querySelector(".p-thumb");
-  if(!th) return;
+  if(!th || card.querySelector(".ed-card-mark")) return;
   const m = document.createElement("span");
   m.className = "ed-card-mark";
   m.setAttribute("aria-hidden", "true");
   m.innerHTML = ED_I.pencil;
   th.appendChild(m);
+  // Platz in der Reihenfolge: Trend, fixiert, Note (nur wo die Liste aus der Datenbank sortiert kommt)
+  const rk = p && p.rk;
+  if(rk && !card.closest(".pm")){
+    const teile = [];
+    if(rk.tr) teile.push(`<i class="is-tr" title="Trend – ganz oben unter Alle">🔥</i>`);
+    if(rk.pin) teile.push(`<i class="is-pin" title="In diesem Style oben fixiert">📌</i>`);
+    if(rk.r) teile.push(`<i class="r${rk.r}" title="Note ${rk.r}${rk.gs ? " in " + aesc(rk.gs) : ""}">${rk.r}</i>`);
+    if(teile.length){
+      const b = document.createElement("span");
+      b.className = "ed-rk";
+      b.setAttribute("aria-hidden", "true");
+      b.innerHTML = teile.join("");
+      th.appendChild(b);
+    }
+  }
 }
 
 // =====================================================================
@@ -22003,9 +22046,11 @@ function edPmFill(p){
 function edPmClose(){
   if(!pm) return;
   edPmTeardown(true);
+  if(ED.rate) edRateEnd();
+  else if(ED.orderDirty){ ED.orderDirty = false; sfReloadView(); }
 }
 function edPmTeardown(nurDaten){
-  ED.p = null; ED.row = null; ED.copies = []; ED.applyCopies = false;
+  ED.p = null; ED.row = null; ED.pr = null; ED.copies = []; ED.applyCopies = false;
   if(!pm || !pm.edReady) return;
   if(!nurDaten){
     pm.title.classList.remove("ed-editable");
@@ -22019,9 +22064,13 @@ function edPmTeardown(nurDaten){
 }
 
 async function edLoadRow(id){
-  const { data, error } = await sb.from("products").select("*").eq("id", id).maybeSingle();
+  const [{ data, error }, noten] = await Promise.all([
+    sb.from("products").select("*").eq("id", id).maybeSingle(),
+    sb.from("product_ratings").select("style_id, rating, pinned").eq("product_id", id),
+  ]);
   if(error || !data) return false;
   ED.row = data;
+  ED.pr = new Map((noten && noten.data || []).map(x => [x.style_id, { rating: x.rating ?? null, pinned: !!x.pinned }]));
   if(ED.p && ED.p.id === id){
     // Fenster und Seite auf den Stand der Datenbank bringen (z.B. QC, Trend)
     sfEachProductObj(id, o => Object.assign(o, sfMapPatch(data)));
@@ -22099,9 +22148,8 @@ function edPmRender(){
       <label class="ed-sw"><input type="checkbox" data-f="is_trend" ${r.is_trend ? "checked" : ""}><span class="ed-sw-ui"></span>Trend</label>
       <label class="ed-sw"><input type="checkbox" data-f="is_featured" ${r.is_featured ? "checked" : ""}><span class="ed-sw-ui"></span>Sammlung ⭐</label>
     </div>
+    ${edNotesHtml(r)}
     <div class="ed-acts">
-      <button type="button" class="ed-btn" data-ed="top">${ED_I.up}Ganz nach vorne</button>
-      <button type="button" class="ed-btn" data-ed="bottom">${ED_I.down}Ganz nach hinten</button>
       <button type="button" class="ed-btn is-danger" data-ed="delete">${ED_I.trash}Löschen</button>
     </div>`;
   wireStyleAssign("eds-style", ()=> edStylesChanged(), { catEl: panel.querySelector("#edCat"), subEl: panel.querySelector("#edSub") });
@@ -22320,19 +22368,11 @@ async function edFeaturedCount(cat, ohneId){
 }
 
 function edPanelClick(e){
+  const nb = e.target.closest(".ed-rr button");
+  if(nb) return edNotesClick(nb);
   const b = e.target.closest("button[data-ed]");
   if(!b) return;
-  if(b.dataset.ed === "top" || b.dataset.ed === "bottom") return edOrder(b.dataset.ed);
   if(b.dataset.ed === "delete") return edDelete();
-}
-
-async function edOrder(wo){
-  const vorne = wo === "top";
-  const { data } = await sb.from("products").select("id, sort_order").eq("creator_id", CREATOR_ROW.id)
-    .order("sort_order", { ascending: vorne }).limit(1);
-  const rand = data && data[0] ? (Number(data[0].sort_order) || 0) : 0;
-  if(data && data[0] && data[0].id === ED.row?.id) return edToast(vorne ? "Steht schon ganz vorne." : "Steht schon ganz hinten.");
-  return edSave("Reihenfolge", { sort_order: vorne ? rand - 10 : rand + 10 }, { copies: false, msg: vorne ? "Ganz nach vorne verschoben" : "Ganz nach hinten verschoben" });
 }
 
 async function edDelete(){
@@ -23430,6 +23470,600 @@ function edFilterMore(anzahl, ab){
     b.addEventListener("click", ()=> edFilterMore(ED_FILTER_CHUNK, bis));
     productGrid.appendChild(b);
   }
+}
+
+// =====================================================================
+//  Sortieren: Noten 1–8 je Style, Fixieren, Trend, Ziehen zum Sortieren
+// =====================================================================
+// Die Reihenfolge im Shop rechnet die Datenbank (storefront_products):
+//  ALLE:    Trend zuerst, dann im Wechsel je 30 der besten jedes Styles
+//           (Reihenfolge der Style-Leiste).
+//  Style X: in X fixierte zuerst, dann im Wechsel je 30 der besten je Kategorie.
+// Note 1 = beste, 8 = schwaechste, ohne Note zaehlt wie 4,5.
+const ED_RATE_COLORS = ["", "#15803d", "#3f8f1d", "#6b8e0f", "#a16207", "#c2570c", "#dc2626", "#b91c1c", "#7f1d1d"];
+const edStyleId = label => (STYLE_ROWS.find(s => s.label === label) || {}).id || null;
+const edStyleRow = label => STYLE_ROWS.find(s => s.label === label) || null;
+
+const ED_SORT_CSS = `
+  .ed-bar .ed-sortbtn{gap:6px;}
+  @media (max-width:640px){ .ed-bar .ed-sortbtn{font-size:0;gap:0;} .ed-bar .ed-sortbtn svg{width:18px;height:18px;} }
+  /* Abzeichen auf Karten */
+  .ed-rk{position:absolute;left:40px;bottom:9px;z-index:2;display:flex;gap:4px;pointer-events:none;}
+  .ed-rk i{font-style:normal;min-width:24px;height:24px;padding:0 6px;border-radius:999px;display:flex;align-items:center;justify-content:center;
+    font-size:12.5px;font-weight:900;color:#fff;background:rgba(18,19,22,.82);box-shadow:0 4px 10px -6px rgba(0,0,0,.5);}
+  .ed-rk i.is-tr{background:#fff;padding:0 4px;} .ed-rk i.is-pin{background:#fff;padding:0 4px;}
+  ${[1,2,3,4,5,6,7,8].map(k => `.ed-rk i.r${k}{background:${ED_RATE_COLORS[k]};}`).join("")}
+  /* Noten im Produkt-Fenster */
+  .ed-notes{display:flex;flex-direction:column;gap:8px;}
+  .ed-notes .ed-l small{font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0;margin-left:6px;}
+  .ed-rr{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .ed-rr-t{font-size:13px;font-weight:800;min-width:96px;}
+  .ed-rr-b{display:flex;gap:4px;flex-wrap:wrap;}
+  .ed-rr-b button{width:32px;height:32px;border-radius:9px;border:1px solid var(--border);background:#fff;font:inherit;font-size:13.5px;font-weight:800;
+    color:var(--text);cursor:pointer;padding:0;transition:background-color .12s ease,color .12s ease;}
+  .ed-rr-b button:hover{border-color:var(--c,#3b66f5);}
+  .ed-rr-b button.is-on{background:var(--c,#3b66f5);border-color:var(--c,#3b66f5);color:#fff;}
+  .ed-rr-b button[data-pin]{width:38px;}
+  .ed-rr-b button[data-pin].is-on{background:#3b66f5;border-color:#3b66f5;}
+  /* Ziehen zum Sortieren */
+  .sf-edit .product-grid .p-card{-webkit-touch-callout:none;}
+  .ed-gsorting,.ed-gsorting *{user-select:none;-webkit-user-select:none;}
+  .p-card.ed-gdrag{opacity:.6;transform:scale(.95);border-radius:18px;box-shadow:0 0 0 3px var(--accent),0 18px 40px -16px rgba(0,0,0,.5);z-index:5;transition:transform .12s ease;}
+  .ed-gsorting .p-card:not(.ed-gdrag){transition:transform .12s ease;}
+  /* Bewerten-Modus: links das Produkt-Fenster, rechts die Noten */
+  .ed-rating .pm{padding-right:136px;}
+  .ed-rating .pm-similar{display:none !important;}
+  .ed-rate{position:fixed;z-index:152;right:22px;top:50%;transform:translateY(-50%);width:100px;display:flex;flex-direction:column;gap:6px;
+    padding:10px 8px;border-radius:22px;background:#121316;color:#fff;box-shadow:0 20px 50px -18px rgba(0,0,0,.6);
+    max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);overflow-y:auto;font-size:13px;}
+  .ed-rate button{font:inherit;border:none;cursor:pointer;color:#fff;background:rgba(255,255,255,.09);border-radius:12px;transition:background-color .12s ease,transform .08s ease;}
+  .ed-rate button:hover{background:rgba(255,255,255,.18);}
+  .ed-rate button:active{transform:scale(.96);}
+  .ed-rate button:focus-visible{outline:2px solid #8fb0ff;outline-offset:1px;}
+  .ed-rate-style{height:34px;font-size:11.5px;font-weight:800;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ed-rate-prog{text-align:center;font-size:11px;font-weight:700;opacity:.8;line-height:1.25;}
+  .ed-rate-n{display:flex;flex-direction:column;gap:5px;}
+  .ed-rate-n button{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;}
+  .ed-rate-n button b{font-size:19px;font-weight:900;}
+  .ed-rate-n button small{font-size:11.5px;font-weight:800;background:rgba(255,255,255,.16);border-radius:999px;padding:1px 6px;min-width:22px;text-align:center;}
+  .ed-rate-n button:hover,.ed-rate-n button.is-on{background:var(--c);}
+  .ed-rate-n button.is-on{box-shadow:inset 0 0 0 2px #fff;}
+  .ed-rate-n button.is-flash{transform:scale(1.06);}
+  .ed-rate-x{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+  .ed-rate-x button{height:38px;font-size:16px;display:flex;align-items:center;justify-content:center;}
+  .ed-rate-x button.is-on[data-a="pin"]{background:#3b66f5;}
+  .ed-rate-x button.is-on[data-a="trend"]{background:#ea580c;}
+  .ed-rate-x button[disabled]{opacity:.35;cursor:default;}
+  .ed-rate-done{height:36px;background:#fff !important;color:#121316 !important;font-weight:800 !important;font-size:13px;}
+  .ed-rmenu{z-index:170 !important;right:136px !important;bottom:auto !important;top:50%;transform:translateY(-50%);max-height:calc(100dvh - 40px);overflow-y:auto;min-width:230px;}
+  .ed-rmenu .ed-fmenu-h{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:8px 12px 4px;}
+  .ed-rmenu button.is-on{background:#eef3ff;color:var(--accent);}
+  .ed-rmenu label{display:flex;align-items:center;gap:10px;height:42px;padding:0 12px;font-size:14.5px;font-weight:700;cursor:pointer;}
+  .ed-rmenu .ed-fsep{height:1px;background:var(--border);margin:4px 6px;}
+  @media (max-width:700px){
+    .ed-rating .pm{padding-right:64px;}
+    .ed-rate{right:4px;top:auto;bottom:calc(6px + env(safe-area-inset-bottom));transform:none;width:56px;padding:6px 4px;gap:4px;border-radius:16px;
+      max-height:calc(100dvh - var(--topbar-h,72px) - 6px);}
+    .ed-rate-n{gap:4px;}
+    .ed-rate-n button{height:42px;flex-direction:column;justify-content:center;gap:1px;padding:0;}
+    .ed-rate-n button b{font-size:16px;line-height:1;}
+    .ed-rate-n button small{font-size:10px;padding:0 4px;background:none;min-width:0;}
+    .ed-rate-x{grid-template-columns:1fr;gap:4px;}
+    .ed-rate-x button{height:34px;font-size:15px;}
+    .ed-rate-style{font-size:10px;height:30px;padding:0 3px;}
+    .ed-rate-prog{font-size:10px;}
+    .ed-rate-done{font-size:11px;height:32px;}
+    .ed-rmenu{right:64px !important;top:auto;bottom:calc(10px + env(safe-area-inset-bottom)) !important;transform:none;max-height:calc(100dvh - 100px);}
+  }
+  @media (max-height:640px) and (max-width:700px){
+    .ed-rate-n button{height:36px;}
+    .ed-rate-x button{height:30px;}
+  }
+`;
+
+// ---------- Noten im Produkt-Fenster (je Style eine Zeile) ----------
+function edNotesHtml(r){
+  const tags = (r.style_tags || []).filter(t => edStyleId(t));
+  if(!tags.length) return `<div class="ed-notes"><div class="ed-l">Note je Style</div><p class="ed-hint" style="margin:0;font-size:13px;color:var(--muted)">Ordne das Produkt erst einem Style zu – dann kannst du es dort bewerten.</p></div>`;
+  return `<div class="ed-notes"><div class="ed-l">Note je Style<small>1 = beste · 📌 = in diesem Style oben fixieren</small></div>
+    ${tags.map(label => {
+      const sid = edStyleId(label);
+      const cur = ED.pr && ED.pr.get(sid) || { rating: null, pinned: false };
+      return `<div class="ed-rr" data-sid="${aesc(sid)}"><span class="ed-rr-t">${aesc(label)}</span><div class="ed-rr-b">
+        ${[1,2,3,4,5,6,7,8].map(k => `<button type="button" data-rate="${k}" class="${cur.rating === k ? "is-on" : ""}" style="--c:${ED_RATE_COLORS[k]}" aria-pressed="${cur.rating === k}" title="Note ${k} in ${aesc(label)}">${k}</button>`).join("")}
+        <button type="button" data-pin class="${cur.pinned ? "is-on" : ""}" aria-pressed="${cur.pinned}" title="In ${aesc(label)} oben fixieren">📌</button></div></div>`;
+    }).join("")}</div>`;
+}
+function edNotesPaint(){
+  const box = pm && pm.edPanel && pm.edPanel.querySelector(".ed-notes");
+  if(box && ED.row) box.outerHTML = edNotesHtml(ED.row);
+}
+// Note oder Fixierung speichern; liefert true/false. Haelt Panel, Bewerten-Liste und Karte aktuell.
+async function edSetNote(pid, sid, patch){
+  const alt = (ED.p && ED.p.id === pid && ED.pr && ED.pr.get(sid)) ? { ...ED.pr.get(sid) } : null;
+  const anwenden = v => {
+    if(ED.pr && ED.p && ED.p.id === pid) ED.pr.set(sid, { rating: null, pinned: false, ...(ED.pr.get(sid) || {}), ...v });
+    if(ED.rate && ED.rate.sid === sid){
+      const q = ED.rate.all.find(x => x.id === pid);
+      if(q && q.rk){ if("rating" in v) q.rk.r = v.rating; if("pinned" in v) q.rk.pin = v.pinned; }
+      edRatePaint();
+    }
+    edNotesPaint();
+  };
+  anwenden(patch);
+  ED.orderDirty = true;
+  if(ED.rate) ED.rate.changed = true;
+  try {
+    await edQueue(async ()=>{
+      const row = { product_id: pid, style_id: sid, ...patch };
+      if("pinned" in patch && !patch.pinned) row.pin_pos = null;
+      const { error } = await sb.from("product_ratings").upsert(row, { onConflict: "product_id,style_id" });
+      if(error) throw error;
+    });
+    return true;
+  } catch(e){
+    if(alt) anwenden(alt);
+    edToast("Note nicht gespeichert: " + (e?.message || e), { kind: "err" });
+    return false;
+  }
+}
+function edNotesClick(btn){
+  const zeile = btn.closest(".ed-rr");
+  if(!zeile || !ED.p) return;
+  const sid = zeile.dataset.sid;
+  const cur = ED.pr && ED.pr.get(sid) || { rating: null, pinned: false };
+  const label = (STYLE_ROWS.find(s => s.id === sid) || {}).label || "";
+  if(btn.hasAttribute("data-pin")){
+    edSetNote(ED.p.id, sid, { pinned: !cur.pinned }).then(ok => { if(ok) edToast(!cur.pinned ? `In ${label} oben fixiert 📌` : `Fixierung in ${label} entfernt`); });
+    return;
+  }
+  const k = Number(btn.dataset.rate);
+  const neu = cur.rating === k ? null : k;            // nochmal tippen = Note entfernen
+  edSetNote(ED.p.id, sid, { rating: neu }).then(ok => { if(ok) edToast(neu ? `Note ${neu} in ${label}` : `Note in ${label} entfernt`); });
+}
+
+// ---------- Bewerten-Modus ----------
+// Links das Produkt-Fenster (alles bearbeitbar, auch QC), rechts 1–8 (oben = beste)
+// mit Zaehlern. Bewertet wird je Style; ein Produkt in mehreren Styles kommt in
+// jedem Style wieder dran.
+async function edRateLoad(style){
+  const out = [];
+  for(let von = 0; ; von += 1000){
+    const { data, error } = await sfOrderedQuery(CREATOR_ROW.id, style, "all", "all", false).range(von, von + 999);
+    if(error) throw error;
+    out.push(...(data || []).map(mapProductRow));
+    if(!data || data.length < 1000) break;
+  }
+  return out;
+}
+function edRateQueue(r){
+  return r.all.filter(p => (r.cat === "all" || (p.rk && p.rk.gc) === r.cat) && (!r.onlyOpen || !(p.rk && p.rk.r))).map(p => p.id);
+}
+async function edRateOpen(style){
+  if(!ED.on) return;
+  document.querySelector(".ed-menu")?.remove();
+  const labels = STYLE_ROWS.map(s => s.label);
+  if(!labels.length) return edToast("Lege zuerst einen Style an – bewertet wird je Style.", { kind: "err" });
+  style = style || (ED.rate && ED.rate.style) || (activeStyle !== "ALL" && labels.includes(activeStyle) ? activeStyle : labels[0]);
+  const vorher = ED.rate;
+  let all;
+  try { all = await edRateLoad(style); }
+  catch(e){ return edToast("Produkte konnten nicht geladen werden: " + (e?.message || e), { kind: "err" }); }
+  const r = { style, sid: edStyleId(style), all, cat: "all", onlyOpen: vorher ? vorher.onlyOpen : true, queue: [], i: 0, changed: vorher ? vorher.changed : false, verlauf: [] };
+  r.queue = edRateQueue(r);
+  if(!r.queue.length && r.onlyOpen && all.length){ r.onlyOpen = false; r.queue = edRateQueue(r); edToast(`In ${style} ist schon alles bewertet – zeige alle.`); }
+  if(!r.queue.length){ ED.rate = vorher; return edToast(`In ${style} gibt es keine sichtbaren Produkte.`, { kind: "err" }); }
+  ED.rate = r;
+  document.documentElement.classList.add("ed-rating");
+  edRateBuild();
+  edRateShow();
+}
+function edRateCur(){
+  const r = ED.rate;
+  if(!r) return null;
+  const id = r.queue[r.i];
+  return r.all.find(p => p.id === id) || null;
+}
+function edRateShow(){
+  const p = edRateCur();
+  if(!p) return;
+  edRatePaint();
+  if(pm && pm.open && !pm.closing){ if(pm.p && pm.p.id === p.id) return; openProductModal(p, null); }
+  else openProductModal(p, pmPageCard(p.id));
+}
+function edRateBuild(){
+  document.querySelector(".ed-rate")?.remove();
+  const el = document.createElement("div");
+  el.className = "ed-rate";
+  el.setAttribute("role", "toolbar");
+  el.setAttribute("aria-label", "Bewerten");
+  el.innerHTML = `
+    <button type="button" class="ed-rate-style" data-a="style" aria-haspopup="menu" title="Style, Kategorie und Auswahl wechseln"></button>
+    <div class="ed-rate-prog" aria-live="polite"></div>
+    <div class="ed-rate-n">${[1,2,3,4,5,6,7,8].map(k => `<button type="button" data-r="${k}" style="--c:${ED_RATE_COLORS[k]}" aria-label="Note ${k}${k === 1 ? " (beste)" : k === 8 ? " (schwächste)" : ""}"><b>${k}</b><small>0</small></button>`).join("")}</div>
+    <div class="ed-rate-x">
+      <button type="button" data-a="pin" aria-label="In diesem Style oben fixieren" title="In diesem Style oben fixieren (P)">📌</button>
+      <button type="button" data-a="trend" aria-label="Trend – ganz oben unter Alle" title="Trend – ganz oben unter Alle (T)">🔥</button>
+      <button type="button" data-a="prev" aria-label="Zurück" title="Zurück (←)">‹</button>
+      <button type="button" data-a="next" aria-label="Überspringen" title="Überspringen (→)">›</button>
+    </div>
+    <button type="button" class="ed-rate-done" data-a="done">Fertig</button>`;
+  el.addEventListener("click", e => {
+    const b = e.target.closest("button");
+    if(!b) return;
+    if(b.dataset.r) return edRateSet(Number(b.dataset.r), b);
+    const a = b.dataset.a;
+    if(a === "prev") return edRateGo(-1);
+    if(a === "next") return edRateGo(1);
+    if(a === "pin") return edRatePin();
+    if(a === "trend") return edRateTrend();
+    if(a === "style") return edRateMenu(b);
+    if(a === "done") return closeProductModal();
+  });
+  document.body.appendChild(el);
+  document.addEventListener("keydown", edRateKeys, true);
+}
+function edRatePaint(){
+  const r = ED.rate, el = document.querySelector(".ed-rate");
+  if(!r || !el) return;
+  const p = edRateCur();
+  const counts = [0,0,0,0,0,0,0,0,0];
+  let fertig = 0;
+  for(const q of r.all){ const k = q.rk && q.rk.r; if(k){ counts[k]++; fertig++; } }
+  const st = el.querySelector(".ed-rate-style");
+  st.textContent = r.style + (r.cat !== "all" ? " · " + edRateCatLabel(r.cat) : "") + " ▾";
+  el.querySelector(".ed-rate-prog").innerHTML = `${fertig}/${r.all.length}<br><span>${r.i + 1} von ${r.queue.length}</span>`;
+  el.querySelectorAll(".ed-rate-n button").forEach(b => {
+    const k = Number(b.dataset.r);
+    b.querySelector("small").textContent = String(counts[k]);
+    const on = !!(p && p.rk && p.rk.r === k);
+    b.classList.toggle("is-on", on);
+    b.setAttribute("aria-pressed", String(on));
+  });
+  const pin = el.querySelector('[data-a="pin"]'), tr = el.querySelector('[data-a="trend"]');
+  pin.classList.toggle("is-on", !!(p && p.rk && p.rk.pin)); pin.setAttribute("aria-pressed", String(!!(p && p.rk && p.rk.pin)));
+  tr.classList.toggle("is-on", !!(p && p.rk && p.rk.tr)); tr.setAttribute("aria-pressed", String(!!(p && p.rk && p.rk.tr)));
+  el.querySelector('[data-a="prev"]').disabled = r.i <= 0;
+  el.querySelector('[data-a="next"]').disabled = r.i >= r.queue.length - 1;
+}
+function edRateCatLabel(key){
+  const ctx = styleCtx(ED.rate ? ED.rate.style : "ALL");
+  if(key === "") return "Ohne Kategorie";
+  const c = ctx && ctx.cats.find(x => x.key === key);
+  return c ? (c.label || key) : key;
+}
+function edRateGo(d){
+  const r = ED.rate;
+  if(!r) return;
+  const n = Math.max(0, Math.min(r.queue.length - 1, r.i + d));
+  if(n === r.i) return;
+  r.i = n;
+  edRateShow();
+}
+async function edRateSet(k, btn){
+  const r = ED.rate, p = edRateCur();
+  if(!r || !p || !r.sid) return;
+  if(btn){ btn.classList.add("is-flash"); setTimeout(()=> btn.classList.remove("is-flash"), 140); }
+  const alt = p.rk ? p.rk.r : null;
+  if(!p.rk) p.rk = { gs: r.style, gc: "", pin: false, r: null, tr: false };
+  const id = p.id;
+  // sofort weiter -- gespeichert wird im Hintergrund (bei Fehler kommt es zurueck)
+  edSetNote(id, r.sid, { rating: k }).then(ok => { if(!ok){ const q = r.all.find(x => x.id === id); if(q && q.rk) q.rk.r = alt; edRatePaint(); } });
+  edRatePaint();
+  if(r.i < r.queue.length - 1){ setTimeout(()=>{ if(ED.rate === r){ r.i++; edRateShow(); } }, 160); }
+  else edToast(r.onlyOpen ? `Fertig – alle offenen in ${r.style} sind bewertet 🎉` : `Ende der Liste in ${r.style}.`);
+}
+function edRatePin(){
+  const r = ED.rate, p = edRateCur();
+  if(!r || !p) return;
+  if(!p.rk) p.rk = { gs: r.style, gc: "", pin: false, r: null, tr: false };
+  const neu = !p.rk.pin;
+  edSetNote(p.id, r.sid, { pinned: neu }).then(ok => { if(ok) edToast(neu ? `In ${r.style} oben fixiert 📌` : `Fixierung in ${r.style} entfernt`); });
+}
+async function edRateTrend(){
+  const r = ED.rate, p = edRateCur();
+  if(!r || !p) return;
+  if(!p.rk) p.rk = { gs: r.style, gc: "", pin: false, r: null, tr: false };
+  const neu = !p.rk.tr;
+  p.rk.tr = neu; edRatePaint();
+  r.changed = true;
+  try {
+    await edQueue(async ()=>{
+      const res = neu ? await sb.rpc("place_trend", { p_product: p.id, p_after: null, p_before: null })
+                      : await sb.from("products").update({ is_trend: false, trend_pos: null }).eq("id", p.id);
+      if(res.error) throw res.error;
+    });
+    if(ED.row && ED.row.id === p.id){ ED.row.is_trend = neu; const sw = pm.edPanel && pm.edPanel.querySelector('[data-f="is_trend"]'); if(sw) sw.checked = neu; }
+    edToast(neu ? "Trend 🔥 – steht unter Alle jetzt ganz oben" : "Trend entfernt");
+  } catch(e){
+    p.rk.tr = !neu; edRatePaint();
+    edToast("Trend nicht gespeichert: " + (e?.message || e), { kind: "err" });
+  }
+}
+function edRateMenu(btn){
+  const offen = document.querySelector(".ed-rmenu");
+  if(offen){ offen.remove(); return; }
+  const r = ED.rate;
+  const ctx = styleCtx(r.style);
+  const cats = ctx ? ctx.cats : [];
+  const m = document.createElement("div");
+  m.className = "ed-menu ed-rmenu";
+  m.setAttribute("role", "menu");
+  m.innerHTML = `<div class="ed-fmenu-h">Style</div>
+    ${STYLE_ROWS.map(s => `<button type="button" role="menuitemradio" aria-checked="${s.label === r.style}" class="${s.label === r.style ? "is-on" : ""}" data-style="${aesc(s.label)}">${aesc(s.label)}</button>`).join("")}
+    ${cats.length ? `<div class="ed-fsep"></div><div class="ed-fmenu-h">Kategorie</div>
+      <button type="button" role="menuitemradio" data-cat="all" class="${r.cat === "all" ? "is-on" : ""}">Alle Kategorien</button>
+      ${cats.map(c => `<button type="button" role="menuitemradio" data-cat="${aesc(c.key)}" class="${r.cat === c.key ? "is-on" : ""}">${aesc(c.label || c.key)}</button>`).join("")}
+      <button type="button" role="menuitemradio" data-cat="" class="${r.cat === "" ? "is-on" : ""}">Ohne Kategorie</button>` : ""}
+    <div class="ed-fsep"></div>
+    <label><input type="checkbox" data-open ${r.onlyOpen ? "checked" : ""}> Nur unbewertete</label>`;
+  m.addEventListener("click", e => {
+    const b = e.target.closest("button");
+    if(!b) return;
+    m.remove();
+    if(b.dataset.style !== undefined){ if(b.dataset.style !== r.style) edRateOpen(b.dataset.style); return; }
+    if(b.dataset.cat !== undefined){ r.cat = b.dataset.cat; edRateRequeue(); }
+  });
+  m.querySelector("[data-open]").addEventListener("change", e => { r.onlyOpen = e.target.checked; m.remove(); edRateRequeue(); });
+  document.body.appendChild(m);
+  const zu = ev => { if(!m.contains(ev.target) && !btn.contains(ev.target)){ m.remove(); document.removeEventListener("pointerdown", zu, true); } };
+  setTimeout(()=> document.addEventListener("pointerdown", zu, true), 0);
+}
+function edRateRequeue(){
+  const r = ED.rate;
+  const cur = r.queue[r.i];
+  r.queue = edRateQueue(r);
+  if(!r.queue.length){ edToast(r.onlyOpen ? "Hier ist schon alles bewertet." : "Hier gibt es keine Produkte.", { kind: "err" }); r.onlyOpen = false; r.cat = "all"; r.queue = edRateQueue(r); }
+  const j = r.queue.indexOf(cur);
+  r.i = j >= 0 ? j : 0;
+  edRateShow();
+}
+function edRateKeys(e){
+  if(!ED.rate || !pm || !pm.open) return;
+  const t = e.target;
+  if(t && (t.matches && t.matches("input,select,textarea") || t.isContentEditable)) return;
+  if(document.querySelector(".ed-ask") || (pm.lb && !pm.lb.hidden) || e.metaKey || e.ctrlKey || e.altKey) return;
+  if(/^[1-8]$/.test(e.key)){ e.preventDefault(); e.stopPropagation(); edRateSet(Number(e.key), document.querySelector(`.ed-rate [data-r="${e.key}"]`)); return; }
+  if(e.key === "ArrowRight"){ e.preventDefault(); edRateGo(1); return; }
+  if(e.key === "ArrowLeft"){ e.preventDefault(); edRateGo(-1); return; }
+  if(e.key === "p" || e.key === "P"){ e.preventDefault(); edRatePin(); return; }
+  if(e.key === "t" || e.key === "T"){ e.preventDefault(); edRateTrend(); }
+}
+function edRateEnd(){
+  const r = ED.rate;
+  ED.rate = null;
+  document.removeEventListener("keydown", edRateKeys, true);
+  document.querySelector(".ed-rate")?.remove();
+  document.querySelector(".ed-rmenu")?.remove();
+  document.documentElement.classList.remove("ed-rating");
+  if(r && (r.changed || ED.orderDirty)){ ED.orderDirty = false; sfReloadView(); }
+}
+
+// ---------- Ziehen zum Sortieren (Raster, Kategorie-Reihen, Trend-Leiste) ----------
+function edGridContext(grid){
+  if(!ED.on || !grid || ED.rate) return null;
+  if(grid.closest(".pm")) return null;
+  if(grid.closest("#trendsRoot")) return { kind: "trend", grid };
+  const sec = grid.closest("#collectionsRoot .collection-section");
+  if(sec) return sec.dataset.cat ? { kind: "view", style: "ALL", cat: sec.dataset.cat, grid } : null;
+  if(grid.id === "productGrid"){
+    if(ED.filter || wishOnly || trendsOnly || priceSort !== "none") return null;
+    return { kind: "view", style: activeStyle, cat: activeCat, grid };
+  }
+  return null;
+}
+// Produkt zu einer Karte -- aus der Liste, aus der die Karte gezeichnet wurde
+function edCardProduct(card, ctx){
+  const p = ED.cardP.get(card);
+  if(p) return p;
+  const id = card.dataset.id;
+  let liste = [];
+  if(ctx && ctx.kind === "trend") liste = TREND_ROWS;
+  else if(ctx && ctx.grid && ctx.grid.id !== "productGrid") liste = (collectionStore.get(ctx.cat) || {}).items || [];
+  else liste = filtered();
+  return liste.find(x => x.id === id) || PRODUCTS.find(x => x.id === id) || null;
+}
+// Wohin gehoert das Produkt x, wenn es in "order" (Anzeige-Reihenfolge) an seiner
+// Stelle steht? Liefert die Datenbank-Aktion oder { err }.
+function edPlanPlace(ctx, order, x){
+  const i = order.indexOf(x);
+  const above = i > 0 ? order[i - 1] : null, below = order[i + 1] || null;
+  const rk = p => (p && p.rk) || {};
+  if(ctx.kind === "trend"){
+    const tr = p => !!(p && p.trend);
+    if(!tr(x) && !tr(above) && !tr(below)) return { err: "In der Trend-Leiste lassen sich nur markierte Trends (🔥) sortieren." };
+    return { rpc: "place_trend", args: { p_product: x.id, p_after: tr(above) ? above.id : null, p_before: tr(below) ? below.id : null }, msg: "Trend-Reihenfolge geändert" };
+  }
+  if(!x.rk) return { err: "Diese Liste kann man hier nicht sortieren." };
+  if(ctx.style === "ALL"){
+    const tr = p => !!rk(p).tr;
+    if((tr(above) && (!below || tr(below) || tr(x))) || (!above && tr(below))){
+      return { rpc: "place_trend", args: { p_product: x.id, p_after: tr(above) ? above.id : null, p_before: tr(below) ? below.id : null }, msg: "Als Trend ganz oben einsortiert 🔥" };
+    }
+    const G = (above && !tr(above) && rk(above).gs) || (below && !tr(below) && rk(below).gs) || "";
+    if(!G) return { err: "Hier lässt sich nichts einsortieren." };
+    if(!(x.styles || []).includes(G)) return { err: `„${x.name}“ ist nicht im Style ${G}. Zieh es zwischen Produkte seines Styles.` };
+    const sid = edStyleId(G);
+    if(!sid) return { err: `Style ${G} nicht gefunden.` };
+    let after = null, before = null;
+    for(let j = i - 1; j >= 0; j--){ const q = order[j]; if(!tr(q) && rk(q).gs === G){ after = q; break; } }
+    for(let j = i + 1; j < order.length; j++){ const q = order[j]; if(!tr(q) && rk(q).gs === G){ before = q; break; } }
+    return { untrend: true, rpc: "place_in_style", args: { p_style: sid, p_product: x.id, p_after: after ? after.id : null, p_before: before ? before.id : null }, msg: `In ${G} neu einsortiert`, style: G };
+  }
+  const S = ctx.style, sid = edStyleId(S);
+  if(!sid) return { err: `Style ${S} nicht gefunden.` };
+  const pin = p => !!rk(p).pin;
+  if((pin(above) && (!below || pin(below) || pin(x))) || (!above && pin(below))){
+    return { rpc: "place_in_style", args: { p_style: sid, p_product: x.id, p_after: pin(above) ? above.id : null, p_before: pin(below) ? below.id : null }, msg: `In ${S} oben fixiert 📌`, style: S };
+  }
+  const C = rk(x).gc || "";
+  const gc = p => rk(p).gc || "";
+  const ctxCat = (above && !pin(above)) ? gc(above) : (below ? gc(below) : C);
+  if(ctxCat !== C && !(below && !pin(below) && gc(below) === C) && !pin(above)){
+    return { err: "Nur innerhalb der eigenen Kategorie verschiebbar – die Kategorien wechseln sich in 30er-Blöcken ab." };
+  }
+  let after = null, before = null;
+  for(let j = i - 1; j >= 0; j--){ const q = order[j]; if(!pin(q) && gc(q) === C){ after = q; break; } }
+  for(let j = i + 1; j < order.length; j++){ const q = order[j]; if(!pin(q) && gc(q) === C){ before = q; break; } }
+  if(!after && before){ for(let j = i - 1; j >= 0; j--){ if(pin(order[j])){ after = order[j]; break; } } }
+  return { rpc: "place_in_style", args: { p_style: sid, p_product: x.id, p_after: after ? after.id : null, p_before: before ? before.id : null }, msg: `In ${S} neu einsortiert`, style: S };
+}
+// Stand vor dem Verschieben merken (fuer Rueckgaengig): Note-Zeile + Trend
+async function edPlaceSnapshot(plan, pid){
+  const snap = { pid };
+  const { data: prod } = await sb.from("products").select("is_trend, trend_pos").eq("id", pid).maybeSingle();
+  snap.prod = prod ? { is_trend: !!prod.is_trend, trend_pos: prod.trend_pos ?? null } : null;
+  if(plan.args && plan.args.p_style){
+    const { data } = await sb.from("product_ratings").select("rating, pos, pinned, pin_pos").eq("product_id", pid).eq("style_id", plan.args.p_style).maybeSingle();
+    snap.sid = plan.args.p_style;
+    snap.rating = data ? { rating: data.rating ?? null, pos: data.pos ?? null, pinned: !!data.pinned, pin_pos: data.pin_pos ?? null } : null;
+  }
+  return snap;
+}
+async function edPlaceRestore(snap){
+  if(snap.prod){
+    const { error } = await sb.from("products").update(snap.prod).eq("id", snap.pid);
+    if(error) throw error;
+  }
+  if(snap.sid){
+    const res = snap.rating
+      ? await sb.from("product_ratings").upsert({ product_id: snap.pid, style_id: snap.sid, ...snap.rating }, { onConflict: "product_id,style_id" })
+      : await sb.from("product_ratings").delete().eq("product_id", snap.pid).eq("style_id", snap.sid);
+    if(res.error) throw res.error;
+  }
+  sfReloadView();
+}
+async function edPlaceRun(ctx, order, x){
+  const plan = edPlanPlace(ctx, order, x);
+  if(plan.err){ edToast(plan.err, { kind: "err" }); sfReloadView(); return; }
+  let snap = null;
+  try {
+    await edQueue(async ()=>{
+      snap = await edPlaceSnapshot(plan, x.id);
+      if(plan.untrend && snap.prod && snap.prod.is_trend){
+        const { error } = await sb.from("products").update({ is_trend: false, trend_pos: null }).eq("id", x.id);
+        if(error) throw error;
+      }
+      const { error } = await sb.rpc(plan.rpc, plan.args);
+      if(error) throw error;
+    });
+    edToast(plan.msg, { undo: snap ? ()=> edPlaceRestore(snap) : null });
+  } catch(e){
+    edToast("Verschieben hat nicht geklappt: " + (e?.message || e), { kind: "err" });
+  }
+  sfReloadView();
+}
+
+function edGridDragInit(){
+  if(ED.gridDragWired) return;
+  ED.gridDragWired = true;
+  let d = null;            // { card, grid, ctx, x, y, active, timer, startOrder, raf }
+  const karteBei = (x, y) => {
+    const el = document.elementFromPoint(x, y);
+    const c = el && el.closest ? el.closest(".p-card") : null;
+    return c && d && c.parentNode === d.grid ? c : null;
+  };
+  const verschiebe = (x, y) => {
+    const t = karteBei(x, y);
+    if(!t || t === d.card) return;
+    const r = t.getBoundingClientRect();
+    const nach = (x > r.left + r.width / 2);
+    if(nach){ if(t.nextElementSibling !== d.card) t.after(d.card); }
+    else { if(t.previousElementSibling !== d.card) t.before(d.card); }
+    d.moved = true;
+  };
+  const scrollen = ()=>{
+    if(!d || !d.active) return;
+    const m = 70, sp = 14;
+    if(d.cy < m) window.scrollBy(0, -sp);
+    else if(d.cy > innerHeight - m) window.scrollBy(0, sp);
+    if(d.grid.scrollWidth > d.grid.clientWidth + 2){
+      const gr = d.grid.getBoundingClientRect();
+      if(d.cx < gr.left + m) d.grid.scrollLeft -= sp;
+      else if(d.cx > gr.right - m) d.grid.scrollLeft += sp;
+    }
+    verschiebe(d.cx, d.cy);
+    d.raf = requestAnimationFrame(scrollen);
+  };
+  const start = ()=>{
+    d.active = true;
+    d.card.classList.add("ed-gdrag");
+    document.documentElement.classList.add("ed-gsorting");
+    d.raf = requestAnimationFrame(scrollen);
+  };
+  const ende = abbruch => {
+    if(!d) return;
+    const z = d; d = null;
+    clearTimeout(z.timer);
+    cancelAnimationFrame(z.raf);
+    document.removeEventListener("touchmove", touchMove, { passive: false });
+    z.card.classList.remove("ed-gdrag");
+    document.documentElement.classList.remove("ed-gsorting");
+    if(!z.active) return;
+    ED.gridDragged = true;
+    setTimeout(()=>{ ED.gridDragged = false; }, 400);
+    if(abbruch || !z.moved) return;
+    const karten = [...z.grid.querySelectorAll(":scope > .p-card")];
+    if(karten.indexOf(z.card) === z.startIdx){ return; }
+    const order = karten.map(c => edCardProduct(c, z.ctx));
+    const x = edCardProduct(z.card, z.ctx);
+    if(!x || order.some(p => !p)){ edToast("Konnte die neue Stelle nicht bestimmen.", { kind: "err" }); sfReloadView(); return; }
+    edPlaceRun(z.ctx, order, x);
+  };
+  const beginne = (card, x, y) => {
+    const grid = card.parentNode;
+    const ctx = edGridContext(grid);
+    if(!ctx) return false;
+    d = { card, grid, ctx, x, y, cx: x, cy: y, active: false, moved: false, timer: 0, raf: 0,
+          startIdx: [...grid.querySelectorAll(":scope > .p-card")].indexOf(card) };
+    return true;
+  };
+  // Maus / Stift: ab 6px Bewegung
+  document.addEventListener("pointerdown", e => {
+    if(!ED.on || e.pointerType === "touch" || e.button !== 0) return;
+    const card = e.target.closest && e.target.closest(".product-grid > .p-card");
+    if(!card) return;
+    beginne(card, e.clientX, e.clientY);
+  });
+  document.addEventListener("pointermove", e => {
+    if(!d || e.pointerType === "touch") return;
+    d.cx = e.clientX; d.cy = e.clientY;
+    if(!d.active){
+      if(Math.hypot(e.clientX - d.x, e.clientY - d.y) < 6) return;
+      start();
+    }
+    e.preventDefault();
+  });
+  document.addEventListener("pointerup", e => { if(d && e.pointerType !== "touch") ende(false); });
+  document.addEventListener("pointercancel", e => { if(d && e.pointerType !== "touch") ende(true); });
+  document.addEventListener("dragstart", e => { if(ED.on && e.target.closest && e.target.closest(".product-grid > .p-card")) e.preventDefault(); });
+  // Finger: kurz halten, dann ziehen (sonst normal scrollen)
+  function touchMove(e){
+    if(!d) return;
+    const t = e.touches[0];
+    d.cx = t.clientX; d.cy = t.clientY;
+    if(!d.active){
+      if(Math.hypot(t.clientX - d.x, t.clientY - d.y) > 8){ clearTimeout(d.timer); d = null; document.removeEventListener("touchmove", touchMove, { passive: false }); }
+      return;
+    }
+    e.preventDefault();
+  }
+  document.addEventListener("touchstart", e => {
+    if(!ED.on || e.touches.length !== 1 || d) return;
+    const card = e.target.closest && e.target.closest(".product-grid > .p-card");
+    if(!card) return;
+    const t = e.touches[0];
+    if(!beginne(card, t.clientX, t.clientY)) return;
+    document.addEventListener("touchmove", touchMove, { passive: false });
+    d.timer = setTimeout(()=>{ if(!d) return; start(); try { navigator.vibrate?.(14); } catch {} }, 380);
+  }, { passive: true });
+  document.addEventListener("touchend", ()=>{ if(d) ende(false); });
+  document.addEventListener("touchcancel", ()=>{ if(d) ende(true); });
+  document.addEventListener("contextmenu", e => { if(ED.on && e.target.closest && e.target.closest(".product-grid > .p-card") && !e.target.closest(".pm")) e.preventDefault(); });
+  // Nach dem Ziehen kein Klick (sonst oeffnet sich das Produkt)
+  document.addEventListener("click", e => {
+    if(ED.gridDragged && e.target.closest && e.target.closest(".p-card")){ e.preventDefault(); e.stopPropagation(); ED.gridDragged = false; }
+  }, true);
 }
 
 </script>
