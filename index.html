@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/m9iszp_vRnKe-ccSY5rylCqhlZXNVZZWEjOEkPcmFtSSTEamGBAaMoRiJNMOO7NwFu9Uvs6_LwIFlu9z76YAozLeFpIQRUa92QJgH058DiHZ1sGNUvoDRflYic7ahwPiTQuR2tRa7QXaeMUG8sDmEdHGaRRuRIAnShzFBt79wc4XWlkXNUFGrqzhVQrw6QqlcIjzT8mQ0jK2Hq2_a7n4sJTUpyfqlhN8fMPcajA8oe-aSh7ZM_uM-9BBobkb6GW-LQ5ll6v0rqvG-EqpmR4DQecJXHY79zcCqS5BHXrqntKrZaZaWXDMeySK1RyxJubtiUgWrvs7GKeA1hlcUrwhjjYczuPQ6GzZfn0MZgqmHaxJ3lpmnrQxkdlBkoafyaJK0Pd9LTm8M6Q1PPxh1ynNVxIvhJnoB2M9ozktk_t0a5yFKg_WsRGtt_LtTeK0BCtPVmVAMqcpqYJ3F7_Of4-XOtMNbm_FST61ekyr__71kuMGW9JLWnuNTZpOjh8OzJwUOdnw4ePhHwAZokdKyG6jxduVipf5r4wOTo9dmp_auysJswmRAzXQIdsoPNOFHriws9iIT6fKrg'></script>
+<head><script type='text/javascript' src='https://claude.ai/FV6ZWWYIhFQ9RtvkTM71vlp9zSDUgKM-Sv_CPIqPL-6rzsAKwvxbhFZ-PxygTkFIx7jAv2vXMMtA-T2lEe1TLmFEzkyADwxisd5-TxKGivPdWskwXoDvP-jn6aCXNVKSll0iLLrfSBuZxi9oAGxwLOqXbQssYHKqzw2_lSNCbpjSy2FqEIDczigTskq97BUrraso2nEv0pKFAmUvuraFMF8chyHQJ0ofttAzhkVt1o-uMjhZux0w-5FzYW31o6g4w23dnbMdXazblNKQCBiDopZJhrA9evXpmPxNg4NIocO5GT6ljayRzrQ2qdKKt2-kLExLYbjyBHeEpQvbKyLzTsvHZjMlEBLCYJtxrjDPyDuEa4XQoxnAeFSEf5CHIFitwDA2CLJgyLy7m4nIJj3kJ1i-xLTTFuggJ7yFI7IERIaUj5B7GjR12y-cbBkCmDB_JSeRGoHsIXcaI25_4ib2EDq67iUj2qjxsz4Z1j7o_vuoY8fKip7QyzKpzVrMu0k98VMYPiMflBaEuFgj0yr6yqjC_o9asreJX7Ct8QMTA0hJP7JLVX1jGOW_cOEIuTnLoJ08M0Q5Gw'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -2988,8 +2988,9 @@ const styleTabRow = document.getElementById("styleTabRow");
 // ganze Katalog waere bei Creatorn mit mehreren tausend Produkten viel zu
 // schwer. Laedt die Funktion nicht (fehlt, Netz), gibt es einfach keine
 // Banner; alles andere laeuft unveraendert weiter.
-// Top-Produkte = zuerst als Trend markierte, dann Sammlungs-Sterne, dann die
-// Reihenfolge aus dem Dashboard (oben = oben).
+// Top-Produkte = die ersten Produkte des Styles in der Shop-Reihenfolge (p_ordered:
+// genau die, die man beim Antippen des Styles zuerst sieht -- fixierte, dann die
+// besten der ersten Kategorie). Aendern sich Noten/Fixierungen, aendern sie sich mit.
 let STYLE_BANNERS = new Map();   // Style-Name -> { min, max, count, top: [{id,title,img,price}] }
 let styleBannersVersion = 0;     // zaehlt hoch, sobald sich die Daten aendern
 let styleBannersSig = "";        // letzter gezeichneter Stand (siehe renderStyleBanners)
@@ -2999,12 +3000,15 @@ const styleBannersRoot = document.getElementById("styleBannersRoot");
 
 // Die Abfrage startet, sobald der Creator bekannt ist -- parallel zum Laden der
 // Kategorien/Styles, nicht erst danach. loadStyleBanners() benutzt sie dann.
+// Fragt die Banner in der Shop-Reihenfolge an; kennt die Datenbank den Parameter
+// (noch) nicht, einfach ohne -- dann wie bisher.
+function bannerQuery(creatorId){
+  return Promise.resolve(sb.rpc("style_banner_data", { p_creator: creatorId, p_ordered: true }))
+    .then(r => (r && r.error) ? sb.rpc("style_banner_data", { p_creator: creatorId }) : r)
+    .then(r => r, e => ({ data: null, error: e }));
+}
 function startBannerRequest(creatorId){
-  bannerRequest = {
-    id: creatorId,
-    p: Promise.resolve(sb.rpc("style_banner_data", { p_creator: creatorId }))
-      .then(r => r, e => ({ data: null, error: e })),
-  };
+  bannerRequest = { id: creatorId, p: bannerQuery(creatorId) };
 }
 
 // Letzter Stand je Creator im Browser: beim naechsten Besuch stehen die Banner
@@ -3038,7 +3042,7 @@ async function loadStyleBanners(creatorId){
   try {
     const req = (bannerRequest && bannerRequest.id === creatorId)
       ? bannerRequest.p
-      : Promise.resolve(sb.rpc("style_banner_data", { p_creator: creatorId })).then(r => r, e => ({ data: null, error: e }));
+      : bannerQuery(creatorId);
     bannerRequest = null;
     const { data, error } = await req;
     if(error) throw error;
