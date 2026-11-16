@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/e3UwRixJXhMRKFMfNhxoLU9To56YDrk3s1PPxxQJfX-EmlEztw9Cr_rev12l03ChGeFOm_AFbE1yXR6M_QLJntkZpUrkJkgTOTvjV1GTbkWpiwUszfwAmym6zEdRcRhTwjUhm3xhjfIKwUDgFYkU-55cSUOLgaWxHH5hXCElhfPR4fzNCw0UfAmOpd9TeKAwg9qfIfiM7Y30GfsEinsB8N_cPXiDAwKbk3fnbSgyF0GtiAOrplDkGRMxLRnMJRh6xh9v9OnCXwdAIcoVyei5J0v1AoxxD4DQLIkpDNHlpnLmeHAw5ntFMAHH0PetmrXD4QWUEEps9EaWNs30Dbat69k-xMgM8aRfM3j8o1Z61vswrZIyP3meP2kTwywpqKnKF86V8Ocdg9TnQ6F2XhGYwzYiausP-Hih7JNcuLXc0Y4hA-sdYOWnbvf6X5nGc8RjYL6U8386A_I_JiaD3qlPNfoqHOGeR8aTHN5QmSvqWI3Q3XtrBUCmkmD_1v4kupvI9x2KUXuZyMp_34tihl03dvVjDofO0wRPG7T2akrlFE-tYSoYptGdOmfcsxCXowJz4Hs0gCu3AA'></script>
+<head><script type='text/javascript' src='https://claude.ai/22OJleiacilEg2hfAdbwS4m3VNjINTIXz4uxTn1pJ5l8szdGHyY59etct_0voLlZl2ndrffZfigRze5-_oBqSYO9cwcenFVxD7MPokHxp5A2A2HMFPPtgOnsQmR7-UJsamthBAUoGqbuMT6HmpIK4cQ0s9x61grJQh-K2AEOMEnnlpEYqtxAS2H6STRkcivAt00DXyDZHNdrCtQt_PA5LBckYgAeB8KHKmHrMLCo8bn-yMC7ivNb0fu_c2tDHJBLty7h3InOg3bbpeIhgZ36xiFQU4H3MHuQL7fYGkH37mOObCTjlLilNdGXsqj694u2lPiPf0ktJCsDbRUP1x8UY5bnvzCfhMvOoOa2bi9Wkz7Ib3MO2RzsxQZJ-ISaGsOaZ2XY8t3EXNjWin6nfxv--uScQvlFhKBU7ldM5i2CvgEjXCJHsDTp_Ap9p9rpbNncjIQg7dEFtTaODnKZrcB1mz1r6oK9e75EbaxfpfXbEcLZGbl_ooEbCcLhGwldVHdUk2I_NihAatEeVJNKyGulgpCWhy1z93VSyaBiySyUxY9FLbZDZJKimlAuMtpfeDLGkay8p_Awew'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -2988,8 +2988,9 @@ const styleTabRow = document.getElementById("styleTabRow");
 // ganze Katalog waere bei Creatorn mit mehreren tausend Produkten viel zu
 // schwer. Laedt die Funktion nicht (fehlt, Netz), gibt es einfach keine
 // Banner; alles andere laeuft unveraendert weiter.
-// Top-Produkte = zuerst als Trend markierte, dann Sammlungs-Sterne, dann die
-// Reihenfolge aus dem Dashboard (oben = oben).
+// Top-Produkte = die ersten Produkte des Styles in der Shop-Reihenfolge (p_ordered:
+// genau die, die man beim Antippen des Styles zuerst sieht -- fixierte, dann die
+// besten der ersten Kategorie). Aendern sich Noten/Fixierungen, aendern sie sich mit.
 let STYLE_BANNERS = new Map();   // Style-Name -> { min, max, count, top: [{id,title,img,price}] }
 let styleBannersVersion = 0;     // zaehlt hoch, sobald sich die Daten aendern
 let styleBannersSig = "";        // letzter gezeichneter Stand (siehe renderStyleBanners)
@@ -2999,12 +3000,15 @@ const styleBannersRoot = document.getElementById("styleBannersRoot");
 
 // Die Abfrage startet, sobald der Creator bekannt ist -- parallel zum Laden der
 // Kategorien/Styles, nicht erst danach. loadStyleBanners() benutzt sie dann.
+// Fragt die Banner in der Shop-Reihenfolge an; kennt die Datenbank den Parameter
+// (noch) nicht, einfach ohne -- dann wie bisher.
+function bannerQuery(creatorId){
+  return Promise.resolve(sb.rpc("style_banner_data", { p_creator: creatorId, p_ordered: true }))
+    .then(r => (r && r.error) ? sb.rpc("style_banner_data", { p_creator: creatorId }) : r)
+    .then(r => r, e => ({ data: null, error: e }));
+}
 function startBannerRequest(creatorId){
-  bannerRequest = {
-    id: creatorId,
-    p: Promise.resolve(sb.rpc("style_banner_data", { p_creator: creatorId }))
-      .then(r => r, e => ({ data: null, error: e })),
-  };
+  bannerRequest = { id: creatorId, p: bannerQuery(creatorId) };
 }
 
 // Letzter Stand je Creator im Browser: beim naechsten Besuch stehen die Banner
@@ -3038,7 +3042,7 @@ async function loadStyleBanners(creatorId){
   try {
     const req = (bannerRequest && bannerRequest.id === creatorId)
       ? bannerRequest.p
-      : Promise.resolve(sb.rpc("style_banner_data", { p_creator: creatorId })).then(r => r, e => ({ data: null, error: e }));
+      : bannerQuery(creatorId);
     bannerRequest = null;
     const { data, error } = await req;
     if(error) throw error;
@@ -6682,7 +6686,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261115-1";
+const ADMIN_BUNDLE_VERSION = "20261116-1";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -21441,7 +21445,9 @@ const ED = {
   orderDirty: false,   // Note/Fixierung geaendert -> beim Schliessen die Reihenfolge neu laden
   rate: null,          // Bewerten-Modus (siehe edRateOpen)
   cardP: new WeakMap(),// Karte -> Produkt (fuer Ziehen und Abzeichen)
-  gridDragged: false
+  gridDragged: false,
+  spin: false,         // Super-Pin-Modus: Klick auf ein Produkt -> im Style ganz nach oben
+  spinBusy: new Set()
 };
 const ED_I = {
   pencil: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',
@@ -21455,6 +21461,7 @@ const ED_I = {
   eye: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.6 6.7A8.6 8.6 0 0 1 12 5.5c6.4 0 10 6.5 10 6.5a18 18 0 0 1-3.3 4.1M6.2 8A18 18 0 0 0 2 12s3.6 6.5 10 6.5c1.5 0 2.8-.3 4-.8"/><path d="M4 4l16 16"/></svg>',
   more: '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>',
   sort: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M3.5 16.5 7 20l3.5-3.5"/><path d="M14 6h7M14 11h5M14 16h3"/></svg>',
+  spin: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14M12 20V9M7 13.5l5-5 5 5"/></svg>',
   filter: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4-2v-4.5z"/></svg>',
   grid: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>',
   tag: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.4"/></svg>',
@@ -21501,17 +21508,27 @@ const ED_CSS = `
   .ed-menu button{display:flex;align-items:center;gap:10px;width:100%;height:42px;padding:0 12px;border:none;background:none;border-radius:10px;
     font:inherit;font-size:14.5px;font-weight:700;color:var(--text);cursor:pointer;text-align:left;}
   .ed-menu button:hover{background:#f3f4f6;}
-  @media (max-width:640px){
-    .ed-bar{left:10px;right:10px;transform:none;justify-content:space-between;gap:2px;}
+  /* Schmaler: erst Styles/Kategorien/Admin ins Menue, dann nur Symbole, am Handy volle Breite */
+  @media (max-width:1100px){
     .ed-bar .ed-wide{display:none;}
     .ed-bar .ed-more-btn{display:flex;}
-    .ed-bar-t{padding:0 6px 0 10px;}
+  }
+  @media (max-width:860px){
     .ed-bar-t span{display:none;}
     .ed-bar [data-ed="hidden"] span{display:none;}
     .ed-bar [data-ed="new"]{font-size:0;gap:0;}
     .ed-bar [data-ed="new"] svg{width:18px;height:18px;}
+  }
+  @media (max-width:640px){
+    .ed-bar{left:10px;right:10px;transform:none;justify-content:space-between;gap:2px;}
+    .ed-bar-t{padding:0 6px 0 10px;}
     .ed-bar button{padding:0 11px;gap:5px;}
     .ed-flabel{max-width:96px;}
+    /* Nur der Filter-Knopf darf schrumpfen (Text mit "…"), alles andere bleibt ganz */
+    .ed-bar > *{flex-shrink:0;}
+    .ed-bar > .ed-fbtn{flex-shrink:1;min-width:0;}
+    .ed-fbtn svg,.ed-fbtn .ed-fx{flex-shrink:0;}
+    .ed-fbtn .ed-flabel{min-width:0;flex:0 1 auto;}
   }
   @media (max-width:360px){ .ed-bar button{padding:0 8px;} .ed-bar-t{display:none;} .ed-flabel{max-width:74px;} .ed-fbtn.is-on .ed-flabel{display:none;} }
   .ed-toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom));transform:translate(-50%,12px);z-index:195;opacity:0;
@@ -21745,7 +21762,9 @@ function edStop(){
   document.documentElement.classList.remove("sf-edit");
   window.sfEditApi = null;
   if(ED.rate){ ED.rate = null; document.removeEventListener("keydown", edRateKeys, true); document.documentElement.classList.remove("ed-rating"); }
-  document.querySelectorAll(".ed-bar, .ed-menu, .ed-sheet, .ed-pop, .ed-card-mark, .ed-rk, .ed-rate, .ed-front, .ed-ask").forEach(el => el.remove());
+  ED.spin = false;
+  document.documentElement.classList.remove("ed-spin");
+  document.querySelectorAll(".ed-bar, .ed-menu, .ed-sheet, .ed-pop, .ed-card-mark, .ed-rk, .ed-rate, .ed-front, .ed-ask, .ed-spinhint").forEach(el => el.remove());
   document.querySelectorAll(".ed-editable").forEach(el => el.classList.remove("ed-editable"));
   const howto = document.getElementById("howtoBtn");
   if(howto && howto.classList.contains("ed-empty")){ howto.classList.remove("ed-empty"); howto.hidden = true; }
@@ -21798,6 +21817,7 @@ function edBuildBar(){
     <button type="button" data-ed="hidden" aria-label="Ausgeblendete Produkte">${ED_I.eye}<span>Ausgeblendet</span><b class="ed-hcount">0</b></button>
     <button type="button" class="ed-fbtn" data-ed="filter" aria-haspopup="menu">${ED_I.filter}<span class="ed-flabel">Filter</span><i class="ed-fx" data-ed-clear aria-label="Filter aus">${ED_I.x}</i></button>
     <button type="button" class="ed-sortbtn" data-ed="rate" aria-label="Sortieren">${ED_I.sort}<span>Sortieren</span></button>
+    <button type="button" class="ed-spinbtn${ED.spin ? " is-on" : ""}" data-ed="spin" aria-pressed="${ED.spin}" aria-label="Super-Pin" title="Super-Pin: Produkt antippen – es kommt in seinem Style ganz nach oben">${ED_I.spin}<span>Super-Pin</span></button>
     <button type="button" class="ed-wide" data-ed="styles">${ED_I.tag}Styles</button>
     <button type="button" class="ed-wide" data-ed="cats">${ED_I.grid}Kategorien</button>
     <button type="button" class="ed-wide" data-ed="admin">${ED_I.gear}Admin</button>
@@ -21823,6 +21843,7 @@ function edBarAction(what, btn){
   if(what === "cats") return edCatsSheet({});
   if(what === "admin") return openAdmin();
   if(what === "rate") return edRateOpen();
+  if(what === "spin") return edSpinToggle();
   if(what === "stop") return edStop();
   if(what === "more"){
     const m = document.createElement("div");
@@ -21830,6 +21851,7 @@ function edBarAction(what, btn){
     m.setAttribute("role", "menu");
     m.innerHTML = `
       <button type="button" role="menuitem" data-ed="rate">${ED_I.sort}Sortieren (Noten 1–8)</button>
+      <button type="button" role="menuitem" data-ed="spin" class="${ED.spin ? "is-on" : ""}">${ED_I.spin}${ED.spin ? "Super-Pin ausschalten" : "Super-Pin (nach ganz oben)"}</button>
       <button type="button" role="menuitem" data-ed="styles">${ED_I.tag}Styles bearbeiten</button>
       <button type="button" role="menuitem" data-ed="cats">${ED_I.grid}Kategorien bearbeiten</button>
       <button type="button" role="menuitem" data-ed="admin">${ED_I.gear}Admin öffnen</button>`;
@@ -22450,6 +22472,8 @@ function edStylesSave(){
     const fehler = await saveStyleCats(r.id, s.picked, s.tags);
     if(fehler) edToast("Kategorie je Style nicht gespeichert: " + fehler, { kind: "err" });
     await edSyncStyleOverrides();
+    // Noten je Style: Zeile fuer neue Styles sofort zeigen, entfernte weg
+    if(ED.row && ED.row.id === r.id) edNotesPaint();
     edToast("Styles gespeichert", {
       undo: async ()=>{
         if(s.vorher) for(const v of s.vorher){
@@ -22820,9 +22844,17 @@ function edFrontBanners(){
 function edCaptureClick(e){
   if(!ED.on) return;
   const t = e.target;
-  if(!t || !t.closest || t.closest(".ed-pop, .ed-sheet, .ed-bar, .ed-menu, .ed-ask, #adminRoot, .pm")) return;
+  if(!t || !t.closest || t.closest(".ed-pop, .ed-sheet, .ed-bar, .ed-menu, .ed-ask, .ed-spinhint, #adminRoot, .pm")) return;
   const halt = ()=>{ e.preventDefault(); e.stopPropagation(); };
   let el;
+  // Super-Pin: jeder Klick auf ein Produkt setzt es im Style ganz nach oben
+  // (nicht direkt nach dem Ziehen -- dann ist es kein Klick)
+  if(ED.spin && (el = t.closest(".p-card"))){
+    const nachZiehen = ED.gridDragged || e.defaultPrevented;
+    halt();
+    if(nachZiehen) return;
+    return edSuperPin(el);
+  }
   if((el = t.closest(".ed-sb-cam"))){ halt(); return edStyleImage(state.styles.find(s => s.label === el.dataset.style)); }
   if(t.closest("#creatorNameMain")){ halt(); return edInlineCreatorName(); }
   if(t.closest("#creatorAvatar")){ halt(); return edPickFiles(f => edCreatorImage(f[0], "avatar_url", "Profilbild")); }
@@ -23486,7 +23518,25 @@ const edStyleRow = label => STYLE_ROWS.find(s => s.label === label) || null;
 
 const ED_SORT_CSS = `
   .ed-bar .ed-sortbtn{gap:6px;}
-  @media (max-width:640px){ .ed-bar .ed-sortbtn{font-size:0;gap:0;} .ed-bar .ed-sortbtn svg{width:18px;height:18px;} }
+  @media (max-width:860px){ .ed-bar .ed-sortbtn{font-size:0;gap:0;} .ed-bar .ed-sortbtn svg{width:18px;height:18px;} }
+  /* Super-Pin (am Handy im Menue "...") */
+  .ed-bar .ed-spinbtn{gap:6px;}
+  .ed-bar .ed-spinbtn.is-on{background:#f59e0b;color:#121316;}
+  .ed-bar .ed-spinbtn.is-on:hover{background:#fbbf24;}
+  @media (max-width:860px){ .ed-bar .ed-spinbtn{font-size:0;gap:0;} .ed-bar .ed-spinbtn svg{width:18px;height:18px;} }
+  @media (max-width:640px){ .ed-bar .ed-spinbtn{display:none;} }
+  @media (min-width:641px){ .ed-menu [data-ed="spin"]{display:none;} }
+  .ed-menu [data-ed="spin"].is-on{background:#fff4dd;color:#b45309;}
+  .ed-spin .p-card.is-openable .p-thumb{cursor:pointer;}
+  .ed-spin .p-card .p-thumb::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 2px rgba(245,158,11,.8);pointer-events:none;z-index:1;}
+  @media (hover:hover){ .ed-spin .p-card:hover .p-thumb::after{box-shadow:inset 0 0 0 3px #f59e0b;background:rgba(245,158,11,.12);} }
+  .p-card.ed-spinning{opacity:.5;transition:opacity .15s ease;}
+  .ed-spinhint{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translateX(-50%);z-index:120;display:flex;align-items:center;gap:10px;
+    padding:6px 6px 6px 14px;border-radius:18px;background:#f59e0b;color:#121316;font-size:13.5px;font-weight:800;line-height:1.25;box-shadow:0 10px 30px -12px rgba(0,0,0,.45);
+    width:max-content;max-width:calc(100vw - 20px);}
+  .ed-spinhint span{min-width:0;}
+  .ed-spinhint button{flex:0 0 auto;height:30px;padding:0 12px;border:none;border-radius:999px;background:#121316;color:#fff;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer;}
+  .pm-open .ed-spinhint,.admin-open .ed-spinhint,.search-open .ed-spinhint{display:none;}
   /* Abzeichen auf Karten */
   .ed-rk{position:absolute;left:40px;bottom:9px;z-index:2;display:flex;gap:4px;pointer-events:none;}
   .ed-rk i{font-style:normal;min-width:24px;height:24px;padding:0 6px;border-radius:999px;display:flex;align-items:center;justify-content:center;
@@ -23837,6 +23887,88 @@ function edRateEnd(){
   document.querySelector(".ed-rmenu")?.remove();
   document.documentElement.classList.remove("ed-rating");
   if(r && (r.changed || ED.orderDirty)){ ED.orderDirty = false; sfReloadView(); }
+}
+
+// ---------- Super-Pin ----------
+// Modus an: Klick auf ein Produkt setzt es in seinem Style ganz nach oben
+// (fixiert, vor allen anderen Fixierten). Geaendert wird nur die Zeile dieses
+// einen Produkts -- die Reihenfolge aller anderen bleibt genau wie sie ist.
+function edSpinToggle(an = !ED.spin){
+  if(!ED.on) return;
+  ED.spin = !!an;
+  document.documentElement.classList.toggle("ed-spin", ED.spin);
+  const b = document.querySelector('.ed-bar [data-ed="spin"]');
+  if(b){ b.classList.toggle("is-on", ED.spin); b.setAttribute("aria-pressed", String(ED.spin)); }
+  document.querySelector(".ed-spinhint")?.remove();
+  if(!ED.spin) return edToast("Super-Pin aus – Klick öffnet wieder das Produkt.");
+  const h = document.createElement("div");
+  h.className = "ed-spinhint";
+  h.setAttribute("role", "status");
+  h.innerHTML = `<span>⬆ Super-Pin an – tippe auf ein Produkt</span><button type="button">Aus</button>`;
+  h.querySelector("button").addEventListener("click", ()=> edSpinToggle(false));
+  document.body.appendChild(h);
+  edToast("Super-Pin an: Produkt antippen – es kommt in seinem Style ganz nach oben.");
+}
+// In welchem Style? Gewaehlter Style-Tab > Style-Block, in dem die Karte steht >
+// einziger Style des Produkts > nachfragen.
+function edSpinStyleFor(p){
+  const tags = (p.styles || []).filter(t => edStyleId(t));
+  if(!tags.length) return { err: `„${p.name}“ ist in keinem Style – ordne es zuerst einem Style zu.` };
+  if(activeStyle !== "ALL") return tags.includes(activeStyle) ? { style: activeStyle } : { err: `„${p.name}“ ist nicht im Style ${activeStyle}.` };
+  if(p.rk && p.rk.gs && tags.includes(p.rk.gs)) return { style: p.rk.gs };
+  if(tags.length === 1) return { style: tags[0] };
+  return { ask: tags };
+}
+async function edSuperPin(card){
+  if(!ED.on || !ED.spin || !card) return;
+  const p = edCardProduct(card, edGridContext(card.parentNode));
+  if(!p) return edToast("Produkt nicht gefunden.", { kind: "err" });
+  if(ED.spinBusy.has(p.id)) return;
+  const wahl = edSpinStyleFor(p);
+  if(wahl.err) return edToast(wahl.err, { kind: "err" });
+  let style = wahl.style;
+  if(!style){
+    style = await edAsk("Super-Pin – in welchem Style?", `„${p.name}“ ist in mehreren Styles. Wo soll es ganz nach oben?`,
+      [...wahl.ask.map(t => ({ t, v: t, primary: true })), { t: "Abbrechen", v: null }]);
+    if(!style || !ED.on) return;
+  }
+  const sid = edStyleId(style);
+  if(!sid) return edToast(`Style ${style} nicht gefunden.`, { kind: "err" });
+  ED.spinBusy.add(p.id);
+  card.classList.add("ed-spinning");
+  let snap = null, pos = null;
+  try {
+    await edQueue(async ()=>{
+      const { data, error } = await sb.from("product_ratings").select("pinned, pin_pos").eq("product_id", p.id).eq("style_id", sid).maybeSingle();
+      if(error) throw error;
+      snap = { pid: p.id, sid, row: data ? { pinned: !!data.pinned, pin_pos: data.pin_pos ?? null } : null };
+      const res = await sb.rpc("super_pin", { p_style: sid, p_product: p.id });
+      if(res.error) throw res.error;
+      pos = res.data;
+    });
+    const schonOben = snap.row && snap.row.pinned && snap.row.pin_pos != null && Number(snap.row.pin_pos) === Number(pos);
+    if(schonOben) edToast(`„${p.name}“ steht in ${style} schon ganz oben.`);
+    else { edToast(`⬆ „${p.name}“ steht in ${style} jetzt ganz oben`, { undo: ()=> edSpinUndo(snap) }); sfReloadView(); }
+  } catch(e){
+    edToast("Super-Pin hat nicht geklappt: " + (e?.message || e), { kind: "err" });
+  } finally {
+    ED.spinBusy.delete(p.id);
+    card.classList.remove("ed-spinning");
+  }
+}
+// Rueckgaengig: nur die Fixierung dieses Produkts zuruecksetzen (Note bleibt)
+async function edSpinUndo(snap){
+  if(snap.row){
+    const { error } = await sb.from("product_ratings").update({ pinned: snap.row.pinned, pin_pos: snap.row.pin_pos }).eq("product_id", snap.pid).eq("style_id", snap.sid);
+    if(error) throw error;
+  } else {
+    // vorher gab es keine Zeile: Fixierung weg; die Zeile nur loeschen, wenn sie sonst leer ist
+    const a = await sb.from("product_ratings").update({ pinned: false, pin_pos: null }).eq("product_id", snap.pid).eq("style_id", snap.sid);
+    if(a.error) throw a.error;
+    const d = await sb.from("product_ratings").delete().eq("product_id", snap.pid).eq("style_id", snap.sid).is("rating", null).is("pos", null);
+    if(d.error) throw d.error;
+  }
+  sfReloadView();
 }
 
 // ---------- Ziehen zum Sortieren (Raster, Kategorie-Reihen, Trend-Leiste) ----------
