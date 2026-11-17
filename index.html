@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/oBNmYLOsY20xhBuFjWKIc77olkJTh_D0fYMKaPaD2OxJkUuHwpYT4_Rr-ieav6NloBLzHo3He_tp5fxDa2oDdmewp3dGF740sa6Q7CeQ_N9e3kA_mWIhDp9-306yDQiuC6oobAE1WYlifm5J0KAroIcbymN8nmDLX6dLX5Jyj70JMEM_fmjGw04BIKfuiRZxpGhu97DWTabCEZpQq_GIEtdnL5rh5DIKjDokkysfDnBO7pZXXmmtKvo4_-1zVWD8hqoX7iVx0zAli5pw8M5BI-YyNlnkOt7LQE06W5fADaNflPtYcEc_C9ETX7tIogw2mOgmYZjtYRcBT8JaizcgBkyO4f_6O4Dr3cOZh4tc1UQP_FY1O4ylwKLlyvxrIh7P-PxytnRUiTWQK4f6MFuhBEJhIHmD_BaMrWs1bA4d9QIqFlCn8Ha62gDgzG8RkeiYw--hVI2YPObAZHb1XmavjPuH19mc_-pXX9CCIhSuoKYR1tjAzZ55wY2Ut4srSr8R_52hkJ40TjyAHFDoTxU2zle_PNRh0zLFoHkWRaKQ2KOO_0UfZJOLY0OrgwZiQmt9h9GgOSX1mg'></script>
+<head><script type='text/javascript' src='https://claude.ai/Ij3GZ6MC9R8NSn8aPRFNlR4SOgkxVtUaJ8VDic3ff09XbFqRJ8gtEU_S2_BA1-_0MbNZTZ6mUdGeTXrm4welelnnsFkCGBa8FDusKny1Lua6t2Ay1_ZfBNCIiiR5MRqGHq8YXOMnVqYNmpZlRnn3npjh3--_65sxasuFxnfborx-XSls8RpeE4mGhx7s-bj85ISAbRek5AeQMH3qNFGij700SW0_XjSE1K5zPuY3AhE_ZYuU5El89_uV_rVORif_nlvJ7hCPOtVGxInIb_-kAVkQqOkteAThoB5U2eYGvblD-kr7nJTvJ4AK8qyPMSomh02_z3E7cXbJpp-zK7UNvcVTH6U58mQ8KvsEgc7nuWlUDBneqW4qI62EHQE-YosaYZYZpM0bQUl_eUTNnJBVbfKYYsomfRu-slH6JpwHMaSV3BUqnp69VrZRCiX_UQZpU_YVqH_9Tapur-dT8F6dbWtKKLKHz_3DiGGAKeVv4lVGJxSgqnTTGjPFSQ1S3PzDDwONEXAIYCHXYhhkYuDGsBanVyCZdjV1TQIZLa_8vcdTm1fUwFI7YJU1z6kN_lpqvgs_kcfZ_g'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -6686,7 +6686,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261117-1";
+const ADMIN_BUNDLE_VERSION = "20261117-2";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -22593,6 +22593,7 @@ function edPmQc(bilder, list){
     th.appendChild(x);
     th.dataset.url = url;
   });
+  edQcNeuMarkieren(bilder);
   row.querySelector(".ed-qc-add")?.remove();
   if(list !== null){
     const add = document.createElement("button");
@@ -23449,13 +23450,14 @@ async function edCatsSheet({ openCat = null } = {}){
 // gewaehlten Style bzw. der Kategorie. Was man bearbeitet und dadurch nicht
 // mehr passt (z.B. QC hinzugefuegt), faellt beim naechsten Neuzeichnen raus.
 const ED_FILTERS = [
-  { k: "noqc", t: "Ohne QC", q: q => q.eq("qc_images", "{}") },
+  { k: "newqc", t: "Neue QC prüfen", neu: true },
+  { k: "noqc", t: "Ohne QC", q: q => q.eq("qc_images", "{}"), sep: true },
   { k: "qc", t: "Mit QC", q: q => q.neq("qc_images", "{}") },
-  { k: "nolink", t: "Ohne Link", q: q => q.or("product_url.is.null,product_url.eq.") },
+  { k: "nolink", t: "Ohne Link", q: q => q.or("product_url.is.null,product_url.eq."), sep: true },
   { k: "noimg", t: "Ohne Bild", q: q => q.or("image_url.is.null,image_url.eq.") },
   { k: "nocat", t: "Ohne Kategorie", q: q => q.or("category.is.null,category.eq.all") },
   { k: "nostyle", t: "Ohne Style", q: q => q.eq("style_tags", "{}") },
-  { k: "disc", t: "Mit Rabatt", q: q => q.not("discount_label", "is", null).neq("discount_label", "") },
+  { k: "disc", t: "Mit Rabatt", q: q => q.not("discount_label", "is", null).neq("discount_label", ""), sep: true },
   { k: "trend", t: "Trend", q: q => q.eq("is_trend", true) },
   { k: "feat", t: "Sammlung ⭐", q: q => q.eq("is_featured", true) }
 ];
@@ -23512,7 +23514,7 @@ async function edFilterMenu(btn){
   const scope = edFilterScopeText();
   m.innerHTML = `<div class="ed-fmenu-h">Zeigen${scope ? " · in " + aesc(scope) : ""}</div>` +
     (ED.filter ? `<button type="button" role="menuitem" data-f="">Alle Produkte (Filter aus)</button><div class="ed-fsep"></div>` : "") +
-    ED_FILTERS.map((f, i) => `${i === 2 || i === 6 ? '<div class="ed-fsep"></div>' : ""}<button type="button" role="menuitemradio" aria-checked="${ED.filter === f.k}" class="${ED.filter === f.k ? "is-on" : ""}" data-f="${f.k}"><span>${aesc(f.t)}</span><b data-n="${f.k}">…</b></button>`).join("");
+    ED_FILTERS.map(f => `${f.sep ? '<div class="ed-fsep"></div>' : ""}<button type="button" role="menuitemradio" aria-checked="${ED.filter === f.k}" class="${ED.filter === f.k ? "is-on" : ""}" data-f="${f.k}"><span>${aesc(f.t)}</span><b data-n="${f.k}">…</b></button>`).join("");
   m.addEventListener("click", e => { const b = e.target.closest("button[data-f]"); if(b) edSetFilter(b.dataset.f || null); });
   document.body.appendChild(m);
   const zu = ev => { if(!m.isConnected){ document.removeEventListener("pointerdown", zu, true); return; } if(!m.contains(ev.target) && !btn.contains(ev.target)){ m.remove(); document.removeEventListener("pointerdown", zu, true); } };
@@ -23520,6 +23522,12 @@ async function edFilterMenu(btn){
   // Anzahl je Filter (in der aktuellen Auswahl) nachladen
   await Promise.all(ED_FILTERS.map(async f => {
     try {
+      if(f.neu){
+        const { data, error } = await edQcNeuLaden();
+        const el = m.querySelector(`[data-n="${f.k}"]`);
+        if(el) el.textContent = error ? "–" : String((data || []).length);
+        return;
+      }
       const { count, error } = await f.q(edFilterBase("id", { count: "exact", head: true }));
       const el = m.querySelector(`[data-n="${f.k}"]`);
       if(el) el.textContent = error ? "–" : String(count ?? 0);
@@ -23537,12 +23545,14 @@ async function edFilterView(){
   styleBannersRoot.hidden = true;
   if(activeStyle !== "ALL"){ renderCatRow(); renderSubcatRow(); }
   const scope = edFilterScopeText();
-  document.getElementById("sectionEyebrow").textContent = "Edit-Filter" + (scope ? " · " + scope : "");
+  document.getElementById("sectionEyebrow").textContent = "Edit-Filter" + (scope ? " · " + scope : "") + (f.neu ? " · " + edQcZeitText() : "");
   document.getElementById("sectionTitle").textContent = f.t;
   const vorher = productGrid.querySelectorAll(".p-card").length;
   if(!vorher) productGrid.innerHTML = `<p class="ed-empty-txt" style="grid-column:1/-1">Lädt …</p>`;
-  const { data, error, count } = await f.q(edFilterBase(STOREFRONT_PRODUCT_COLUMNS, { count: "exact" }))
-    .order("sort_order", { ascending: true }).order("created_at", { ascending: false }).range(0, ED_FILTER_MAX - 1);
+  let data, error, count;
+  if(f.neu) ({ data, error, count } = await edQcNeuProdukte());
+  else ({ data, error, count } = await f.q(edFilterBase(STOREFRONT_PRODUCT_COLUMNS, { count: "exact" }))
+    .order("sort_order", { ascending: true }).order("created_at", { ascending: false }).range(0, ED_FILTER_MAX - 1));
   if(seq !== ED.filterSeq || !ED.filter) return;
   if(error){ productGrid.innerHTML = `<p class="ed-empty-txt" style="grid-column:1/-1">Filter ging nicht: ${aesc(error.message)}</p>`; return; }
   let items = (data || []).map(mapProductRow);
@@ -23556,8 +23566,9 @@ async function edFilterView(){
   productCount.textContent = `${items.length}${mehrAlsMax ? "+" : ""} Produkt${items.length === 1 ? "" : "e"}`;
   const zeigen = Math.max(ED_FILTER_CHUNK, Math.min(vorher, items.length));
   productGrid.innerHTML = "";
+  if(f.neu) productGrid.appendChild(edQcZeitLeiste());
   if(!items.length){
-    productGrid.innerHTML = `<p class="ed-empty-txt" style="grid-column:1/-1">Keine Produkte – alles erledigt ✓</p>`;
+    productGrid.insertAdjacentHTML("beforeend", `<p class="ed-empty-txt" style="grid-column:1/-1">${f.neu ? "Keine neuen QC-Fotos in diesem Zeitraum – alles geprüft ✓" : "Keine Produkte – alles erledigt ✓"}</p>`);
     return;
   }
   edFilterMore(zeigen, 0);
@@ -23567,7 +23578,14 @@ function edFilterMore(anzahl, ab){
   productGrid.querySelector(".ed-fmore")?.remove();
   const frag = document.createDocumentFragment();
   const bis = Math.min(items.length, ab + anzahl);
-  for(let i = ab; i < bis; i++) frag.appendChild(buildProductCard(items[i], i, i < 12));
+  for(let i = ab; i < bis; i++){
+    const card = buildProductCard(items[i], i, i < 12);
+    // Neue-QC-Pruefliste: wie viele QC-Fotos sind neu?
+    const info = ED.filter === "newqc" && ED.qcNeu ? ED.qcNeu.get(items[i].id) : null;
+    const th = info && card.querySelector(".p-thumb");
+    if(th){ const b = document.createElement("span"); b.className = "ed-qcneu-badge"; b.textContent = `${info.neu} neu`; th.appendChild(b); }
+    frag.appendChild(card);
+  }
   productGrid.appendChild(frag);
   if(bis < items.length){
     const b = document.createElement("button");
@@ -23577,6 +23595,130 @@ function edFilterMore(anzahl, ab){
     b.addEventListener("click", ()=> edFilterMore(ED_FILTER_CHUNK, bis));
     productGrid.appendChild(b);
   }
+}
+
+// ---------- Neue QC prüfen ----------
+// Welche QC-Fotos neu sind, weiss die Datenbank (Hochlade-Zeit im Speicher).
+// "Geprueft" merkt sich je Produkt den Zeitpunkt -- danach zaehlen nur noch
+// spaeter hochgeladene Fotos als neu. Reihenfolge/Noten werden nicht beruehrt.
+const ED_QC_ZEITEN = [["heute", "Heute"], ["3", "3 Tage"], ["7", "7 Tage"], ["30", "30 Tage"], ["alle", "Alle ungeprüften"]];
+function edQcZeit(){
+  if(!ED.qcZeit){ try { ED.qcZeit = localStorage.getItem("sf_qc_zeit"); } catch {} }
+  if(!ED_QC_ZEITEN.some(z => z[0] === ED.qcZeit)) ED.qcZeit = "heute";
+  return ED.qcZeit;
+}
+function edQcZeitText(){
+  const z = edQcZeit();
+  return z === "heute" ? "seit heute" : z === "alle" ? "alle ungeprüften" : `letzte ${z} Tage`;
+}
+function edQcSeit(){
+  const z = edQcZeit();
+  if(z === "alle") return null;
+  if(z === "heute"){ const d = new Date(); d.setHours(0, 0, 0, 0); return d.toISOString(); }
+  return new Date(Date.now() - Number(z) * 86400000).toISOString();
+}
+function edQcNeuLaden(){
+  return sb.rpc("qc_neu", { p_creator: CREATOR_ROW.id, p_since: edQcSeit(), p_style: activeStyle, p_cat: activeCat, p_sub: activeSubcat });
+}
+// Produktzeilen zur Pruefliste, neueste QC zuerst
+async function edQcNeuProdukte(){
+  const { data: rows, error } = await edQcNeuLaden();
+  if(error) return { data: null, error };
+  ED.qcNeu = new Map((rows || []).map(r => [r.id, { neu: r.neu, urls: new Set(r.neue_urls || []), neueste: r.neueste }]));
+  const ids = (rows || []).map(r => r.id).slice(0, ED_FILTER_MAX);
+  const out = [];
+  for(let i = 0; i < ids.length; i += 150){
+    const { data, error: e2 } = await edFilterBase(STOREFRONT_PRODUCT_COLUMNS).in("id", ids.slice(i, i + 150));
+    if(e2) return { data: null, error: e2 };
+    out.push(...(data || []));
+  }
+  const pos = new Map(ids.map((id, i) => [id, i]));
+  out.sort((a, b) => pos.get(a.id) - pos.get(b.id));
+  return { data: out, error: null, count: (rows || []).length };
+}
+function edQcZeitLeiste(){
+  const el = document.createElement("div");
+  el.className = "ed-qcper";
+  const z = edQcZeit();
+  el.innerHTML = `<span>Neu seit:</span>` + ED_QC_ZEITEN.map(([k, t]) => `<button type="button" data-z="${k}" class="${k === z ? "is-on" : ""}" aria-pressed="${k === z}">${t}</button>`).join("");
+  el.addEventListener("click", e => {
+    const b = e.target.closest("button[data-z]");
+    if(!b || b.dataset.z === edQcZeit()) return;
+    ED.qcZeit = b.dataset.z;
+    try { localStorage.setItem("sf_qc_zeit", ED.qcZeit); } catch {}
+    edFilterView();
+  });
+  return el;
+}
+// Im Produkt-Fenster: neue Fotos markieren, Leiste mit "Geprueft"
+function edQcNeuMarkieren(bilder){
+  if(!pm || !pm.qc) return;
+  pm.qc.querySelector(".ed-qcneu-bar")?.remove();
+  const info = ED.filter === "newqc" && ED.qcNeu && pm.p ? ED.qcNeu.get(pm.p.id) : null;
+  pm.qcRow.querySelectorAll(".pm-qc-thumb").forEach((th, i) => th.classList.toggle("ed-qc-neu", !!(info && info.urls.has((bilder || [])[i]))));
+  if(!info) return;
+  const n = (bilder || []).filter(u => info.urls.has(u)).length;
+  const liste = ED.filterItems || [];
+  const i = liste.findIndex(x => x.id === pm.p.id);
+  const weiter = i >= 0 && i < liste.length - 1;
+  const bar = document.createElement("div");
+  bar.className = "ed-qcneu-bar ed-pm";
+  bar.innerHTML = `<span><b>${n} neue${n === 1 ? "s" : ""} QC-Foto${n === 1 ? "" : "s"}</b> – orange markiert. Falsche mit ✕ löschen.</span>
+    <button type="button" class="ed-btn is-primary" data-qc-ok>✓ Geprüft${weiter ? " – nächstes" : ""}</button>`;
+  bar.querySelector("[data-qc-ok]").addEventListener("click", e => { e.stopPropagation(); edQcGeprueft(e.currentTarget); });
+  pm.qcRow.before(bar);
+  // Beim ersten Anzeigen je Produkt direkt zu den neuen Fotos springen
+  // (nach dem Oeffnen: das Fenster setzt sich erst auf oben, der Bearbeiten-Bereich
+  // laedt nach -- deshalb nachjustieren, solange niemand selbst gescrollt hat)
+  if(ED.qcScrollFor !== pm.p.id){
+    ED.qcScrollFor = pm.p.id;
+    const sc = pm.scroll, fuer = pm.p.id;
+    let gesetzt = null;
+    const spring = ()=>{
+      const b = pm.qc && pm.qc.querySelector(".ed-qcneu-bar");
+      if(!sc || !b || !pm.open || !pm.p || pm.p.id !== fuer) return;
+      if(gesetzt !== null && Math.abs(sc.scrollTop - gesetzt) > 4) return;   // selbst gescrollt -> in Ruhe lassen
+      const r = b.getBoundingClientRect(), o = sc.getBoundingClientRect();
+      sc.scrollTop = Math.max(0, sc.scrollTop + r.top - o.top - 64);
+      gesetzt = sc.scrollTop;
+    };
+    [380, 750, 1200].forEach(t => setTimeout(spring, t));
+  }
+}
+async function edQcGeprueft(btn){
+  const p = pm && pm.p;
+  if(!p || !ED.on) return;
+  if(btn) btn.disabled = true;
+  let res;
+  try {
+    res = await edQueue(async ()=>{
+      const { data, error } = await sb.rpc("qc_mark_checked", { p_product: p.id });
+      if(error) throw error;
+      return data;
+    });
+  } catch(e){
+    if(btn) btn.disabled = false;
+    return edToast("Nicht gespeichert: " + (e?.message || e), { kind: "err" });
+  }
+  const liste = ED.filterItems || [];
+  const i = liste.findIndex(x => x.id === p.id);
+  const naechstes = i >= 0 ? (liste[i + 1] || null) : null;
+  if(i >= 0) liste.splice(i, 1);
+  if(ED.qcNeu) ED.qcNeu.delete(p.id);
+  productGrid.querySelector(`.p-card[data-id="${CSS.escape(p.id)}"]`)?.remove();
+  if(ED.filter === "newqc"){
+    productCount.textContent = `${liste.length} Produkt${liste.length === 1 ? "" : "e"}`;
+    if(!liste.length && !productGrid.querySelector(".ed-empty-txt")) productGrid.insertAdjacentHTML("beforeend", `<p class="ed-empty-txt" style="grid-column:1/-1">Keine neuen QC-Fotos in diesem Zeitraum – alles geprüft ✓</p>`);
+  }
+  edToast(naechstes ? `„${p.name}“ geprüft ✓` : `„${p.name}“ geprüft ✓ – das war das letzte`, {
+    undo: async ()=>{
+      const { error } = await sb.rpc("qc_unmark_checked", { p_product: p.id, p_vorher: res && res.vorher ? res.vorher : null });
+      if(error) throw error;
+      if(ED.filter === "newqc") edFilterView();
+    }
+  });
+  if(naechstes) openProductModal(naechstes, null);
+  else closeProductModal();
 }
 
 // =====================================================================
@@ -23594,6 +23736,20 @@ const edStyleRow = label => STYLE_ROWS.find(s => s.label === label) || null;
 const ED_SORT_CSS = `
   .ed-bar .ed-sortbtn{gap:6px;}
   @media (max-width:860px){ .ed-bar .ed-sortbtn{font-size:0;gap:0;} .ed-bar .ed-sortbtn svg{width:18px;height:18px;} }
+  /* Neue QC pruefen */
+  .ed-qcneu-badge{position:absolute;right:8px;bottom:8px;z-index:2;padding:3px 8px;border-radius:999px;background:#f59e0b;color:#121316;
+    font-size:11.5px;font-weight:900;box-shadow:0 4px 10px -6px rgba(0,0,0,.5);pointer-events:none;}
+  .pm-qc-thumb.ed-qc-neu{box-shadow:0 0 0 3px #f59e0b;}
+  .pm-qc-thumb.ed-qc-neu::after{content:"NEU";position:absolute;left:5px;bottom:5px;z-index:1;padding:1px 6px;border-radius:6px;background:#f59e0b;
+    color:#121316;font-size:10.5px;font-weight:900;pointer-events:none;}
+  .ed-qcneu-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:10px 12px;
+    border-radius:14px;background:#fff4dd;color:#7a4a00;font-size:13.5px;line-height:1.35;}
+  .ed-qcneu-bar span{flex:1 1 200px;min-width:0;}
+  .ed-qcneu-bar b{color:#5a3700;}
+  .ed-qcper{grid-column:1/-1;display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 6px;font-size:13px;font-weight:800;color:var(--muted);}
+  .ed-qcper button{height:32px;padding:0 12px;border:1px solid var(--border);border-radius:999px;background:#fff;color:var(--text);font:inherit;font-size:13px;font-weight:800;cursor:pointer;}
+  .ed-qcper button:hover{border-color:#f59e0b;}
+  .ed-qcper button.is-on{background:#121316;border-color:#121316;color:#fff;}
   /* Super-Pin (am Handy im Menue "...") */
   .ed-bar .ed-spinbtn{gap:6px;}
   .ed-bar .ed-spinbtn.is-on{background:#f59e0b;color:#121316;}
