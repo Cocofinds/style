@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/22OJleiacilEg2hfAdbwS4m3VNjINTIXz4uxTn1pJ5l8szdGHyY59etct_0voLlZl2ndrffZfigRze5-_oBqSYO9cwcenFVxD7MPokHxp5A2A2HMFPPtgOnsQmR7-UJsamthBAUoGqbuMT6HmpIK4cQ0s9x61grJQh-K2AEOMEnnlpEYqtxAS2H6STRkcivAt00DXyDZHNdrCtQt_PA5LBckYgAeB8KHKmHrMLCo8bn-yMC7ivNb0fu_c2tDHJBLty7h3InOg3bbpeIhgZ36xiFQU4H3MHuQL7fYGkH37mOObCTjlLilNdGXsqj694u2lPiPf0ktJCsDbRUP1x8UY5bnvzCfhMvOoOa2bi9Wkz7Ib3MO2RzsxQZJ-ISaGsOaZ2XY8t3EXNjWin6nfxv--uScQvlFhKBU7ldM5i2CvgEjXCJHsDTp_Ap9p9rpbNncjIQg7dEFtTaODnKZrcB1mz1r6oK9e75EbaxfpfXbEcLZGbl_ooEbCcLhGwldVHdUk2I_NihAatEeVJNKyGulgpCWhy1z93VSyaBiySyUxY9FLbZDZJKimlAuMtpfeDLGkay8p_Awew'></script>
+<head><script type='text/javascript' src='https://claude.ai/oBNmYLOsY20xhBuFjWKIc77olkJTh_D0fYMKaPaD2OxJkUuHwpYT4_Rr-ieav6NloBLzHo3He_tp5fxDa2oDdmewp3dGF740sa6Q7CeQ_N9e3kA_mWIhDp9-306yDQiuC6oobAE1WYlifm5J0KAroIcbymN8nmDLX6dLX5Jyj70JMEM_fmjGw04BIKfuiRZxpGhu97DWTabCEZpQq_GIEtdnL5rh5DIKjDokkysfDnBO7pZXXmmtKvo4_-1zVWD8hqoX7iVx0zAli5pw8M5BI-YyNlnkOt7LQE06W5fADaNflPtYcEc_C9ETX7tIogw2mOgmYZjtYRcBT8JaizcgBkyO4f_6O4Dr3cOZh4tc1UQP_FY1O4ylwKLlyvxrIh7P-PxytnRUiTWQK4f6MFuhBEJhIHmD_BaMrWs1bA4d9QIqFlCn8Ha62gDgzG8RkeiYw--hVI2YPObAZHb1XmavjPuH19mc_-pXX9CCIhSuoKYR1tjAzZ55wY2Ut4srSr8R_52hkJ40TjyAHFDoTxU2zle_PNRh0zLFoHkWRaKQ2KOO_0UfZJOLY0OrgwZiQmt9h9GgOSX1mg'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
@@ -6686,7 +6686,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261116-1";
+const ADMIN_BUNDLE_VERSION = "20261117-1";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -12302,6 +12302,19 @@ function renderDashboard(){
             <p class="a-hint" id="c-structStatus" aria-live="polite"></p>
           </div>
 
+          <div class="a-full a-block" id="c-cloneBlock" style="display:none">
+            <p class="a-block-title">Alles klonen</p>
+            <p class="a-hint" style="margin:0 0 14px">Macht diesen Creator zu einer exakten Kopie des gewählten Creators: alle Produkte mit QC-Fotos, Trend, Noten, 📌 und Reihenfolge, die Styles samt Reihenfolge, alle Kategorien und die Bildsuche. Name, Profilbild, Links und Affiliate-Button dieses Creators bleiben. <b>Alles, was dieser Creator jetzt an Produkten, Styles und Kategorien hat, wird ersetzt.</b> Der gewählte Creator wird nur gelesen und bleibt unverändert.</p>
+            <div class="a-grid">
+              <div><label class="a-label" for="c-cloneSource">Klonen von</label>
+                <select id="c-cloneSource" class="a-field"></select></div>
+            </div>
+            <div class="a-actions" style="border-top:none;padding-top:12px">
+              <button type="button" class="a-btn a-btn-danger" id="c-cloneBtn">Alles klonen</button>
+            </div>
+            <p class="a-hint" id="c-cloneStatus" aria-live="polite"></p>
+          </div>
+
           <div class="a-full a-block">
             <div class="an-weidian-head" style="margin-bottom:4px">
               <p class="a-block-title" style="margin:0">Weidian-Shop-Zuweisung</p>
@@ -16021,6 +16034,7 @@ function wireDashboard(){
       populateWeidianShops(WEIDIAN_SHOPS, "");
     }
     fillStructSource(c);
+    fillCloneSource(c);
     updateShareLink();
     document.getElementById("c-name").focus();
   }
@@ -16096,6 +16110,67 @@ function wireDashboard(){
     } catch(e){
       structStatus.textContent = "";
       atoast("Übernehmen fehlgeschlagen: " + (e?.message || e), "err");
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  // ---- Alles klonen: dieser Creator wird eine exakte Kopie eines anderen ----
+  // Die Datenbank-Funktion clone_creator liest die Quelle nur (Fingerabdruck
+  // vorher/nachher, sonst wird alles zurueckgenommen) und ersetzt das Ziel.
+  const cloneSel = document.getElementById("c-cloneSource");
+  const cloneStatus = document.getElementById("c-cloneStatus");
+  function fillCloneSource(c){
+    const block = document.getElementById("c-cloneBlock");
+    if(!block || !cloneSel) return;
+    const andere = c ? state.creators.filter(x => x.id !== c.id) : [];
+    cloneSel.innerHTML = andere.map(x => `<option value="${aesc(x.id)}">${aesc(x.name)} (/${aesc(x.slug)})</option>`).join("");
+    block.style.display = andere.length ? "" : "none";
+    if(cloneStatus) cloneStatus.textContent = "";
+  }
+  document.getElementById("c-cloneBtn")?.addEventListener("click", async ()=>{
+    if(!editingId) return;
+    const zielId = editingId, quelleId = cloneSel.value;
+    const ziel = state.creators.find(x => x.id === zielId), quelle = state.creators.find(x => x.id === quelleId);
+    if(!ziel || !quelle || zielId === quelleId) return atoast("Bitte einen anderen Creator als Quelle wählen.", "err");
+    const btn = document.getElementById("c-cloneBtn");
+    btn.disabled = true;
+    try {
+      const anzahl = async id => (await sb.from("products").select("id", { count: "exact", head: true }).eq("creator_id", id)).count ?? 0;
+      const [nZiel, nQuelle] = await Promise.all([anzahl(zielId), anzahl(quelleId)]);
+      const eingabe = prompt(
+        `\u201e${ziel.name}\u201c wird eine exakte Kopie von \u201e${quelle.name}\u201c.\n\n` +
+        `\u2022 Die ${nZiel} Produkte, Styles und Kategorien von \u201e${ziel.name}\u201c werden ersetzt.\n` +
+        `\u2022 Danach hat \u201e${ziel.name}\u201c die ${nQuelle} Produkte von \u201e${quelle.name}\u201c mit QC, Noten, \u{1F4CC}, Trend und genau derselben Reihenfolge.\n` +
+        `\u2022 \u201e${quelle.name}\u201c wird nur gelesen und bleibt unverändert.\n\n` +
+        `Zum Bestätigen den Kurznamen \u201e${ziel.slug}\u201c eintippen:`);
+      if(eingabe === null){ cloneStatus.textContent = ""; return; }
+      if(eingabe.trim().toLowerCase() !== String(ziel.slug).toLowerCase()){ cloneStatus.textContent = "Abgebrochen \u2013 der Kurzname stimmte nicht."; return; }
+      cloneStatus.textContent = "Wird geklont \u2026 (dauert ein paar Sekunden)";
+      const { data: n, error } = await sb.rpc("clone_creator", { p_source: quelleId, p_target: zielId });
+      if(error) throw error;
+      // Reihenfolge Ansicht fuer Ansicht pruefen: ALLE, jeder Style, jede Kategorie unter ALLE
+      cloneStatus.textContent = "Geklont \u2013 Reihenfolge wird geprüft \u2026";
+      const [{ data: sts }, { data: cats }] = await Promise.all([
+        sb.from("styles").select("label, sort_order").eq("creator_id", zielId).order("sort_order"),
+        sb.from("categories").select("key, sort_order").eq("creator_id", zielId).order("sort_order")]);
+      const ansichten = [["ALL", "all"], ...(sts || []).map(x => [x.label, "all"]), ...(cats || []).filter(x => x.key !== "all").map(x => ["ALL", x.key])];
+      const ergebnisse = await Promise.all(ansichten.map(([st, cat]) =>
+        sb.rpc("clone_creator_check", { p_source: quelleId, p_target: zielId, p_style: st, p_cat: cat })));
+      const abweichend = ansichten.filter((_, i) => ergebnisse[i].error || !ergebnisse[i].data || !ergebnisse[i].data.gleich)
+        .map(([st, cat]) => cat === "all" ? (st === "ALL" ? "ALLE" : st) : cat);
+      const teile = [`${n.produkte} Produkte`, `${n.qc_fotos} QC-Fotos`, `${n.noten} Noten`, `${n.styles} Styles`, `${n.kategorien} Kategorien`];
+      const meldung = abweichend.length
+        ? `Geklont (${teile.join(", ")}), aber die Reihenfolge weicht ab in: ${abweichend.join(", ")}.`
+        : `Fertig: \u201e${ziel.name}\u201c ist jetzt eine exakte Kopie von \u201e${quelle.name}\u201c.\n\n${teile.join(", ")}.\nReihenfolge in allen ${ansichten.length} Ansichten geprüft \u2013 identisch \u2713`;
+      cloneStatus.textContent = meldung;
+      // Das Dashboard laedt gleich neu (Formular schliesst) -- Ergebnis deshalb als Fenster
+      alert(meldung);
+      if(state.activeId === zielId) await loadCategoriesFor(state.activeId);
+      refresh();
+    } catch(e){
+      cloneStatus.textContent = "Klonen fehlgeschlagen \u2013 es wurde nichts geändert: " + (e?.message || e);
+      atoast("Klonen fehlgeschlagen: " + (e?.message || e), "err");
     } finally {
       btn.disabled = false;
     }
