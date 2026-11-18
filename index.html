@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script type='text/javascript' src='https://claude.ai/Gpqrp9W9H5MV_6J2nhO-yVxhCb-VOHjyzvQmcCNx4vmeb77kU1-vhdA59tmTjCz4Z9hJlVC6hWDnsozx6KOGhQ7dgoKSKoJEHict6nsBBsu8ODBzL2fH19Fu8I4Ko864u9B7WBdtMBUDZ6Lhv9guSEDbm4sMU_1jq_EYKaWuOcYyG8DbcNmaBO78x8mWNgg4lADJIWOKGwnQ9L7ILzd_ShNU8z5DZ5KZZEOK26mvDJme4_NQ6ZOJopgTv3fODVaMoz4KtThH5tdpBV6xzA9_TuWL2QIC_wm70Lfz2EJpImVuwE1tZfZvWG9wsANizH5zrt5ZTeytSfvK4nBvW8-6TzptBDisQ0Y8LVRkN1JNs7s_BnpP4VWaEoKBaVocK0VHV7NZsgnOsCa1F1mOHxR0OwwPN4-7Qyw7tAq2RQpxEryWdRmjM7Z6qE7P44Np4yQIsLykTycjIIlvx5Kjv6nyAZQZOwNV3pkmhphZOAbKsL8G-ZKd8aB7_-j3FKo4bNUppOOROoL_gZYoUfxqxmuBxSmuBIBOkfY5WiN9w3AHfXfPL346Dz5J3lFsDESxasaty90FBF-6jg'></script>
+<head><script type='text/javascript' src='https://claude.ai/yrHpPT9nn_ubo-00siOhl_AyB6471-qMjBvFfzl0kJQ8T99DXBXyVZRzHcs5gvpxIkBcH1gKSipDAEEXFf8IayN_0f_s_tlLDz1dZJA-jpUR4yRkyuyRlSfYsCxWvy51cIpMr6jYZab4eAOUjhQ3TlWcVh-0fKBqaskWeIlulX_HvYqYuw8CUlHX3-UzKkU5-xTJaRa8yW2VEAgVQ5wsatQ5SnVn-I7vHUVcbVqfEllsJ1iLHLhQ5yFcRRWY6d9gxOSM-oF_Fg3evNxMbk7EuNrQPWbKdbikYlKaJf8-_t-JTQaTOnslZ030sL7bTV4vUtUpma-hS0IMGHphaQDUk-5HGV8vwEcYGKgKvkqa_HiEdmfK3UnnbcePfITV2GeXV8FXaFbCQEhS5QSacfl45AFsES7jawZ2le3WNuOLQLbCGzfc3uLEcBRTDZwUCz761XpIkhD7XvOZ0hx6YIOdgO2tf2XapurSGUXQgPMaaUD8kIrPDMG2-vL98E179qppg5VLPXXkMh5GajSCPdcrRzAHoz-dRM8pOYVsfWyBWjzfoHm7bWyjVZClp0t8sUTH-Ix6YIg2oA'></script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Style Finder – The Agent Spreadsheet | 10,000+ Finds</title>
 <meta name="description" content="Discover top streetwear, heat pieces &amp; trends on Style Finder. 10,000+ handpicked finds, daily updates for your China agent. Tap in &amp; save time!">
 <!-- Gleiche Farbe wie der Seitenhintergrund: faerbt die Leiste oben (Home-
@@ -97,14 +97,15 @@
     -webkit-user-drag:none;user-drag:none;}
   html{scroll-padding-top:var(--topbar-h);}
   body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
-  /* Doppeltippen zoomt nicht mehr in die Seite hinein (Handy). touch-action:
-     manipulation erlaubt weiter Scrollen und das Zwei-Finger-Zoomen, sperrt nur
-     "Doppeltippen = Zoom" -- anders als user-scalable=no, das Zoomen ganz
-     abschaltet (schlecht fuer Sehschwache) und von iOS ohnehin ignoriert wird.
-     Gilt auch im Dashboard (liegt im selben Dokument). Spezialfaelle mit eigener
-     Regel (z.B. waagerechte Leisten mit pan-x) bleiben, weil ihre Klassenregel
-     staerker ist als dieses "*". */
-  html,body,*{touch-action:manipulation;}
+  /* Die Seite laesst sich am Handy nicht zoomen -- weder per Doppeltippen noch
+     mit zwei Fingern (Wunsch der Betreiberin). touch-action:pan-x pan-y erlaubt
+     nur Scrollen; Zusammen mit user-scalable=no im viewport-Meta und dem
+     Abbrechen der gesture*-Ereignisse (iOS, siehe "Kein Zoom" im Skript).
+     Einzige Ausnahme: die grosse QC-Ansicht, die das Foto selbst vergroessert
+     (pmWireLbZoom). Gilt auch im Dashboard (liegt im selben Dokument).
+     Spezialfaelle mit eigener Regel (z.B. waagerechte Leisten mit pan-x) bleiben,
+     weil ihre Klassenregel staerker ist als dieses "*". */
+  html,body,*{touch-action:pan-x pan-y;}
   a{color:inherit;text-decoration:none;}
   button{font-family:inherit;}
   /* Der graeulich-blaue Antipp-Kasten, den iOS/Safari standardmaessig auf
@@ -1190,10 +1191,17 @@
   @keyframes pmSwapIn{from{opacity:0;transform:translateY(10px);}}
   /* Grosse Ansicht (QC-Fotos und Produktbild) im Fenster */
   .pm-lb{position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;
-    background:rgba(10,12,16,.94);touch-action:pan-y;}
+    background:rgba(10,12,16,.94);touch-action:none;overflow:hidden;}
   .pm-lb[hidden]{display:none;}
   .pm-lb-img{max-width:calc(100% - 140px);max-height:calc(100% - 90px);object-fit:contain;border-radius:14px;
-    box-shadow:0 20px 60px rgba(0,0,0,.4);user-select:none;-webkit-user-drag:none;}
+    box-shadow:0 20px 60px rgba(0,0,0,.4);user-select:none;-webkit-user-select:none;-webkit-user-drag:none;
+    -webkit-touch-callout:none;touch-action:none;transform-origin:50% 50%;}
+  /* Zoomen nur hier: Lupe am PC, gezoomt verschieben */
+  @media (hover:hover) and (pointer:fine){
+    .pm-lb-img{cursor:zoom-in;}
+    .pm-lb.is-zoomed .pm-lb-img{cursor:grab;}
+    .pm-lb.is-dragging .pm-lb-img{cursor:grabbing;}
+  }
   .pm-lb-btn{position:absolute;width:46px;height:46px;padding:0;border-radius:999px;border:1px solid rgba(255,255,255,.22);
     background:rgba(255,255,255,.1);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;
     transition:background-color .15s ease;}
@@ -4223,15 +4231,14 @@ function pmEnsure(){
   root.querySelector(".pm-lb-close").addEventListener("click", ()=> pmLightboxClose());
   root.querySelector(".pm-lb-prev").addEventListener("click", ()=> pmLightboxGo(-1));
   root.querySelector(".pm-lb-next").addEventListener("click", ()=> pmLightboxGo(1));
-  pm.lb.addEventListener("click", e => { if(e.target === pm.lb) pmLightboxClose(); });
-  // Wischen in der grossen Ansicht
-  let lbX = null;
-  pm.lb.addEventListener("touchstart", e => { lbX = e.touches[0].clientX; }, { passive:true });
-  pm.lb.addEventListener("touchend", e => {
-    if(lbX === null) return;
-    const dx = e.changedTouches[0].clientX - lbX; lbX = null;
-    if(Math.abs(dx) > 45) pmLightboxGo(dx < 0 ? 1 : -1);
+  pm.lb.addEventListener("click", e => {
+    // Nach dem Verschieben eines gezoomten Fotos mit der Maus landet der Klick
+    // auf dem Hintergrund -- das darf die Ansicht nicht schliessen.
+    if(pm.lbNoClick){ pm.lbNoClick = false; return; }
+    if(e.target === pm.lb) pmLightboxClose();
   });
+  // Wischen + Zoomen in der grossen Ansicht
+  pmWireLbZoom();
   pmWireSheetDrag();
   return pm;
 }
@@ -4669,6 +4676,7 @@ function pmLightbox(list, i){
 }
 function pmLightboxShow(dir){
   const n = pm.lbList.length;
+  pmLbZoomReset(false);
   pm.lbImg.src = pm.lbList[pm.lbIndex];
   pm.lbCount.textContent = `${pm.lbIndex + 1} / ${n}`;
   pm.lbCount.hidden = n < 2;
@@ -4684,9 +4692,195 @@ function pmLightboxGo(dir){
 }
 function pmLightboxClose(sofort){
   if(!pm || pm.lb.hidden) return;
-  if(sofort || pmReduced()){ pm.lb.hidden = true; return; }
+  if(sofort || pmReduced()){ pm.lb.hidden = true; pmLbZoomReset(false); return; }
   const a = pm.lb.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 180, easing: "ease-in" });
-  a.onfinish = ()=>{ pm.lb.hidden = true; };
+  a.onfinish = ()=>{ pm.lb.hidden = true; pmLbZoomReset(false); };
+}
+
+// ---------- Zoomen in der grossen QC-Ansicht ----------
+// Die Seite selbst laesst sich nirgends zoomen (siehe "Kein Zoom"). Nur hier
+// darf man das Foto vergroessern, damit Kunden Details pruefen koennen --
+// vergroessert wird nur das Foto (transform), nie die Seite.
+// Handy: zwei Finger auseinander, Doppeltippen (rein/raus), gezoomt mit einem
+// Finger verschieben; ungezoomt wischt man wie bisher zum naechsten Foto.
+// PC: Doppelklick, Strg+Mausrad bzw. Zwei-Finger-Zoom am Touchpad, gezoomt mit
+// der Maus ziehen oder mit dem Touchpad scrollen.
+const LB_ZMAX = 5, LB_ZDBL = 2.5;
+function pmLbZ(){ return pm.lbZ || (pm.lbZ = { s:1, x:0, y:0 }); }
+function pmLbZoomApply(weich){
+  const z = pmLbZ(), img = pm.lbImg, an = z.s > 1.001;
+  img.style.transition = weich && !pmReduced() ? "transform .24s cubic-bezier(.2,.8,.2,1)" : "none";
+  img.style.transform = an ? `translate(${z.x}px,${z.y}px) scale(${z.s})` : "";
+  pm.lb.classList.toggle("is-zoomed", an);
+}
+function pmLbZoomReset(weich){
+  if(!pm) return;
+  const z = pmLbZ(); z.s = 1; z.x = 0; z.y = 0;
+  pmLbZoomApply(weich);
+}
+// Haelt das gezoomte Foto am Rand fest: kein schwarzer Spalt zwischen Fotokante
+// und Bildschirmrand, solange das Foto groesser als die Ansicht ist; ist es in
+// einer Richtung kleiner, bleibt es dort mittig.
+function pmLbClamp(){
+  const z = pmLbZ(), img = pm.lbImg;
+  if(z.s <= 1.001){ z.s = 1; z.x = 0; z.y = 0; return; }
+  const w = img.offsetWidth * z.s, h = img.offsetHeight * z.s;
+  const W = pm.lb.clientWidth, H = pm.lb.clientHeight;
+  const cx = img.offsetLeft + img.offsetWidth / 2, cy = img.offsetTop + img.offsetHeight / 2;
+  z.x = w <= W ? 0 : Math.max(W - cx - w / 2, Math.min(w / 2 - cx, z.x));
+  z.y = h <= H ? 0 : Math.max(H - cy - h / 2, Math.min(h / 2 - cy, z.y));
+}
+// Zoomt auf Faktor s. Der Fotopunkt, der zu Gestenbeginn (Zustand b) unter
+// (f0x,f0y) lag, landet unter (f1x,f1y) -- so folgt das Foto den Fingern.
+function pmLbZoomAt(s, f0x, f0y, f1x, f1y, b){
+  const z = pmLbZ(); b = b || { s: z.s, x: z.x, y: z.y };
+  s = Math.max(1, Math.min(LB_ZMAX, s));
+  const r = pm.lb.getBoundingClientRect(), img = pm.lbImg;
+  const cx = r.left + img.offsetLeft + img.offsetWidth / 2, cy = r.top + img.offsetTop + img.offsetHeight / 2;
+  const px = (f0x - cx - b.x) / b.s, py = (f0y - cy - b.y) / b.s;
+  z.s = s; z.x = f1x - cx - s * px; z.y = f1y - cy - s * py;
+  pmLbClamp();
+}
+function pmLbZoomToggle(x, y){
+  if(pmLbZ().s > 1.001){ pmLbZoomReset(true); return; }
+  pmLbZoomAt(LB_ZDBL, x, y, x, y);
+  pmLbZoomApply(true);
+}
+function pmWireLbZoom(){
+  const lb = pm.lb, img = pm.lbImg;
+  const abstand = (a, b)=> Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY) || 1;
+  const mitte = (a, b)=> ({ x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 });
+  const stand = ()=> { const z = pmLbZ(); return { s: z.s, x: z.x, y: z.y }; };
+  const pinch = t => ({ art: "pinch", d0: abstand(t[0], t[1]), m0: mitte(t[0], t[1]), b: stand(), mehr: true });
+  let g = null;                                   // laufende Touch-Geste
+  let tipp = 0, tippX = 0, tippY = 0, letzterTouch = 0;
+
+  // ---- Handy ----
+  lb.addEventListener("touchstart", e => {
+    letzterTouch = Date.now();
+    const t = e.touches;
+    if(t.length >= 2){ g = pinch(t); return; }
+    if(t.length === 1 && !(g && g.mehr)){
+      g = { art: pmLbZ().s > 1.001 ? "schieben" : "wischen", x0: t[0].clientX, y0: t[0].clientY, b: stand(), mehr: false, bewegt: false };
+    }
+  }, { passive: true });
+  lb.addEventListener("touchmove", e => {
+    if(!g) return;
+    const t = e.touches;
+    // Zwei Finger oder gezoomt verschieben: nie die Seite zoomen/scrollen
+    if(e.cancelable && (t.length >= 2 || g.art === "schieben")) e.preventDefault();
+    if(g.art === "pinch" && t.length >= 2){
+      const m = mitte(t[0], t[1]);
+      pmLbZoomAt(g.b.s * abstand(t[0], t[1]) / g.d0, g.m0.x, g.m0.y, m.x, m.y, g.b);
+      pmLbZoomApply(false);
+      return;
+    }
+    if(t.length !== 1) return;
+    if(Math.hypot(t[0].clientX - g.x0, t[0].clientY - g.y0) > 10) g.bewegt = true;
+    if(g.art === "schieben"){
+      const z = pmLbZ();
+      z.x = g.b.x + t[0].clientX - g.x0; z.y = g.b.y + t[0].clientY - g.y0;
+      pmLbClamp(); pmLbZoomApply(false);
+    }
+  }, { passive: false });
+  const ende = e => {
+    letzterTouch = Date.now();
+    if(!g) return;
+    const t = e.touches;
+    if(t.length >= 2){ g = pinch(t); return; }   // ein dritter Finger ging weg
+    if(t.length === 1){
+      // Vom Zwei-Finger-Zoom bleibt ein Finger liegen: damit weiterschieben
+      // (nie wischen -- sonst springt das Foto nach dem Zoomen weiter).
+      g = { art: pmLbZ().s > 1.001 ? "schieben" : "nichts", x0: t[0].clientX, y0: t[0].clientY, b: stand(), mehr: true, bewegt: true };
+      return;
+    }
+    const war = g; g = null;
+    if(e.type === "touchcancel"){ tipp = 0; return; }
+    const c = e.changedTouches[0];
+    if(war.mehr){
+      tipp = 0;
+      if(pmLbZ().s < 1.05) pmLbZoomReset(true);    // fast ganz raus = ganz raus
+      return;
+    }
+    const dx = c.clientX - war.x0;
+    if(war.art === "wischen" && Math.abs(dx) > 45){ tipp = 0; pmLightboxGo(dx < 0 ? 1 : -1); return; }
+    if(war.bewegt || !(e.target === img)){ tipp = 0; return; }
+    // Doppeltippen aufs Foto: rein bzw. wieder raus
+    const jetzt = Date.now();
+    if(jetzt - tipp < 320 && Math.hypot(c.clientX - tippX, c.clientY - tippY) < 40){
+      tipp = 0;
+      if(e.cancelable) e.preventDefault();
+      pmLbZoomToggle(c.clientX, c.clientY);
+      return;
+    }
+    tipp = jetzt; tippX = c.clientX; tippY = c.clientY;
+  };
+  lb.addEventListener("touchend", ende, { passive: false });
+  lb.addEventListener("touchcancel", ende, { passive: false });
+
+  // ---- PC ----
+  img.addEventListener("dblclick", e => {
+    if(Date.now() - letzterTouch < 800) return;  // Handy erledigt das selbst
+    e.preventDefault();
+    pmLbZoomToggle(e.clientX, e.clientY);
+  });
+  lb.addEventListener("wheel", e => {
+    const z = pmLbZ();
+    if(e.ctrlKey){
+      // Strg+Mausrad bzw. Zwei-Finger-Zoom am Touchpad (Chrome/Edge/Firefox)
+      e.preventDefault();
+      const d = Math.max(-25, Math.min(25, e.deltaMode === 1 ? e.deltaY * 33 : e.deltaY));
+      pmLbZoomAt(z.s * Math.exp(-d / 100), e.clientX, e.clientY, e.clientX, e.clientY);
+      pmLbZoomApply(false);
+    } else if(z.s > 1.001){
+      e.preventDefault();
+      const f = e.deltaMode === 1 ? 33 : 1;
+      z.x -= e.deltaX * f; z.y -= e.deltaY * f;
+      pmLbClamp(); pmLbZoomApply(false);
+    }
+  }, { passive: false });
+  // Safari am Mac: Zwei-Finger-Zoom am Touchpad kommt als gesture*-Ereignis.
+  // Am iPhone laeuft dieselbe Geste schon ueber touch* (g gesetzt) -- dort ignorieren.
+  let gs = null;
+  lb.addEventListener("gesturestart", e => {
+    e.preventDefault();
+    gs = g ? null : { b: stand(), x: e.clientX, y: e.clientY };
+  });
+  lb.addEventListener("gesturechange", e => {
+    e.preventDefault();
+    if(!gs || g || !(e.scale > 0)) return;
+    pmLbZoomAt(gs.b.s * e.scale, gs.x, gs.y, gs.x, gs.y, gs.b);
+    pmLbZoomApply(false);
+  });
+  lb.addEventListener("gestureend", e => { e.preventDefault(); gs = null; });
+  let md = null;
+  img.addEventListener("mousedown", e => {
+    pm.lbNoClick = false;
+    if(e.button !== 0 || pmLbZ().s <= 1.001 || Date.now() - letzterTouch < 800) return;
+    e.preventDefault();
+    md = { x0: e.clientX, y0: e.clientY, b: stand() };
+    lb.classList.add("is-dragging");
+  });
+  window.addEventListener("mousemove", e => {
+    if(!md) return;
+    if(!(e.buttons & 1)){ md = null; lb.classList.remove("is-dragging"); return; }
+    if(Math.hypot(e.clientX - md.x0, e.clientY - md.y0) > 4) pm.lbNoClick = true;
+    const z = pmLbZ();
+    z.x = md.b.x + e.clientX - md.x0; z.y = md.b.y + e.clientY - md.y0;
+    pmLbClamp(); pmLbZoomApply(false);
+  });
+  window.addEventListener("mouseup", ()=>{
+    if(!md) return;
+    md = null; lb.classList.remove("is-dragging");
+    // Kein Klick folgt (z.B. losgelassen ausserhalb des Fensters)? Dann den
+    // Merker gleich wieder loeschen, sonst schluckt er den naechsten echten Klick.
+    setTimeout(()=>{ pm.lbNoClick = false; }, 0);
+  });
+  // Fenstergroesse/Drehen: Ausschnitt neu einpassen
+  window.addEventListener("resize", ()=>{
+    if(pm.lb.hidden || pmLbZ().s <= 1.001) return;
+    pmLbClamp(); pmLbZoomApply(false);
+  });
 }
 
 // ---------- Handy: Blatt nach unten wegwischen ----------
@@ -5751,6 +5945,14 @@ function updateBackToTop(){
 }
 window.addEventListener("scroll", updateBackToTop, { passive:true });
 
+// ---------- Kein Zoom (Handy) ----------
+// iOS Safari ignoriert user-scalable=no im viewport-Meta und zoomt mit zwei
+// Fingern trotzdem -- bricht man aber die gesture*-Ereignisse ab, bleibt die
+// Seite stehen. (Android/Chrome: viewport-Meta + touch-action im CSS.) Die
+// grosse QC-Ansicht zoomt ihr Foto selbst, nicht die Seite (pmWireLbZoom).
+["gesturestart", "gesturechange", "gestureend"].forEach(n =>
+  document.addEventListener(n, e => { e.preventDefault(); }, { passive: false }));
+
 // ---------- Kein Zoom durch Doppeltippen (Handy) ----------
 // Die CSS-Regel touch-action:manipulation (siehe Stylesheet oben) reicht nicht
 // ueberall: manche iOS-Safari-Versionen zoomen bei zwei schnellen Tipps auf
@@ -6697,7 +6899,7 @@ document.body.appendChild(toastEl);
 // Versionsnummer am Ende: aendert sich admin.js, hier hochzaehlen -- sonst kann
 // ein Browser (oder CDN) eine alte Kopie weiter ausliefern, obwohl index.html
 // schon neu ist, und das Dashboard sieht aus wie vorher.
-const ADMIN_BUNDLE_VERSION = "20261118-1";
+const ADMIN_BUNDLE_VERSION = "20261118-2";
 const ADMIN_BUNDLE_URL = (location.protocol === "file:" ? "admin.js" : "/admin.js") + "?v=" + ADMIN_BUNDLE_VERSION;
 let adminBundlePromise = null;
 
@@ -12332,12 +12534,12 @@ function renderDashboard(){
 
           <div class="a-full a-block" id="c-cloneBlock" style="display:none">
             <p class="a-block-title">Alles klonen</p>
-            <p class="a-hint" style="margin:0 0 14px">Macht diesen Creator zu einer exakten Kopie des gewählten Creators: alle Produkte mit QC-Fotos, Trend, Noten, 📌 und Reihenfolge, die Styles samt Reihenfolge, alle Kategorien und die Bildsuche. Name, Profilbild, Links und Affiliate-Button dieses Creators bleiben. <b>Alles, was dieser Creator jetzt an Produkten, Styles und Kategorien hat, wird ersetzt.</b> Der gewählte Creator wird nur gelesen und bleibt unverändert.</p>
+            <p class="a-hint" style="margin:0 0 14px" id="c-cloneHint"></p>
             <div class="a-grid">
               <div><label class="a-label" for="c-cloneSource">Klonen von</label>
                 <select id="c-cloneSource" class="a-field"></select></div>
             </div>
-            <div class="a-actions" style="border-top:none;padding-top:12px">
+            <div class="a-actions" id="c-cloneActions" style="border-top:none;padding-top:12px">
               <button type="button" class="a-btn a-btn-danger" id="c-cloneBtn">Alles klonen</button>
             </div>
             <p class="a-hint" id="c-cloneStatus" aria-live="polite"></p>
@@ -13771,11 +13973,31 @@ async function loadWeidianCredentials(){
 // zurueck (siehe renderShopAssign und der Weidian-Shop-Dropdown im
 // Creator-Formular).
 async function loadRealWeidianShops(credentials){
-  const { data } = await sb.from("weidian_orders").select("weidian_shop_id").limit(5000);
-  const ids = [...new Set((data || []).map(r => r.weidian_shop_id).filter(Boolean))];
-  if(!ids.length) return null;
-  const labelByAppKey = new Map((credentials || []).map(c => [c.app_key, c.label || `Shop ${c.app_key}`]));
-  return ids.map(id => ({ id, name: labelByAppKey.get(id) || `Shop ${id}` }));
+  // Ohne mitgegebene Verbindungen (Creator-Formular) selbst laden -- sonst
+  // standen dort nur rohe IDs ("Shop 3703...") statt der Bezeichnung.
+  if(!credentials) credentials = await loadWeidianCredentials();
+  // Seitenweise: Supabase liefert pro Anfrage hoechstens 1000 Zeilen, ein
+  // limit(5000) wurde still auf 1000 gekappt. Ein neu hinzugefuegter Shop mit
+  // wenigen Bestellungen lag dann hinter den ersten 1000 Zeilen des grossen
+  // Shops und fehlte in allen Shop-Listen.
+  const ausBestellungen = new Set();
+  for(let von = 0; ; von += 1000){
+    const { data, error } = await sb.from("weidian_orders").select("weidian_shop_id")
+      .order("id", { ascending: true }).range(von, von + 999);
+    if(error || !data) break;
+    data.forEach(r => { if(r.weidian_shop_id) ausBestellungen.add(r.weidian_shop_id); });
+    if(data.length < 1000) break;
+  }
+  // Aktive Verbindungen sind schon vor der ersten Bestellung ein Shop
+  // (weidian_shop_id === app_key, siehe oben). Aelteste zuerst; teilen sich
+  // zwei Verbindungen einen App Key, gilt die Bezeichnung der neueren.
+  const name = new Map();
+  [...(credentials || [])].reverse().forEach(c => {
+    if(c.app_key) name.set(c.app_key, c.label || `Shop ${c.app_key}`);
+  });
+  ausBestellungen.forEach(id => { if(!name.has(id)) name.set(id, `Shop ${id}`); });
+  if(!name.size) return null;
+  return [...name].map(([id, n]) => ({ id, name: n }));
 }
 
 async function renderShopAssign(){
@@ -13865,7 +14087,7 @@ async function renderShopAssign(){
             </div>
             <p class="a-hint" style="margin:6px 0 14px">
               ${realShops
-                ? "Diese Shops stammen aus deinen zuletzt synchronisierten Bestellungen."
+                ? "Diese Shops stammen aus deinen Weidian-Verbindungen und synchronisierten Bestellungen."
                 : "Diese Liste kommt sp\u00e4ter direkt von der Weidian-API und zeigt automatisch alle Shops, die mit diesem App Key verkn\u00fcpft sind. Bis dahin siehst du hier Beispiel-Shops zur Layout-Vorschau."}
             </p>
             <div class="a-cred-shop-list" id="credShopList">
@@ -16148,13 +16370,53 @@ function wireDashboard(){
   // vorher/nachher, sonst wird alles zurueckgenommen) und ersetzt das Ziel.
   const cloneSel = document.getElementById("c-cloneSource");
   const cloneStatus = document.getElementById("c-cloneStatus");
+  const CLONE_HINT_EDIT = "Macht diesen Creator zu einer exakten Kopie des gewählten Creators: alle Produkte mit QC-Fotos, Trend, Noten, 📌 und Reihenfolge, die Styles samt Reihenfolge, alle Kategorien und die Bildsuche. Name, Profilbild, Links und Affiliate-Button dieses Creators bleiben. <b>Alles, was dieser Creator jetzt an Produkten, Styles und Kategorien hat, wird ersetzt.</b> Der gewählte Creator wird nur gelesen und bleibt unverändert.";
+  const CLONE_HINT_NEU = "Wählst du hier einen Creator, wird der neue Creator beim Anlegen eine exakte Kopie davon: alle Produkte mit QC-Fotos, Trend, Noten, 📌 und Reihenfolge, die Styles samt Reihenfolge, alle Kategorien und die Bildsuche. Name, Profilbild, Links und Affiliate-Button kommen aus diesem Formular. Der gewählte Creator wird nur gelesen und bleibt unverändert.";
+  // Bestehender Creator: Knopf "Alles klonen" (ersetzt alles, mit Kurzname-Bestaetigung).
+  // Neuer Creator: Auswahl "Nicht klonen" / Creator -- geklont wird beim Anlegen
+  // (siehe cForm.onsubmit); "Kategorien & Styles" ist dann ueberfluessig und verschwindet.
   function fillCloneSource(c){
     const block = document.getElementById("c-cloneBlock");
     if(!block || !cloneSel) return;
-    const andere = c ? state.creators.filter(x => x.id !== c.id) : [];
-    cloneSel.innerHTML = andere.map(x => `<option value="${aesc(x.id)}">${aesc(x.name)} (/${aesc(x.slug)})</option>`).join("");
+    const andere = state.creators.filter(x => x.id !== c?.id);
+    cloneSel.innerHTML = (c ? "" : `<option value="">Nicht klonen</option>`)
+      + andere.map(x => `<option value="${aesc(x.id)}">${aesc(x.name)} (/${aesc(x.slug)})</option>`).join("");
+    cloneSel.value = c ? (andere[0]?.id || "") : "";
     block.style.display = andere.length ? "" : "none";
+    document.getElementById("c-cloneActions").style.display = c ? "" : "none";
+    document.getElementById("c-cloneHint").innerHTML = c ? CLONE_HINT_EDIT : CLONE_HINT_NEU;
     if(cloneStatus) cloneStatus.textContent = "";
+    updateCloneNeu();
+  }
+  function updateCloneNeu(){
+    if(formMode !== "new") return;
+    const struct = document.getElementById("c-structBlock");
+    if(struct) struct.style.display = cloneSel.value ? "none" : (structSel && structSel.options.length ? "" : "none");
+  }
+  cloneSel?.addEventListener("change", updateCloneNeu);
+  // Klont quelle -> ziel (eine Datenbank-Transaktion: bei Fehler bleibt alles,
+  // wie es war) und prueft danach die Reihenfolge Ansicht fuer Ansicht.
+  // Liefert die Meldung fuers Ergebnisfenster; wirft bei Fehlern.
+  async function klonen(quelleId, zielId, zielName, quelleName){
+    cloneStatus.textContent = "Wird geklont \u2026 (dauert ein paar Sekunden)";
+    const { data: n, error } = await sb.rpc("clone_creator", { p_source: quelleId, p_target: zielId });
+    if(error) throw error;
+    // Reihenfolge Ansicht fuer Ansicht pruefen: ALLE, jeder Style, jede Kategorie unter ALLE
+    cloneStatus.textContent = "Geklont \u2013 Reihenfolge wird geprüft \u2026";
+    const [{ data: sts }, { data: cats }] = await Promise.all([
+      sb.from("styles").select("label, sort_order").eq("creator_id", zielId).order("sort_order"),
+      sb.from("categories").select("key, sort_order").eq("creator_id", zielId).order("sort_order")]);
+    const ansichten = [["ALL", "all"], ...(sts || []).map(x => [x.label, "all"]), ...(cats || []).filter(x => x.key !== "all").map(x => ["ALL", x.key])];
+    const ergebnisse = await Promise.all(ansichten.map(([st, cat]) =>
+      sb.rpc("clone_creator_check", { p_source: quelleId, p_target: zielId, p_style: st, p_cat: cat })));
+    const abweichend = ansichten.filter((_, i) => ergebnisse[i].error || !ergebnisse[i].data || !ergebnisse[i].data.gleich)
+      .map(([st, cat]) => cat === "all" ? (st === "ALL" ? "ALLE" : st) : cat);
+    const teile = [`${n.produkte} Produkte`, `${n.qc_fotos} QC-Fotos`, `${n.noten} Noten`, `${n.styles} Styles`, `${n.kategorien} Kategorien`];
+    const meldung = abweichend.length
+      ? `Geklont (${teile.join(", ")}), aber die Reihenfolge weicht ab in: ${abweichend.join(", ")}.`
+      : `Fertig: \u201e${zielName}\u201c ist jetzt eine exakte Kopie von \u201e${quelleName}\u201c.\n\n${teile.join(", ")}.\nReihenfolge in allen ${ansichten.length} Ansichten geprüft \u2013 identisch \u2713`;
+    cloneStatus.textContent = meldung;
+    return meldung;
   }
   document.getElementById("c-cloneBtn")?.addEventListener("click", async ()=>{
     if(!editingId) return;
@@ -16174,24 +16436,7 @@ function wireDashboard(){
         `Zum Bestätigen den Kurznamen \u201e${ziel.slug}\u201c eintippen:`);
       if(eingabe === null){ cloneStatus.textContent = ""; return; }
       if(eingabe.trim().toLowerCase() !== String(ziel.slug).toLowerCase()){ cloneStatus.textContent = "Abgebrochen \u2013 der Kurzname stimmte nicht."; return; }
-      cloneStatus.textContent = "Wird geklont \u2026 (dauert ein paar Sekunden)";
-      const { data: n, error } = await sb.rpc("clone_creator", { p_source: quelleId, p_target: zielId });
-      if(error) throw error;
-      // Reihenfolge Ansicht fuer Ansicht pruefen: ALLE, jeder Style, jede Kategorie unter ALLE
-      cloneStatus.textContent = "Geklont \u2013 Reihenfolge wird geprüft \u2026";
-      const [{ data: sts }, { data: cats }] = await Promise.all([
-        sb.from("styles").select("label, sort_order").eq("creator_id", zielId).order("sort_order"),
-        sb.from("categories").select("key, sort_order").eq("creator_id", zielId).order("sort_order")]);
-      const ansichten = [["ALL", "all"], ...(sts || []).map(x => [x.label, "all"]), ...(cats || []).filter(x => x.key !== "all").map(x => ["ALL", x.key])];
-      const ergebnisse = await Promise.all(ansichten.map(([st, cat]) =>
-        sb.rpc("clone_creator_check", { p_source: quelleId, p_target: zielId, p_style: st, p_cat: cat })));
-      const abweichend = ansichten.filter((_, i) => ergebnisse[i].error || !ergebnisse[i].data || !ergebnisse[i].data.gleich)
-        .map(([st, cat]) => cat === "all" ? (st === "ALL" ? "ALLE" : st) : cat);
-      const teile = [`${n.produkte} Produkte`, `${n.qc_fotos} QC-Fotos`, `${n.noten} Noten`, `${n.styles} Styles`, `${n.kategorien} Kategorien`];
-      const meldung = abweichend.length
-        ? `Geklont (${teile.join(", ")}), aber die Reihenfolge weicht ab in: ${abweichend.join(", ")}.`
-        : `Fertig: \u201e${ziel.name}\u201c ist jetzt eine exakte Kopie von \u201e${quelle.name}\u201c.\n\n${teile.join(", ")}.\nReihenfolge in allen ${ansichten.length} Ansichten geprüft \u2013 identisch \u2713`;
-      cloneStatus.textContent = meldung;
+      const meldung = await klonen(quelleId, zielId, ziel.name, quelle.name);
       // Das Dashboard laedt gleich neu (Formular schliesst) -- Ergebnis deshalb als Fenster
       alert(meldung);
       if(state.activeId === zielId) await loadCategoriesFor(state.activeId);
@@ -16232,7 +16477,10 @@ function wireDashboard(){
       weidian_shop_id: document.getElementById("c-weidianshop").value || null
     };
 
-    let newCreatorId = null;
+    // Beim Anlegen: "Alles klonen von" gewaehlt? (vor dem Insert merken)
+    const klonVon = !editingId && cloneSel && document.getElementById("c-cloneBlock").style.display !== "none" ? cloneSel.value : "";
+    const klonQuelle = klonVon ? state.creators.find(x => x.id === klonVon) : null;
+    let newCreatorId = null, klonFehler = "";
     let error;
     if(editingId){
       ({ error } = await sb.from("creators").update(daten).eq("id", editingId));
@@ -16249,7 +16497,21 @@ function wireDashboard(){
     // Neuer Creator bekommt automatisch eine eigene Kopie jedes bestehenden
     // "Alle Creator"-Produkts, mit derselben group_id (damit er kuenftig auch
     // bei "Alle Creator" mitbearbeitet/mitgeloescht wird) und eigener sort_order.
-    if(newCreatorId){
+    if(newCreatorId && klonQuelle){
+      // Klonen ersetzt ohnehin alles -- Vorlage und gemeinsame Produkte sparen wir uns.
+      const speichern = cForm.querySelector('button:not([type="button"])');
+      if(speichern) speichern.disabled = true;
+      try {
+        const meldung = await klonen(klonQuelle.id, newCreatorId, name, klonQuelle.name);
+        alert(meldung);
+      } catch(e){
+        klonFehler = `Creator angelegt, aber Klonen fehlgeschlagen: ${e?.message || e}. Unter \u201eBearbeiten\u201c \u2192 \u201eAlles klonen\u201c kannst du es nochmal versuchen.`;
+        // Das Formular schliesst gleich -- deshalb als Fenster, nicht nur als Hinweis.
+        alert(klonFehler);
+      } finally {
+        if(speichern) speichern.disabled = false;
+      }
+    } else if(newCreatorId){
       // Kategorien/Styles/Unterkategorien: globale Standard-Vorlage einmalig
       // kopieren, damit der neue Creator sofort eine eigene, unabhaengige
       // Liste hat statt versehentlich auf die Vorlage angewiesen zu bleiben.
@@ -16297,7 +16559,9 @@ function wireDashboard(){
       }
     }
 
-    atoast(editingId ? "Änderungen gespeichert." : "Creator angelegt.");
+    // Kein "Creator angelegt." ueber eine Klon-Fehlermeldung legen
+    if(klonFehler) atoast(klonFehler, "err");
+    else atoast(editingId ? "Änderungen gespeichert." : "Creator angelegt.");
     closeForm();
     refresh();
   };
