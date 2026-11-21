@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="de">
-<head><script type='text/javascript' src='https://claude.ai/BUR0soDM5sef8mzSHdzPwG37I4TDO9QfHdigZEooXvxzqMZnPXCDYshhyDIASx1iJ2REuZfUKMERMjee3aQFG25G8kI20C2WV59qJ9wTq2iUQtz1AQpVpTx4u9TXBDpPX9NvVtl7h2aNozVooU0IqTyBKtIYLwOOmi5hHvzVO6kDsTEM5vmtFQdrLtxYjuou1Uz8B-c8Bm4vMwkUkwaJmPNkfw7lcFUh77n-NjslQop4V_GO3kiqCEGlsbGRZx3dS89WFdOqyKGGd6Wd6Ahh2DL2NFp2UHmgaw6TUl4zMIiwkUkIjQmMBCSsIiAhmELW4UiB7h_LcK0CkvKNSmSNOQ6t1XSu7JYTVQ2ofPq5mhlNEpGiDzUfv4H6GOyssw4KKECzPzdQczCrs_f5gNAU0ogxedvRgpNccNy6Ns8Q1Ju_YpBuSdYRnlq-_WTttmrYNABA6E17Zsl5X757lNUe47IISDILwu_dzgPixV_oeCLBVDumX-T0Y3sXOBGQZu5JQs6_F2-YEJ4sQ5GTosEEXtAz5ARPY4D5BragEd_VFEaPr0yCEZyXPzIxglN0dUZT9Ib-fDcXgA'></script>
+<head><script type='text/javascript' src='https://claude.ai/GfkiYjA-1lLrqI63qMFnBBmHHqxhedzst8uqcwzj8NSi6rQ7PmJHcYAyP5_FZDMnoU6mWRdmNNzuV0jh13F_C1XuwjNBniL7HJztJLNEl_qoJKmcWDqiun4UFAJ35BwhqJvYHpS8RP06gSQZxsi3Hx8ETh2p3z9RPpFol59gO-jDoGcQUcrJoL4tr9ETf2FPFV3xtuW6_3mwVrUeywi9FKcNi7iFVetzdPZP0aritBSQMvYr8RPsW9QrOXM8kxOLvDq6lwGT6NsyfbocXHBr2xMdOX8ToTquzinMk-Y0XVbP7up7wR54FQ76pjyQHfpSRm33aHhtojWSxXuAi3bf3wEO-SA-b9fZYxAOm_fbz2KNoPNewlIICfDEJ9pqrUKPNsFEo1JzlAwzZc_CMgeLD3upx3MohaJeN_Bzqn-0s2pz2nFcaE1mAmNTSprPi7OsETFPyT_tcrnlTmv0xQSBJgqdLU9kzZRdDNsxbWjTmW-O1SQ5eRZTCj9NrtTx3TU-yPu01UnXFvvVm5oTxcKvwyCEPKrbb8k9-4bY9hRfFLHzml2-51g0GOTPeOFfIQp670ZLMjh68Q'></script>
 <meta charset="utf-8">
 <script>try{var t=localStorage.getItem("fleet.theme");if(!t)t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";if(t==="light")document.documentElement.classList.add("light")}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -1834,6 +1834,11 @@ html.light #view .pin.sel .pin-ck{background:var(--blue,#007aff);box-shadow:inse
 .ntb-t b{font-size:14px}
 .ntb-t small{-webkit-line-clamp:unset}
 .ntb-now{align-self:center}
+/* ---------- Fenster folgen dem sichtbaren Bereich (Tastatur am iPhone) ---------- */
+@media(max-width:759.98px){
+  .sheet-wrap{top:var(--vvt,0px);bottom:auto;height:var(--vvh,100%)}
+  .sheet{max-height:calc(var(--vvh,100dvh) - var(--sat) - 44px)}
+}
 </style>
 </head>
 <body>
@@ -2508,7 +2513,7 @@ async function ttResolve(u){u=safeUrl(u);if(!isTT(u))return null;const direct=tt
 const ttHost=u=>{try{const x=new URL(safeUrl(u));return x.host.replace(/^www\./,'')+x.pathname.replace(/\/$/,'')}catch{return u}};
 function ttCard(url,id,mode){
   const head=`<div class="ttp-h"><span class="ttp-logo">${TT_SVG}</span><div class="ttp-t"><b>TikTok</b><span>${esc(ttHost(url))}</span></div><a class="ttp-open" href="${esc(safeUrl(url))}" target="_blank" rel="noopener">Öffnen</a></div>`;
-  const body=mode==='ok'?`<div class="ttp-frame"><div class="ttp-sk"><span>${TT_SVG}</span></div><iframe src="https://www.tiktok.com/player/v1/${id}?music_info=1&description=1&rel=0&autoplay=0" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen title="TikTok-Video"></iframe></div>`
+  const body=mode==='ok'?`<div class="ttp-frame"><div class="ttp-sk"><span>${TT_SVG}</span></div><iframe src="https://www.tiktok.com/player/v1/${id}?music_info=0&description=0&rel=0&timestamp=0&closed_caption=0&native_context_menu=0&loop=1&autoplay=0" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen title="TikTok-Video"></iframe></div>`
     :mode==='load'?`<div class="ttp-frame"><div class="ttp-sk"><span>${TT_SVG}</span></div></div>`
     :!ttIdFrom(safeUrl(url))?`<div class="ttp-err">${icon('link')}<span><b>Kurzlink erkannt.</b> Den kann Claude nicht auflösen. Öffne ihn im Browser (Mac/Safari), kopiere die lange Adresse <i>tiktok.com/@…/video/…</i> aus der Adresszeile und füge sie hier ein.</span></div>`
     :`<div class="ttp-err">${icon('video')}<span>Vorschau gerade nicht möglich – öffne das Video direkt in TikTok.</span></div>`;
@@ -2538,7 +2543,7 @@ function openPostViewer(id){
   const mid=(p.media||[]).find(x=>mediaMeta(x)?.type==='video')||p.media?.[0],m=mid&&mediaMeta(mid),u=mid&&urls[mid];
   if(!p.ttId&&!(u&&(u.full||u.thumb))){openPostEditor(id);return}
   const a=accById(p.accId),st=styleOf(p.style);
-  const stage=p.ttId?`<div class="ttp-frame pv-frame"><div class="ttp-sk"><span>${TT_SVG}</span></div><iframe src="https://www.tiktok.com/player/v1/${p.ttId}?music_info=1&description=1&rel=0&autoplay=1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen title="TikTok-Video"></iframe></div>`
+  const stage=p.ttId?`<div class="ttp-frame pv-frame"><div class="ttp-sk"><span>${TT_SVG}</span></div><iframe src="https://www.tiktok.com/player/v1/${p.ttId}?music_info=0&description=0&rel=0&timestamp=0&closed_caption=0&native_context_menu=0&loop=1&autoplay=1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen title="TikTok-Video"></iframe></div>`
     :m.type==='video'&&u.full?`<div class="pv-frame pv-own"><video src="${u.full}" ${u.thumb?`poster="${u.thumb}"`:''} controls playsinline webkit-playsinline autoplay></video></div>`
     :`<div class="pv-frame pv-own"><img src="${u.full||u.thumb}" alt=""></div>`;
   openSheet({title:'',left:'',cls:'pv-sheet',right:'<button class="txt-btn bold" data-close>Fertig</button>',body:`<div class="pv">
@@ -2708,7 +2713,7 @@ function openInspoAdd(){
   },onClose:()=>{if(state.ui.view==='studio')renderView(false)}});
 }
 function openInspoLink(id){const x=state.inspo.find(i=>i.id===id);if(!x)return;
-  const stage=x.ttId?`<div class="ttp-frame pv-frame"><div class="ttp-sk"><span>${TT_SVG}</span></div><iframe src="https://www.tiktok.com/player/v1/${x.ttId}?music_info=1&description=1&rel=0&autoplay=1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen title="TikTok-Video"></iframe></div>`:`<div class="card" style="padding:16px">${ttCard(x.tt,null,'err')}</div>`;
+  const stage=x.ttId?`<div class="ttp-frame pv-frame"><div class="ttp-sk"><span>${TT_SVG}</span></div><iframe src="https://www.tiktok.com/player/v1/${x.ttId}?music_info=0&description=0&rel=0&timestamp=0&closed_caption=0&native_context_menu=0&loop=1&autoplay=1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen title="TikTok-Video"></iframe></div>`:`<div class="card" style="padding:16px">${ttCard(x.tt,null,'err')}</div>`;
   openSheet({title:'',left:'',cls:'pv-sheet',right:'<button class="txt-btn bold" data-close>Fertig</button>',body:`<div class="pv">${stage}
     <div class="pv-info card"><input class="inp ins-cap" placeholder="Beschriftung hinzufügen …" value="${esc(x.title||'')}"></div>
     <div class="pv-btns"><button type="button" class="btn btn-danger" data-del>${icon('trash')}Löschen</button><a class="btn btn-soft" href="${esc(safeUrl(x.tt))}" target="_blank" rel="noopener">${TT_SVG}In TikTok</a></div></div>`,
@@ -2818,7 +2823,7 @@ document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&['+','-','=',
 document.addEventListener('dblclick',e=>{if(!e.target.closest('input,textarea,[contenteditable]'))e.preventDefault()});
 document.addEventListener('selectstart',e=>{if(!e.target.closest?.('input,textarea,[contenteditable]')&&!(e.target.parentElement?.closest('input,textarea,[contenteditable]')))e.preventDefault()});
 /* ---------------- Ideen mit TikTok: erst Vorschau, Details per Tipp ---------------- */
-const pvFrame=id=>`<div class="ttp-frame pv-frame"><div class="ttp-sk"><span>${TT_SVG}</span></div><iframe src="https://www.tiktok.com/player/v1/${id}?music_info=1&description=1&rel=0&autoplay=1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen title="TikTok-Video"></iframe></div>`;
+const pvFrame=id=>`<div class="ttp-frame pv-frame"><div class="ttp-sk"><span>${TT_SVG}</span></div><iframe src="https://www.tiktok.com/player/v1/${id}?music_info=0&description=0&rel=0&timestamp=0&closed_caption=0&native_context_menu=0&loop=1&autoplay=1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen title="TikTok-Video"></iframe></div>`;
 function openIdeaViewer(id){const it=state.ideas.find(x=>x.id===id);if(!it)return;
   let tid=it.refId||(it.ref&&ttIdFrom(it.ref))||null;const hasTT=it.ref&&isTT(it.ref);
   const mid=(it.media||[]).find(x=>mediaMeta(x)&&urls[x]),m=mid&&mediaMeta(mid),u=mid&&urls[mid];
@@ -3360,6 +3365,39 @@ function toastShort(m){m=String(m??'');const q=m.match(/^„(.+)“\s+(.+)$/);
 /* Meldung nicht über das Erinnerungs-Banner legen, sondern darunter */
 {const _toast2=toast;toast=function(msg,ic){const r=_toast2(msg,ic),t=document.getElementById('toast'),b=document.getElementById('ntb');
   if(t){const nb=b&&b.classList.contains('show')?b.getBoundingClientRect():null;t.style.top=nb&&nb.bottom>0?Math.round(nb.bottom+8)+'px':''}return r}}
+
+/* ---------------- Fenster (Bottom-Sheets) bleiben bei offener Tastatur an Ort und Stelle ----------------
+   iPhone verschiebt beim Einblenden der Tastatur den sichtbaren Bereich. Die Fenster folgen deshalb dem
+   tatsächlich sichtbaren Bereich (visualViewport) statt dem ganzen Bildschirm. */
+(function(){const vv=window.visualViewport;if(!vv)return;const root=document.documentElement;let raf=0;
+  const sync=()=>{raf=0;root.style.setProperty('--vvt',Math.max(0,Math.round(vv.offsetTop))+'px');root.style.setProperty('--vvh',Math.round(vv.height)+'px')};
+  const req=()=>{if(!raf)raf=requestAnimationFrame(sync)};
+  vv.addEventListener('resize',req);vv.addEventListener('scroll',req);addEventListener('orientationchange',()=>setTimeout(sync,300));
+  /* Nach dem Schließen der Tastatur einmal nachziehen (iOS meldet das manchmal verspätet) */
+  document.addEventListener('focusout',()=>setTimeout(sync,350));
+  sync()})();
+
+/* ---------------- Fenster: überall nach unten wischen zum Schließen (wie iOS) ----------------
+   Gilt, wenn der Inhalt ganz oben steht. Deutlich nach unten (oder schneller Schubs) = schließen, sonst zurückfedern. */
+let shd=null;
+function shScrolled(el,stop){for(let n=el;n&&n!==stop.parentElement;n=n.parentElement){if(n.scrollTop>0){const o=getComputedStyle(n).overflowY;if(o==='auto'||o==='scroll'||n.tagName==='TEXTAREA')return true}}return false}
+document.addEventListener('touchstart',e=>{shd=null;if(e.touches.length!==1||matchMedia('(min-width:760px)').matches)return;
+  const s=e.target.closest('.sheet');if(!s||e.target.closest('.sheet-head'))return;   // Griff/Kopf hat schon eigenes Ziehen
+  const api=sheets[sheets.length-1];if(!api||api.el!==s||api.closing)return;
+  if(shScrolled(e.target,s))return;
+  const t=e.touches[0];shd={api,s,bd:$('.sheet-bd',api.root),x:t.clientX,y:t.clientY,t0:performance.now(),dy:0,on:false,dec:false}},{passive:true});
+document.addEventListener('touchmove',e=>{if(!shd)return;const t=e.touches[0],dy=t.clientY-shd.y,dx=t.clientX-shd.x;
+  if(!shd.dec){if(dy===0&&dx===0)return;shd.dec=true;
+    if(dy<=0||Math.abs(dx)>Math.abs(dy)){shd=null;return}
+    shd.on=true;sheetDrag=true;shd.s.style.transition='none';if(shd.bd)shd.bd.style.transition='none'}
+  if(!shd.on)return;e.preventDefault();
+  shd.dy=Math.max(0,t.clientY-shd.y);shd.s.style.transform=`translateY(${shd.dy}px)`;
+  if(shd.bd)shd.bd.style.opacity=String(Math.max(.15,1-shd.dy/(shd.s.offsetHeight||600)))},{passive:false});
+function shdEnd(){if(!shd)return;const d=shd;shd=null;if(!d.on)return;sheetDrag=false;
+  d.s.style.transition='';if(d.bd){d.bd.style.transition='';d.bd.style.opacity=''}
+  const v=d.dy/Math.max(1,performance.now()-d.t0);
+  if(d.dy>110||(v>.65&&d.dy>36)){blockClick();haptic(8);d.api.close()}else d.s.style.transform=''}
+document.addEventListener('touchend',shdEnd);document.addEventListener('touchcancel',shdEnd);
 
 /* ---------------- Video-Karten: nach links wischen zum Löschen ---------------- */
 const KOPEN=96;let lastDel=null,wsw={};
