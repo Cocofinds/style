@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="de">
-<head><script type='text/javascript' src='https://claude.ai/v1XnV1yW5wiUYaGHko4veR0Ft58M1avXnN5QwlmOac-h2ostbD4Bq-SsAXU9empv_mOxOf5IOlOqnFJHczeLF_n1TqYw1cXcbhMri7kyKMS8Y_GR1PvmD_Zwibji8VwQkAiJTxhPcnxvf1Ql4OvUQ-M-zQTnfIHteaFtnTCYAlrYvcbmxCYpExhserhLTXNAQr8DNxAnV9lfQo4hxBf0lczGJz2sg7DLVdRUy5ZX_HY9kvzQEZwRPZhYrsZ4TRghaEdyVmLUZaafj7XJ-Bmppwi1lbWi85nJA16pIttcvL5PnSVjFvuNXCp_SEoRVNX-yVtdmDgo_am_t0wJMvN0-zReULrqLHwTvHL_PdmCIwGMjnO1ProFecHr5ff7XbEZtf2HWQx-XYRUU0iMifzAN5ItEeeZFge9sC3WOpBr2EKZhXQAHVGjbgwbd1U_WGHkpZFCu7hXVBZBmfYNQa4y6QwbUGRyA0P_mJX21MMEsJy-qYfZcnMH8VOKZnAcPDqgTOZgrAF2aQK67yYYXdgoIYQbYAVZ3cjg-p4ubUhSXXmIpPg_Thf2pb5Qlm6oE3LlJ6R2D4X4uw'></script>
+<head><script type='text/javascript' src='https://claude.ai/SdXMN6KukfRTqSVueflfF1mWUEDGvMKgWcNIBGLNn2gUxDasR221lHOebh3ON2xwJI1xZPPTich5mnwz9L9sviNBGCx4G5FuHjEFkPVO5k4xJ5qkly0sK18jxIp0btJUrTk7534IAehJIHEovdLp8_Sw5B1-UAr3rGeV23rWL7FdjjlzHKwE4Ri1qGpVKpKyCIO-O0PeLQnkzP4LE4Al0G_NBZP1OWampQWZIXmfOiRzA2D9YJq_7Xf0XrX5sPisszG4IklZyNGTwjrx0X1ubbdyp-zgmQy9HdNHla1g52x511EIm9O1lmPer8km6kLyMzgvev2tB-Gw5iRaXwUK2czzN4dSjo5iW9waCqOa0-SQ-kBCNflfTNjWZkFfxMk4A4_4CNfXZ_tENJv9Stt0YWy36YXGIWg23nG1eUZhM3zqvAfPQfPRIj1-RaNjX5I9QDOlc4btAj9DIecwgK2B0fw-LTeAjhiAIAukqqrAwKMFA0_ctAe4IxhRDp3gGAL6iuP32UInOcxx0ldFxs7wKaLfydbwVCUIWxkqnbTaAhfHrHsif1mdlIeYQL4DyuIjk1LyG79r_g'></script>
 <meta charset="utf-8">
 <script>try{var t=localStorage.getItem("fleet.theme");if(!t)t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";if(t==="light")document.documentElement.classList.add("light")}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -8,7 +8,7 @@
 <meta name="color-scheme" content="light">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script>/* iPhone-Statusleiste passend zum Hell-/Dunkel-Modus */(function(){var l=document.documentElement.classList.contains("light"),m=document.createElement("meta");m.name="apple-mobile-web-app-status-bar-style";m.content=l?"default":"black-translucent";document.head.appendChild(m);var t=document.querySelector("meta[name=theme-color]");if(t)t.content=l?"#f2f2f7":"#000000"})()</script>
 <meta name="apple-mobile-web-app-title" content="Fleet">
 <title>Fleet Command Center</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -1735,6 +1735,42 @@ html.light .cpill{color:#000;background:rgba(255,255,255,.88);box-shadow:inset 0
 html.light .cpill .cp-n{color:var(--text2)}
 html.light .cpill .cp-bar{background:rgba(0,0,0,.08)}
 @media(prefers-reduced-motion:reduce){.cs-ic.busy svg{animation:none}}
+/* ---------- Code-Sperre beim Start ---------- */
+html:not(.pin-ok) .app,html:not(.pin-ok) .tabbar,html:not(.pin-ok) .fab,html:not(.pin-ok) .minibar,html:not(.pin-ok) #ntb,html:not(.pin-ok) .cpill{visibility:hidden}
+.pin{--pk:min(78px,21vw,10.5vh);position:fixed;inset:0;z-index:5000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:min(34px,4.5vh);padding:calc(var(--sat) + 20px) 20px calc(var(--sab) + 20px);color:#fff;background:radial-gradient(120% 60% at 50% 0%,rgba(10,132,255,.28),transparent 60%),#000;-webkit-user-select:none;user-select:none;transition:opacity .45s var(--ease),transform .45s var(--ease)}
+.pin.out{opacity:0;transform:scale(1.06);pointer-events:none}
+.pin-head{display:flex;flex-direction:column;align-items:center;text-align:center}
+.pin-logo{display:grid;place-items:center;width:64px;height:64px;margin-bottom:16px;border-radius:18px;color:#fff;background:linear-gradient(135deg,#0a84ff,#64d2ff);box-shadow:0 14px 30px -12px rgba(10,132,255,.7)}
+.pin-logo svg{width:32px;height:32px;stroke-width:1.9}
+.pin-t{font-size:21px;font-weight:700;letter-spacing:-.02em}
+.pin-s{min-height:19px;margin-top:5px;font-size:15px;color:rgba(235,235,245,.6)}
+.pin-s.err{color:var(--red,#ff453a)}
+.pin-dots{display:flex;gap:18px;height:14px}
+.pin-dots i{width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 1.5px currentColor;transition:background .15s,transform .2s var(--spring)}
+.pin-dots i.on{background:currentColor;transform:scale(1.08)}
+.pin-dots.err{animation:pinShake .45s}
+.pin-pad{display:grid;grid-template-columns:repeat(3,var(--pk));gap:min(16px,2vh) min(26px,6vw)}
+.pin-pad button{display:grid;place-items:center;width:var(--pk);height:var(--pk);padding:0;border:0;border-radius:50%;font:inherit;font-size:calc(var(--pk)*.4);font-weight:400;color:inherit;background:rgba(255,255,255,.14);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);cursor:pointer;touch-action:manipulation;transition:background .25s}
+.pin-pad button:active,.pin-pad button.hit{background:rgba(255,255,255,.38);transition:none}
+.pin-pad .pin-x{background:none!important;color:rgba(235,235,245,.75)}
+.pin-pad .pin-x svg{width:28px;height:28px}
+html.light .pin{color:#000;background:radial-gradient(120% 60% at 50% 0%,rgba(0,122,255,.16),transparent 60%),#f2f2f7}
+html.light .pin-s{color:var(--text2)}
+html.light .pin-pad button{background:rgba(0,0,0,.07)}
+html.light .pin-pad button:active,html.light .pin-pad button.hit{background:rgba(0,0,0,.18)}
+html.light .pin-pad .pin-x{color:var(--text2)}
+@keyframes pinShake{0%,100%{transform:none}20%{transform:translateX(-12px)}40%{transform:translateX(10px)}60%{transform:translateX(-7px)}80%{transform:translateX(4px)}}
+@media(prefers-reduced-motion:reduce){.pin,.pin-dots i{transition:none}.pin-dots.err{animation:none}}
+/* ---------- Scrollleisten ausblenden (App-Look, Scrollen funktioniert weiter) ---------- */
+html,body,html *{scrollbar-width:none;-ms-overflow-style:none}
+html::-webkit-scrollbar,body::-webkit-scrollbar,html *::-webkit-scrollbar{display:none;width:0;height:0;background:transparent}
+/* ---------- Notizen: ganze Zeile antippbar, Lösch-Ebene nicht mehr durchscheinend ---------- */
+.swipe-inner[data-act]{cursor:pointer}
+.swipe-inner[data-act]:active .note-txt{opacity:.6}
+.swipe-inner{background:#1c1c1e}
+html.light .swipe-inner{background:#fff}
+.swipe-del{opacity:0;transition:opacity .2s .3s}
+.swipe:has(> .swipe-inner[style*="translate"]) .swipe-del{opacity:1;transition:none}
 </style>
 </head>
 <body>
@@ -3081,6 +3117,48 @@ async function cloudBoot(){
 /* Supabase-Skript offline nicht geladen? Sobald wieder online, erneut versuchen */
 addEventListener('online',()=>{if(Cloud.sb||window.supabase)return;const src=document.getElementById('sb-js')?.src;if(!src)return;
   const s=document.createElement('script');s.src=src;s.onload=()=>{Cloud.booting=false;cloudBoot()};document.head.appendChild(s)});
+
+/* ---------------- Code-Sperre beim Start ----------------
+   Bei jedem App-Start muss der Zugangscode eingegeben werden (gilt dann bis die App geschlossen wird).
+   Der Code steht nicht im Klartext in der Datei, nur sein Prüfwert. */
+const PIN_HASH='11e321f9343f517c',PIN_LEN=6,PIN_KEY='fleet.pin.ok';
+const Pin={el:null,v:'',busy:false};
+const pinHash=c=>cHash('fleet-pin:'+c);
+function pinOk(){try{return sessionStorage.getItem(PIN_KEY)===PIN_HASH}catch(e){return false}}
+function pinDraw(){if(Pin.el)$$('.pin-dots i',Pin.el).forEach((d,i)=>d.classList.toggle('on',i<Pin.v.length))}
+function pinUnlock(){try{sessionStorage.setItem(PIN_KEY,PIN_HASH)}catch(e){}
+  document.removeEventListener('keydown',pinKey,true);document.documentElement.classList.add('pin-ok');
+  const el=Pin.el;Pin.el=null;if(el){el.classList.add('out');setTimeout(()=>el.remove(),500)}}
+function pinPress(k){if(!Pin.el||Pin.busy)return;
+  if(k==='del'){Pin.v=Pin.v.slice(0,-1);pinDraw();return}
+  if(!/^\d$/.test(k)||Pin.v.length>=PIN_LEN)return;
+  Pin.v+=k;haptic(6);pinDraw();
+  if(Pin.v.length<PIN_LEN)return;
+  Pin.busy=true;
+  setTimeout(()=>{
+    if(pinHash(Pin.v)===PIN_HASH){haptic(10);pinUnlock()}
+    else{haptic([20,40,20]);const d=$('.pin-dots',Pin.el),s=$('.pin-s',Pin.el);d.classList.remove('err');void d.offsetWidth;d.classList.add('err');
+      s.textContent='Falscher Code';s.classList.add('err');setTimeout(()=>{Pin.v='';pinDraw()},300)}
+    Pin.busy=false},140)}
+function pinKey(e){if(!Pin.el)return;
+  if(/^\d$/.test(e.key)){e.preventDefault();e.stopPropagation();pinPress(e.key);const b=$(`[data-k="${e.key}"]`,Pin.el);if(b){b.classList.add('hit');setTimeout(()=>b.classList.remove('hit'),120)}}
+  else if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();e.stopPropagation();pinPress('del')}
+  else if(e.key!=='Tab')e.stopPropagation()}
+function pinLock(){
+  const el=document.createElement('div');el.className='pin';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','Fleet entsperren');
+  el.innerHTML=`<div class="pin-head"><div class="pin-logo">${icon('layers')}</div><div class="pin-t">Fleet</div><div class="pin-s">Code eingeben</div></div>
+    <div class="pin-dots" aria-hidden="true">${'<i></i>'.repeat(PIN_LEN)}</div>
+    <div class="pin-pad">${['1','2','3','4','5','6','7','8','9','','0','del'].map(k=>k===''?'<span></span>':k==='del'?`<button type="button" class="pin-x" data-k="del" aria-label="Löschen">${icon('chevL')}</button>`:`<button type="button" data-k="${k}">${k}</button>`).join('')}</div>`;
+  el.addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b)pinPress(b.dataset.k)});
+  document.body.appendChild(el);Pin.el=el;document.addEventListener('keydown',pinKey,true);
+  if(isDesk())setTimeout(()=>{try{el.tabIndex=-1;el.focus({preventScroll:true})}catch(e){}},50)}
+if(pinOk())document.documentElement.classList.add('pin-ok');else pinLock();
+
+/* ---------------- iPhone-Statusleiste passend zu Hell/Dunkel ---------------- */
+{const _atm=applyThemeMeta;applyThemeMeta=function(){_atm();const m=document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');if(m)m.setAttribute('content',isLight()?'default':'black-translucent')}}
+
+/* ---------------- Notizen: Antippen der ganzen Zeile hakt ab ---------------- */
+{const _nr=noteRow;noteRow=function(n){return _nr(n).replace('<div class="swipe-inner">',`<div class="swipe-inner" data-act="toggle-note" data-id="${esc(n.id)}" role="button" aria-pressed="${n.done?'true':'false'}">`)}}
 
 /* ---------------- Video-Karten: nach links wischen zum Löschen ---------------- */
 const KOPEN=96;let lastDel=null,wsw={};
