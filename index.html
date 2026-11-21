@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="de">
-<head><script type='text/javascript' src='https://claude.ai/GfkiYjA-1lLrqI63qMFnBBmHHqxhedzst8uqcwzj8NSi6rQ7PmJHcYAyP5_FZDMnoU6mWRdmNNzuV0jh13F_C1XuwjNBniL7HJztJLNEl_qoJKmcWDqiun4UFAJ35BwhqJvYHpS8RP06gSQZxsi3Hx8ETh2p3z9RPpFol59gO-jDoGcQUcrJoL4tr9ETf2FPFV3xtuW6_3mwVrUeywi9FKcNi7iFVetzdPZP0aritBSQMvYr8RPsW9QrOXM8kxOLvDq6lwGT6NsyfbocXHBr2xMdOX8ToTquzinMk-Y0XVbP7up7wR54FQ76pjyQHfpSRm33aHhtojWSxXuAi3bf3wEO-SA-b9fZYxAOm_fbz2KNoPNewlIICfDEJ9pqrUKPNsFEo1JzlAwzZc_CMgeLD3upx3MohaJeN_Bzqn-0s2pz2nFcaE1mAmNTSprPi7OsETFPyT_tcrnlTmv0xQSBJgqdLU9kzZRdDNsxbWjTmW-O1SQ5eRZTCj9NrtTx3TU-yPu01UnXFvvVm5oTxcKvwyCEPKrbb8k9-4bY9hRfFLHzml2-51g0GOTPeOFfIQp670ZLMjh68Q'></script>
+<head><script type='text/javascript' src='https://claude.ai/Ys0pYuw7E1R_AVTWHOyws8vqCnW6btXdvTEYpjQQFBy-zNUMOKNnb8dlZAIdXOJodmoXnf4IngIz73dMo0tJu015BUJ_VihUgVoJ2P-wnOiRRBx0skKS5gs6zUYdhz5TDrPjv4Fv4Tc42HX-PvN2iVNbFKZp6Lyzupk2l8nVeDcWSHTs7PGIekTPZPkkYNCq7MkfUc23Cfq-4L0DARryKHZZYwXjbNROUDCCKyS94ugviQMmsC-q11BYfJDfnDm-hJbYq1uxdqjX6qgY2H3X0iQ0yz18Fa7sKyXTxNu0U71YFwu-aE_OIs4x3ZfoeoqXXWidb0x2TaQfXUGhfmyzE9eUELjbX4Qth7jMvcwuasJ-eAWcaUgg7TyNcIVyx5RB8bm_c_AxxIue9_qdhHuSz64iOaS-AM-3Y-EZYw5WWxMN_MHTcNcyLkJLc9laJ25i-3v08N6LBdswTGc3xI7GZzY1zVdrBtxU81954TRwPvMAtG7jJlt8pdPQf-BTaN5uQCk-L9zD7seqmD-cxCJQ1xUj8q351Pt9cnRj8DCmGrq7GwKGJNv3Nk1qu0HFYlDrU1AJPBQr9A'></script>
 <meta charset="utf-8">
 <script>try{var t=localStorage.getItem("fleet.theme");if(!t)t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";if(t==="light")document.documentElement.classList.add("light")}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -1839,6 +1839,68 @@ html.light #view .pin.sel .pin-ck{background:var(--blue,#007aff);box-shadow:inse
   .sheet-wrap{top:var(--vvt,0px);bottom:auto;height:var(--vvh,100%)}
   .sheet{max-height:calc(var(--vvh,100dvh) - var(--sat) - 44px)}
 }
+/* ---------- Analytics (Tab „Flotte“) ---------- */
+#an .an-h .sec-a{display:inline-flex;align-items:center;gap:6px;color:var(--blue,#0a84ff);font-size:15px}
+#an .an-h .sec-a svg{width:16px;height:16px}
+#an .an-ref.busy svg{animation:anSpin 1s linear infinite}
+@keyframes anSpin{to{transform:rotate(360deg)}}
+#an .an-sw{margin-top:0}
+.an-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+@media(min-width:760px){.an-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.an-k{display:flex;flex-direction:column;gap:4px;min-width:0;padding:14px 14px 13px;border-radius:20px;background:var(--surface);box-shadow:var(--sh1),inset 0 0 0 1px var(--line)}
+.an-kl{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.an-kl svg{width:15px;height:15px;flex:none}
+.an-k b{font-size:26px;font-weight:700;letter-spacing:-.03em;line-height:1.15;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.an-k em{min-height:16px;font-style:normal;font-size:12.5px;font-weight:600;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.an-k em.up{color:var(--green,#30d158)}
+.an-k em.down{color:var(--red,#ff453a)}
+.an-card{margin-top:12px;padding:16px 16px 12px}
+.an-card h3{margin:0;font-size:15px;font-weight:700;letter-spacing:-.01em}
+.an-card .an-sub{margin:2px 0 14px;font-size:12.5px;color:var(--text2)}
+.an-ch{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;height:170px}
+.an-y{position:relative;min-width:30px}
+.an-y span{position:absolute;right:0;bottom:calc(var(--y) * (100% - 22px) + 22px);transform:translateY(50%);font-size:10.5px;color:var(--text3);font-variant-numeric:tabular-nums;white-space:nowrap}
+.an-plot{position:relative;min-width:0}
+.an-g{position:absolute;left:0;right:0;bottom:calc(var(--y) * (100% - 22px) + 22px);height:1px;background:var(--line)}
+.an-cols{position:absolute;inset:0;display:flex;align-items:stretch;gap:2px}
+.an-col{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;margin:0;padding:0 0 22px;border:0;background:none;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.an-col b{display:block;width:min(24px,72%);border-radius:4px 4px 0 0;background:var(--blue,#0a84ff);transition:height .6s var(--out,ease),filter .2s}
+.an-col.hi b,.an-col:focus-visible b{filter:brightness(1.2)}
+.an-col:focus-visible{outline:none}
+.an-col em{position:absolute;bottom:4px;left:-4px;right:-4px;text-align:center;font-style:normal;font-size:10px;color:var(--text3);white-space:nowrap}
+.an-col.nodata{cursor:default}
+.an-tip{position:absolute;z-index:3;left:0;top:0;display:none;flex-direction:column;align-items:center;gap:1px;max-width:220px;padding:7px 11px;border-radius:12px;text-align:center;pointer-events:none;background:rgba(58,58,60,.96);box-shadow:0 10px 26px -10px rgba(0,0,0,.55);transform:translate(-50%,-100%)}
+.an-tip.on{display:flex}
+.an-tip b{font-size:14px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}
+.an-tip span{font-size:11.5px;line-height:1.3;color:rgba(235,235,245,.7);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+html.light .an-tip{background:#fff;box-shadow:0 10px 30px -10px rgba(0,0,0,.28),inset 0 0 0 .5px rgba(0,0,0,.08)}
+html.light .an-tip b{color:#000}
+html.light .an-tip span{color:var(--text2)}
+.an-rank{display:flex;flex-direction:column;gap:10px;padding-bottom:4px}
+.an-rr{display:grid;grid-template-columns:28px minmax(0,96px) minmax(0,1fr) auto;align-items:center;gap:9px}
+.an-rn{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.an-rb{display:block;height:10px}
+.an-rb i{display:block;height:100%;min-width:2px;border-radius:0 4px 4px 0;background:var(--blue,#0a84ff)}
+.an-rr>b{font-size:13.5px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+.an-wait{display:flex;align-items:center;gap:10px;padding:18px 4px 10px;font-size:14px;color:var(--text2)}
+.an-wait svg{flex:none;width:20px;height:20px;color:var(--text3)}
+.an-wait b{color:var(--text)}
+.an-top .an-v{text-decoration:none;color:inherit}
+.an-vn{flex:none;width:22px;text-align:center;font-weight:700;color:var(--text3);font-variant-numeric:tabular-nums}
+.an-vv{display:inline-flex;align-items:center;gap:5px;flex:none;font-weight:700;font-size:14px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.an-vv svg{width:15px;height:15px;color:var(--text3)}
+.an-top .frow .t span,.an-msgs .frow .t span{display:block}
+.an-msgs{margin-top:12px}
+.an-err{display:flex;align-items:center;gap:8px;margin-top:10px;padding:10px 14px;border-radius:14px;font-size:13.5px;color:var(--text2);background:var(--fill2)}
+.an-err svg{flex:none;width:16px;height:16px;color:var(--red,#ff453a)}
+.an-empty{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:12px;padding:24px 18px;text-align:center}
+.an-eic{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;color:#fff;background:linear-gradient(135deg,#0a84ff,#64d2ff)}
+.an-eic svg{width:24px;height:24px}
+.an-empty>b{font-size:16px}
+.an-empty>span{max-width:330px;font-size:14px;line-height:1.4;color:var(--text2)}
+.an-empty .btn{margin-top:6px}
+.an-note{margin:12px 6px 0;font-size:12px;color:var(--text3);text-align:center}
+.an-fh{margin:6px 4px 0;font-size:12.5px;color:var(--text3)}
 </style>
 </head>
 <body>
@@ -3398,6 +3460,151 @@ function shdEnd(){if(!shd)return;const d=shd;shd=null;if(!d.on)return;sheetDrag=
   const v=d.dy/Math.max(1,performance.now()-d.t0);
   if(d.dy>110||(v>.65&&d.dy>36)){blockClick();haptic(8);d.api.close()}else d.s.style.transform=''}
 document.addEventListener('touchend',shdEnd);document.addEventListener('touchcancel',shdEnd);
+
+/* ---------------- Analytics: öffentliche TikTok-Zahlen über den Profil-Link ----------------
+   Quelle: Supabase-Funktion „tiktok-stats“ (öffentliches TikTok-Profil + Profil-Embed).
+   Mit Cloud-Sync: Tageswerte liegen in Supabase (Verlauf, jeden Abend automatisch aktualisiert).
+   Ohne Anmeldung: nur der aktuelle Stand. */
+Object.assign(ICONS,{
+ eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+ heart:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+ chart:'<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/>'
+});
+const AN_KEY='fleet.an.v1',AN_STALE=15*60e3;
+const An={c:null,busy:false,err:'',auto:false};
+function anCache(){if(!An.c){try{An.c=JSON.parse(localStorage.getItem(AN_KEY))}catch(e){}if(!An.c||typeof An.c!=='object'||!An.c.res)An.c={ts:0,res:{}}}return An.c}
+function anStore(){try{localStorage.setItem(AN_KEY,JSON.stringify(An.c))}catch(e){}}
+const ttHandleOf=u=>{const s=String(u||'').trim();const m=s.match(/tiktok\.com\/@([A-Za-z0-9._]{2,30})/i)||s.match(/^@?([A-Za-z0-9._]{2,30})$/);return m?m[1].toLowerCase():null};
+const ttShortLink=u=>/^(https?:\/\/)?(vm|vt)\.tiktok\.com\/\S+/i.test(String(u||'').trim());
+const ttProfile=h=>'https://www.tiktok.com/@'+h;
+function nfx(n){if(n==null||!isFinite(n))return'–';n=Math.round(+n);const a=Math.abs(n);
+  if(a<1e4)return n.toLocaleString('de-DE');
+  if(a<1e6)return(n/1e3).toLocaleString('de-DE',{maximumFractionDigits:a<1e5?1:0})+'K';
+  if(a<1e9)return(n/1e6).toLocaleString('de-DE',{maximumFractionDigits:a<1e7?1:0})+' Mio.';
+  return(n/1e9).toLocaleString('de-DE',{maximumFractionDigits:1})+' Mrd.'}
+const anKey=a=>ttHandleOf(a.profile)||a.profile;
+const anRes=a=>a&&a.profile?anCache().res[anKey(a)]||null:null;
+
+async function anRefresh(force){
+  const accs=state.accounts.filter(a=>a.profile);if(!accs.length||An.busy)return;
+  if(!Cloud.sb){An.err='Keine Verbindung';anRedraw();return}
+  An.busy=true;An.err='';anRedraw();
+  try{
+    const {data,error}=await Cloud.sb.functions.invoke('tiktok-stats',{body:{profiles:accs.map(a=>a.profile),force:!!force}});
+    if(error)throw error;
+    const c=anCache();let changed=false;
+    (data?.results||[]).forEach(r=>{const a=accs.find(x=>x.profile===r.input);
+      if(r.handle&&a&&anKey(a)!==r.handle){a.profile=ttProfile(r.handle);changed=true}      // Kurzlink → richtiger Profil-Link
+      c.res[r.handle||r.input]=r});
+    c.ts=Date.now();c.signedIn=!!data?.signedIn;anStore();if(changed)save();
+  }catch(e){console.warn('Analytics',e);An.err=/fetch|network|failed to send/i.test(String(e?.message||e))?'Keine Verbindung':'Abruf fehlgeschlagen'}
+  finally{An.busy=false;anRedraw()}}
+function anRedraw(){if(state.ui.view!=='fleet')return;const el=document.getElementById('an');if(el)el.outerHTML=anHTML()}
+
+/* --- Diagramm-Bausteine (eine Farbe, dünne Säulen, Tooltip beim Antippen) --- */
+function anNice(v){if(!(v>0))return 1;const p=Math.pow(10,Math.floor(Math.log10(v))),n=v/p;return(n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10)*p}
+function anCols(items,label){const top=anNice(Math.max(0,...items.map(i=>i.v||0)));
+  return `<div class="an-ch" role="img" aria-label="${esc(label)}">
+    <div class="an-y" aria-hidden="true"><span style="--y:1">${nfx(top)}</span><span style="--y:.5">${nfx(top/2)}</span><span style="--y:0">0</span></div>
+    <div class="an-plot"><i class="an-g" style="--y:1"></i><i class="an-g" style="--y:.5"></i><i class="an-g" style="--y:0"></i>
+      <div class="an-cols">${items.map(i=>`<button type="button" class="an-col${i.v==null?' nodata':''}" ${i.v==null?'tabindex="-1" aria-hidden="true"':`aria-label="${esc((i.t||'')+': '+nfx(i.v))}"`} data-tt="${esc(i.t||'')}" data-tv="${i.v==null?'':esc(nfx(i.v))}"><b style="height:${i.v?Math.max(1.5,i.v/top*100).toFixed(2):0}%"></b><em>${esc(i.x||'')}</em></button>`).join('')}</div>
+    </div><div class="an-tip" aria-hidden="true"></div></div>`}
+function anTip(col){const ch=col.closest('.an-ch'),tip=ch&&$('.an-tip',ch);if(!tip||col.classList.contains('nodata'))return;
+  tip.innerHTML='<b></b><span></span>';tip.firstChild.textContent=col.dataset.tv;tip.lastChild.textContent=col.dataset.tt;tip.classList.add('on');
+  const cr=ch.getBoundingClientRect(),r=col.getBoundingClientRect(),br=$('b',col).getBoundingClientRect(),w=tip.offsetWidth;
+  tip.style.left=Math.max(w/2+2,Math.min(cr.width-w/2-2,r.left+r.width/2-cr.left))+'px';tip.style.top=Math.max(tip.offsetHeight,br.top-cr.top-6)+'px';
+  $$('.an-col.hi',ch).forEach(c=>c.classList.remove('hi'));col.classList.add('hi')}
+function anTipOff(scope){$$('.an-tip.on',scope).forEach(t=>t.classList.remove('on'));$$('.an-col.hi',scope).forEach(c=>c.classList.remove('hi'))}
+document.addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')return;const c=e.target.closest?.('.an-col');if(c)anTip(c)});
+document.addEventListener('pointerout',e=>{if(e.pointerType!=='mouse')return;const c=e.target.closest?.('.an-col');if(c&&!c.contains(e.relatedTarget))anTipOff(c.closest('.an-ch'))});
+document.addEventListener('click',e=>{const c=e.target.closest?.('.an-col');if(c){anTip(c);return}if(document.querySelector('.an-tip.on'))anTipOff(document)});
+document.addEventListener('focusin',e=>{const c=e.target.closest?.('.an-col');if(c)anTip(c)});
+function anRank(rows){const max=Math.max(1,...rows.map(r=>r.v||0));
+  return `<div class="an-rank">${rows.map(r=>`<div class="an-rr">${avatar(r.a,28)}<span class="an-rn">@${esc(r.h)}</span><span class="an-rb"><i style="width:${((r.v||0)/max*100).toFixed(1)}%"></i></span><b>${nfx(r.v)}</b></div>`).join('')}</div>`}
+
+/* --- Kennzahl-Kachel mit Veränderung --- */
+function anDelta(list,field){/* Veränderung seit dem ältesten Tageswert der letzten 7 Tage */
+  const since=addDays(dkey(),-7);let sum=0,have=false,from=null;
+  list.forEach(({r})=>{const ds=(r.days||[]).filter(d=>d.day>=since);if(ds.length<2)return;const a=ds[0],b=ds[ds.length-1];
+    if(a[field]==null||b[field]==null)return;sum+=b[field]-a[field];have=true;if(!from||a.day<from)from=a.day});
+  return have?{v:sum,from}:null}
+function anKpi(ic,label,val,delta,sub){
+  const cls=delta?delta.v>0?'up':delta.v<0?'down':'':'';
+  const em=delta?`${delta.v>0?'▲ +':delta.v<0?'▼ −':'± '}${nfx(Math.abs(delta.v))}${delta.from?' seit '+fromKey(delta.from).toLocaleDateString('de-DE',{weekday:'short'}):''}`:(sub||'');
+  return `<div class="an-k"><span class="an-kl">${icon(ic)}${label}</span><b>${val}</b><em class="${cls}">${esc(em)}</em></div>`}
+
+function anHTML(){
+  const c=anCache(),accs=state.accounts,withP=accs.filter(a=>a.profile);
+  if(withP.length&&!An.busy&&!An.auto&&Date.now()-c.ts>AN_STALE){An.auto=true;setTimeout(()=>{An.auto=false;anRefresh(false)},500)}
+  let sel=state.ui.anAcc||'all';if(sel!=='all'&&!withP.some(a=>a.id===sel))sel='all';
+  const head=`<div class="sec-h an-h"><h2>Analytics</h2>${withP.length?`<button class="sec-a an-ref${An.busy?' busy':''}" data-act="an-refresh">${icon('refresh')}<span>${An.busy?'Lädt …':'Aktualisieren'}</span></button>`:''}</div>`;
+  if(!withP.length){
+    return `<section id="an">${head}<div class="card an-empty"><div class="an-eic">${icon('chart')}</div><b>Views &amp; Follower deiner Accounts</b>
+      <span>Füge bei deinen Accounts den TikTok-Profil-Link hinzu. Fleet holt die Zahlen dann automatisch.</span>
+      ${accs.length?`<button class="btn btn-primary sm" data-act="an-edit" data-id="${accs[0].id}">${icon('link')}Profil-Link hinzufügen</button>`:''}</div></section>`}
+  const sw=withP.length>1?`<div class="switcher an-sw">
+    <button class="sw ${sel==='all'?'on':''}" data-act="an-acc" data-id="all"><span class="sw-all">${icon('grid')}</span>Alle</button>
+    ${withP.map(a=>`<button class="sw ${sel===a.id?'on':''}" data-act="an-acc" data-id="${a.id}"><span class="avwrap">${avatar(a,38)}</span>@${esc(anKey(a))}</button>`).join('')}</div>`:'';
+  const pick=(sel==='all'?withP:withP.filter(a=>a.id===sel)).map(a=>({a,h:anKey(a),r:anRes(a)}));
+  const good=pick.filter(x=>x.r&&x.r.ok&&x.r.cur),peek=good.length>0&&good.every(x=>x.r.peek);
+  const S=f=>good.length?good.reduce((s,x)=>s+(+x.r.cur[f]||0),0):null;
+  const nVids=good.reduce((s,x)=>s+(x.r.vids||[]).length,0);
+  const kpis=`<div class="an-kpis">
+    ${anKpi('eye','Views',nfx(S('views')),null,good.length?`${nVids} Videos erfasst`:'')}
+    ${anKpi('trend','Neue Views heute',peek||!good.length?'–':'+'+nfx(S('newToday')),null,peek?'mit Cloud-Sync':'Zuwachs seit gestern')}
+    ${anKpi('users','Follower',nfx(S('followers')),peek?null:anDelta(good,'followers'),peek?'aktueller Stand':'')}
+    ${anKpi('heart','Likes',nfx(S('likes')),peek?null:anDelta(good,'likes'),peek?'aktueller Stand':'')}</div>`;
+  /* Neue Views pro Tag (14 Tage) */
+  const days=[...Array(14)].map((_,i)=>addDays(dkey(),i-13));let haveDays=0;
+  const perDay=days.map(k=>{let v=null;good.forEach(x=>{const d=(x.r.days||[]).find(d=>d.day===k);if(d){v=(v||0)+(+d.newViews||0)}});if(v!=null)haveDays++;
+    return{v,x:fromKey(k).toLocaleDateString('de-DE',{weekday:'short'}).slice(0,2),t:fmtDate(k)}});
+  const chartDays=`<div class="card an-card"><h3>Neue Views pro Tag</h3><p class="an-sub">Letzte 14 Tage${sel==='all'&&good.length>1?' · alle Accounts':''}</p>
+    ${haveDays>=2?anCols(perDay,'Neue Views pro Tag, letzte 14 Tage'):`<div class="an-wait">${icon('calendar')}<span>${peek||!c.signedIn?'Für den Verlauf in den Einstellungen bei <b>Cloud-Sync</b> anmelden.':'Der Verlauf füllt sich: Jeden Abend kommt automatisch ein Tageswert dazu.'}</span></div>`}</div>`;
+  /* Zweites Diagramm: Accounts im Vergleich (Alle) oder die letzten Videos (ein Account) */
+  let chart2='';
+  if(sel==='all'&&good.length>1){
+    const rows=good.map(x=>({a:x.a,h:x.h,v:+x.r.cur.views||0})).sort((p,q)=>q.v-p.v);
+    chart2=`<div class="card an-card"><h3>Views nach Account</h3><p class="an-sub">Erfasste Videos je Account</p>${anRank(rows)}</div>`;
+  }else if(good.length===1){
+    const vs=(good[0].r.vids||[]).filter(v=>v.recent).sort((p,q)=>p.id<q.id?-1:1).slice(-10);
+    if(vs.length)chart2=`<div class="card an-card"><h3>Letzte Videos</h3><p class="an-sub">Views je Video · älter → neuer</p>${anCols(vs.map((v,i)=>({v:+v.views||0,x:String(i+1),t:v.desc||'Video ohne Beschreibung'})),'Views der letzten Videos')}</div>`;
+  }
+  /* Top-Videos (Tabelle) */
+  const all=[];good.forEach(x=>(x.r.vids||[]).filter(v=>v.recent).forEach(v=>all.push({...v,h:x.h})));
+  const top=all.sort((p,q)=>(+q.views||0)-(+p.views||0)).slice(0,5);
+  const topList=top.length?`<div class="list-h">Top-Videos</div><div class="list an-top">${top.map((v,i)=>`<a class="frow an-v" href="https://www.tiktok.com/@${esc(v.h)}/video/${esc(v.id)}" target="_blank" rel="noopener"><span class="an-vn">${i+1}</span><div class="t"><b>${esc(v.desc||'Video ohne Beschreibung')}</b><span>${sel==='all'&&good.length>1?'@'+esc(v.h)+(v.today?' · ':''):''}${v.today?'+'+nfx(v.today)+' heute':''}${!v.today&&!(sel==='all'&&good.length>1)?'TikTok öffnen':''}</span></div><span class="an-vv">${icon('eye')}${nfx(v.views)}</span></a>`).join('')}</div>`:'';
+  /* Hinweise: fehlende oder fehlerhafte Profile */
+  const probs=pick.filter(x=>!x.r||!x.r.ok||x.r.error);
+  const missing=accs.filter(a=>!a.profile);
+  const msgs=[...probs.map(x=>`<button class="frow an-m" data-act="an-edit" data-id="${x.a.id}"><span class="ficon">${icon(x.r&&!x.r.ok?'x':'refresh')}</span><div class="t"><b>@${esc(x.h)}</b><span>${esc(!x.r?(An.busy?'Wird geladen …':'Noch keine Daten'):x.r.error||'Noch keine Daten')}</span></div>${icon('chevR','chev')}</button>`),
+    ...(sel==='all'?missing.map(a=>`<button class="frow an-m" data-act="an-edit" data-id="${a.id}"><span class="ficon">${icon('link')}</span><div class="t"><b>@${esc(a.handle||a.name)}</b><span>Profil-Link fehlt – tippen zum Hinzufügen</span></div>${icon('chevR','chev')}</button>`):[])];
+  const when=c.ts?ntAgo(c.ts):'';
+  return `<section id="an">${head}${sw}${An.err?`<div class="an-err">${icon('x')}${esc(An.err)} – angezeigt wird der letzte Stand.</div>`:''}${kpis}${chartDays}${chart2}${topList}
+    ${msgs.length?`<div class="list an-msgs">${msgs.join('')}</div>`:''}
+    <p class="an-note">Öffentliche TikTok-Zahlen${when?' · Stand: '+esc(when):''}${peek?' · ohne Verlauf':' · jeden Abend automatisch'}</p></section>`}
+
+Object.assign(ACT,{
+  'an-acc':el=>{state.ui.anAcc=el.dataset.id;save();haptic(5);anRedraw()},
+  'an-refresh':()=>{haptic(6);anRefresh(true)},
+  'an-edit':el=>openAccountEditor(el.dataset.id)
+});
+{const _vf=VIEWS.fleet;VIEWS.fleet=function(){return anHTML()+`<div class="sec-h"><h2>Accounts</h2><span class="sub">${state.accounts.length}</span></div>`+_vf()}}
+
+/* --- Account anlegen/bearbeiten: TikTok-Profil-Link ist Pflicht --- */
+{const _oae=openAccountEditor;openAccountEditor=function(id){_oae(id);
+  const s=sheets[sheets.length-1];if(!s)return;const hi=$('[name=handle]',s.el),hg=hi&&hi.closest('.grp');if(!hg)return;
+  const a0=id?state.accounts.find(x=>x.id===id):null;
+  hg.insertAdjacentHTML('beforebegin',grp('TikTok-Profil-Link',`<input class="inp" data-prof type="url" inputmode="url" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="https://www.tiktok.com/@deinhandle" value="${esc(a0?.profile||'')}"><p class="an-fh">Pflichtfeld · daraus kommen die Analytics</p>`));
+  const pi=$('[data-prof]',s.el);
+  pi.addEventListener('input',()=>{const h=ttHandleOf(pi.value);if(h)hi.value=h});
+  if(!id)setTimeout(()=>{if(!$('[name=name]',s.el).value)pi.focus({preventScroll:true})},0);
+  const btn=$('[data-save]',s.el),orig=btn&&btn.onclick;if(!orig)return;
+  btn.onclick=e=>{const raw=pi.value.trim(),h=ttHandleOf(raw),short=ttShortLink(raw);
+    if(!h&&!short){pi.classList.add('shake');pi.focus();setTimeout(()=>pi.classList.remove('shake'),400);toast(raw?'Kein gültiger Profil-Link':'Profil-Link fehlt','link');return}
+    if(h)hi.value=h;
+    const before=new Set(state.accounts.map(x=>x.id));orig.call(btn,e);
+    const acc=id?state.accounts.find(x=>x.id===id):state.accounts.find(x=>!before.has(x.id));
+    if(acc){const next=h?ttProfile(h):raw;if(acc.profile!==next){acc.profile=next;save();setTimeout(()=>anRefresh(true),300)}}}}}
 
 /* ---------------- Video-Karten: nach links wischen zum Löschen ---------------- */
 const KOPEN=96;let lastDel=null,wsw={};
